@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker-compose up -d)",
+      "Bash(docker-compose down)",
+      "Bash(docker-compose run --rm web rails generate:*)",
+      "Bash(docker-compose run --rm web rails db:*)",
+      "Bash(docker-compose run --rm web bundle install)",
+      "Bash(docker-compose run --rm web rails console)",
+      "Bash(docker-compose run --rm web rspec)",
+      "Bash(docker-compose run --rm web rails routes)",
+      "Bash(docker-compose logs web)",
+      "Bash(git add *)",
+      "Bash(git commit -m *)",
+      "Bash(git push origin *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(docker system prune *)",
+      "Bash(docker-compose down -v)"
+    ]
+  }
+}
