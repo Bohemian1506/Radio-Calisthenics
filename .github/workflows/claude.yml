@@ -35,9 +35,9 @@ jobs:
       - name: Run Claude Code Action
         uses: anthropics/claude-code-action@main
         with:
-          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          custom-instructions: |
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_instructions: |
             EventPay Managerは初学者向けのRailsプロジェクトです。以下を重視してください：
             
             1. **学習重視**: コードには日本語コメントを適切に付ける
