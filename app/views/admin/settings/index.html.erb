@@ -1,0 +1,103 @@
+<% content_for :title, "管理者設定" %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">⚙️ 管理者設定</h1>
+        <div>
+          <%= link_to "ダッシュボード", admin_root_path, class: "btn btn-outline-primary me-2" %>
+          <%= link_to "ユーザー一覧", admin_users_path, class: "btn btn-outline-info me-2" %>
+          <%= link_to "スタンプカードに戻る", stamp_cards_path, class: "btn btn-secondary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8 col-md-10 mx-auto">
+      <!-- 参加時間設定 -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">🕐 ラジオ体操参加時間設定</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted mb-4">
+            スタンプを押すことができる時間帯を設定します。この時間外はスタンプを押すことができません。
+          </p>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="card border-primary">
+                <div class="card-body">
+                  <h6 class="card-title">🌅 開始時刻</h6>
+                  <div class="d-flex align-items-center mb-3">
+                    <span class="h4 text-primary me-3"><%= @participation_start_time %></span>
+                  </div>
+                  
+                  <%= form_with url: admin_settings_path, method: :patch, local: true, class: "d-flex gap-2" do |f| %>
+                    <%= f.hidden_field :setting_name, value: "participation_start_time" %>
+                    <%= f.time_field :setting_value, value: @participation_start_time, 
+                                     class: "form-control form-control-sm", required: true %>
+                    <%= f.submit "更新", class: "btn btn-primary btn-sm" %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <div class="card border-success">
+                <div class="card-body">
+                  <h6 class="card-title">🌆 終了時刻</h6>
+                  <div class="d-flex align-items-center mb-3">
+                    <span class="h4 text-success me-3"><%= @participation_end_time %></span>
+                  </div>
+                  
+                  <%= form_with url: admin_settings_path, method: :patch, local: true, class: "d-flex gap-2" do |f| %>
+                    <%= f.hidden_field :setting_name, value: "participation_end_time" %>
+                    <%= f.time_field :setting_value, value: @participation_end_time, 
+                                     class: "form-control form-control-sm", required: true %>
+                    <%= f.submit "更新", class: "btn btn-success btn-sm" %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="alert alert-info">
+            <strong>💡 現在の設定:</strong>
+            スタンプは <strong><%= @participation_start_time %></strong> から 
+            <strong><%= @participation_end_time %></strong> まで押すことができます。
+          </div>
+        </div>
+      </div>
+
+      <!-- システム情報 -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">📊 システム情報</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <ul class="list-unstyled">
+                <li><strong>システム名:</strong> Radio-Calisthenics</li>
+                <li><strong>バージョン:</strong> Phase2</li>
+                <li><strong>Rails:</strong> <%= Rails.version %></li>
+                <li><strong>Ruby:</strong> <%= RUBY_VERSION %></li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <ul class="list-unstyled">
+                <li><strong>環境:</strong> <%= Rails.env %></li>
+                <li><strong>タイムゾーン:</strong> <%= Time.zone.name %></li>
+                <li><strong>現在時刻:</strong> <%= Time.current.strftime("%Y-%m-%d %H:%M:%S") %></li>
+                <li><strong>データベース:</strong> PostgreSQL</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,145 @@
+<% content_for :title, "管理者ダッシュボード" %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">🎯 管理者ダッシュボード</h1>
+        <div>
+          <%= link_to "設定", admin_settings_path, class: "btn btn-outline-primary me-2" %>
+          <%= link_to "ユーザー一覧", admin_users_path, class: "btn btn-outline-info me-2" %>
+          <%= link_to "スタンプカードに戻る", stamp_cards_path, class: "btn btn-secondary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 統計サマリー -->
+  <div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">👥 総ユーザー数</h5>
+          <h2 class="text-primary"><%= @total_users %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">⭐ 総スタンプ数</h5>
+          <h2 class="text-success"><%= @total_stamps %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">📅 今日のスタンプ</h5>
+          <h2 class="text-warning"><%= @today_stamps %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">🔥 アクティブユーザー</h5>
+          <h2 class="text-info"><%= @active_users %></h2>
+          <small class="text-muted">過去1週間</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 日別統計グラフ -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">📊 過去7日間のスタンプ数</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <% @daily_stats.each do |stat| %>
+                    <th class="text-center">
+                      <%= stat[:date].strftime("%m/%d") %><br>
+                      <small class="text-muted">
+                        <%= %w[日 月 火 水 木 金 土][stat[:date].wday] %>
+                      </small>
+                    </th>
+                  <% end %>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <% max_count = @daily_stats.map { |s| s[:count] }.max %>
+                  <% max_count = 1 if max_count == 0 %>
+                  <% @daily_stats.each do |stat| %>
+                    <td class="text-center">
+                      <div class="d-flex flex-column align-items-center">
+                        <div class="bg-primary mb-1" 
+                             style="width: 20px; height: <%= (stat[:count].to_f / max_count * 50).round %>px; min-height: 2px;">
+                        </div>
+                        <small><%= stat[:count] %></small>
+                      </div>
+                    </td>
+                  <% end %>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 最近のスタンプ記録 -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">📋 最近のスタンプ記録</h5>
+        </div>
+        <div class="card-body">
+          <% if @recent_stamps.any? %>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>ユーザー</th>
+                    <th>日付</th>
+                    <th>スタンプ時刻</th>
+                    <th>記録時刻</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @recent_stamps.each do |stamp| %>
+                    <tr>
+                      <td>
+                        <%= link_to admin_user_path(stamp.user), class: "text-decoration-none" do %>
+                          <%= stamp.user.email %>
+                        <% end %>
+                      </td>
+                      <td><%= stamp.date.strftime("%Y年%m月%d日") %></td>
+                      <td><%= stamp.stamped_at.strftime("%H:%M") %></td>
+                      <td>
+                        <small class="text-muted">
+                          <%= time_ago_in_words(stamp.created_at) %>前
+                        </small>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <p class="text-muted text-center">まだスタンプ記録がありません。</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
