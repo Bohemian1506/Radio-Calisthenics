@@ -33,6 +33,20 @@ jobs:
         with:
           fetch-depth: 0
           
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Setup GitHub CLI
+        run: |
+          # GitHub CLI は GitHub Actions runner にプリインストールされている
+          echo "✅ GitHub CLI is available: $(gh --version | head -1)"
+          gh auth status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
@@ -57,6 +71,22 @@ jobs:
           else
             echo "❌ Bun is not available"
           fi
+          
+      - name: Environment verification
+        run: |
+          echo "=== Environment Verification ==="
+          echo "Node.js: $(node --version)"
+          echo "npm: $(npm --version)"
+          echo "Bun: $(bun --version || echo 'Not available')"
+          echo "GitHub CLI: $(gh --version | head -1)"
+          echo "Git: $(git --version)"
+          echo "Ruby: $(ruby --version || echo 'Not available')"
+          echo "Rails: $(rails --version || echo 'Not available')"
+          echo "=== Working Directory ==="
+          pwd
+          ls -la
+          echo "=== Files in project root ==="
+          find . -maxdepth 2 -type f -name "*.json" -o -name "*.yml" -o -name "*.rb" | head -10
           
       - name: Run Claude Code Action
         uses: anthropics/claude-code-action@main
