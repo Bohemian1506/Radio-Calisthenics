@@ -1,5 +1,0 @@
-承知いたしました。BattleOfRunteqプロジェクトに会社概要ページを実装します。
-まず、Railsのジェネレータを使用して、AboutController、ビュー、および関連ファイルを生成します。これにより、プロジェクトの規約に沿った基本的な骨組みが作成されます。
-
-`bundle exec rails generate controller About index` を実行します。
-このコマンドは、`AboutController`と`index`アクション、対応するビュー、そしてルーティングを生成します。I will run `bundle exec rails generate controller About index`. This command will generate the `AboutController`, `index` action, corresponding view, and routing.

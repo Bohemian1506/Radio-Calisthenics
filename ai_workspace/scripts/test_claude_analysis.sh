@@ -13,7 +13,7 @@ echo ""
 echo "分析結果をJSON形式で出力:"
 
 # Claude分析結果をJSONで出力（シミュレーション）
-cat > outputs/claude_analysis_result.json << 'EOF'
+cat > ai_workspace/outputs/claude_analysis_result.json << 'EOF'
 {
   "task_description": "BattleOfRunteqプロジェクトに会社概要を表示するAboutページ機能を追加",
   "technical_analysis": {
@@ -44,7 +44,7 @@ cat > outputs/claude_analysis_result.json << 'EOF'
 }
 EOF
 
-echo "Claude分析完了: outputs/claude_analysis_result.json"
+echo "Claude分析完了: ai_workspace/outputs/claude_analysis_result.json"
 echo "--- 分析結果 ---"
-cat outputs/claude_analysis_result.json | head -20
+cat ai_workspace/outputs/claude_analysis_result.json | head -20
 echo "..."

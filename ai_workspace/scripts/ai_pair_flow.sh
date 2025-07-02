@@ -32,7 +32,7 @@ GEMFILE_CONTENT=$(head -20 Gemfile 2>/dev/null || echo "Gemfile not found")
 ROUTES_CONTENT=$(cat config/routes.rb 2>/dev/null || echo "Routes not found")
 
 # Claude分析をシミュレート（実際の環境では、ここでClaude Codeが詳細分析）
-cat > outputs/claude_plan.json << EOF
+cat > ai_workspace/outputs/claude_plan.json << EOF
 {
   "analysis": "BattleOfRunteqプロジェクトの技術分析: Rails 8 + PostgreSQL + Bootstrap構成。$TASK_DESCRIPTION の実装は既存構造に適合。リスク評価: 低〜中程度",
   "implementation_plan": {
@@ -61,7 +61,7 @@ cat > outputs/claude_plan.json << EOF
 }
 EOF
 
-echo "Claude計画完了: outputs/claude_plan.json"
+echo "Claude計画完了: ai_workspace/outputs/claude_plan.json"
 
 # Phase 2: Gemini実装
 echo ""
@@ -69,7 +69,7 @@ echo "--- Phase 2: Gemini実装 ---"
 
 # jqが利用可能な場合はJSONから抽出、そうでなければ直接使用
 if command -v jq &> /dev/null; then
-    CLAUDE_PLAN=$(cat outputs/claude_plan.json | jq -r '.gemini_instructions')
+    CLAUDE_PLAN=$(cat ai_workspace/outputs/claude_plan.json | jq -r '.gemini_instructions')
 else
     CLAUDE_PLAN="BattleOfRunteqプロジェクトで「$TASK_DESCRIPTION」を実装してください。Rails 8のMVCパターンに従い、適切なコントローラー・ビュー・ルーティングを作成し、Bootstrap 5.2を使用したレスポンシブデザインで実装してください。RSpecテストも必須です。"
 fi
@@ -95,16 +95,16 @@ $CLAUDE_PLAN
 6. 初学者向けのわかりやすいコード
 
 実装したファイルとその内容を詳細に報告してください。各ファイルの役割と実装理由も説明してください。
-" > outputs/gemini_implementation.txt
+" > ai_workspace/outputs/gemini_implementation.txt
 
-echo "Gemini実装完了: outputs/gemini_implementation.txt"
+echo "Gemini実装完了: ai_workspace/outputs/gemini_implementation.txt"
 
 # Phase 3: Claude検証・改善ループ
 while [ $CURRENT_ITERATION -lt $MAX_ITERATIONS ]; do
     echo ""
     echo "--- Phase 3: Claude検証 (Iteration $((CURRENT_ITERATION + 1))/$MAX_ITERATIONS) ---"
     
-    GEMINI_RESULT=$(cat outputs/gemini_implementation.txt)
+    GEMINI_RESULT=$(cat ai_workspace/outputs/gemini_implementation.txt)
     RESULT_SIZE=$(echo "$GEMINI_RESULT" | wc -c)
     
     echo "検証対象サイズ: $RESULT_SIZE 文字"
@@ -122,7 +122,7 @@ while [ $CURRENT_ITERATION -lt $MAX_ITERATIONS ]; do
     fi
     
     # 検証結果をJSON出力
-    cat > outputs/claude_review_$CURRENT_ITERATION.json << EOF
+    cat > ai_workspace/outputs/claude_review_$CURRENT_ITERATION.json << EOF
 {
   "score": $SCORE,
   "status": "$STATUS",
@@ -176,7 +176,7 @@ $IMPROVEMENTS
 5. パフォーマンス最適化
 
 改善したコードと変更理由を詳細に説明してください。
-" > outputs/gemini_implementation.txt
+" > ai_workspace/outputs/gemini_implementation.txt
 
     CURRENT_ITERATION=$((CURRENT_ITERATION + 1))
     
@@ -189,13 +189,13 @@ done
 echo ""
 echo "=== AI自律連携完了 ==="
 echo "最終結果ファイル:"
-echo "- Claude計画: outputs/claude_plan.json"
-echo "- Gemini実装: outputs/gemini_implementation.txt"
-echo "- Claude検証: outputs/claude_review_$((CURRENT_ITERATION)).json"
+echo "- Claude計画: ai_workspace/outputs/claude_plan.json"
+echo "- Gemini実装: ai_workspace/outputs/gemini_implementation.txt"
+echo "- Claude検証: ai_workspace/outputs/claude_review_$((CURRENT_ITERATION)).json"
 
-if [ -f outputs/claude_review_$((CURRENT_ITERATION)).json ]; then
-    FINAL_SCORE=$(grep '"score"' outputs/claude_review_$((CURRENT_ITERATION)).json | grep -o '[0-9]*' | head -1)
-    FINAL_STATUS=$(grep '"status"' outputs/claude_review_$((CURRENT_ITERATION)).json | cut -d'"' -f4)
+if [ -f ai_workspace/outputs/claude_review_$((CURRENT_ITERATION)).json ]; then
+    FINAL_SCORE=$(grep '"score"' ai_workspace/outputs/claude_review_$((CURRENT_ITERATION)).json | grep -o '[0-9]*' | head -1)
+    FINAL_STATUS=$(grep '"status"' ai_workspace/outputs/claude_review_$((CURRENT_ITERATION)).json | cut -d'"' -f4)
     echo ""
     echo "=== 最終評価 ==="
     echo "スコア: $FINAL_SCORE/100"
@@ -210,7 +210,7 @@ fi
 
 echo ""
 echo "📝 実装内容確認:"
-echo "cat outputs/gemini_implementation.txt"
+echo "cat ai_workspace/outputs/gemini_implementation.txt"
 echo ""
 echo "📊 詳細評価確認:"
-echo "cat outputs/claude_review_*.json"
+echo "cat ai_workspace/outputs/claude_review_*.json"

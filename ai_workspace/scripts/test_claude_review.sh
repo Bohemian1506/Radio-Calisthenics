@@ -2,7 +2,7 @@
 echo "=== Claude検証テスト ==="
 
 # Geminiの実装結果を読み込み
-if [ ! -f outputs/gemini_implementation_result.txt ]; then
+if [ ! -f ai_workspace/outputs/gemini_implementation_result.txt ]; then
     echo "エラー: Gemini実装結果が見つかりません。先にtest_gemini_implementation.shを実行してください。"
     exit 1
 fi
@@ -10,7 +10,7 @@ fi
 echo "Gemini実装内容をClaude Code（この環境）で検証中..."
 
 # Gemini実装結果の内容を読み込み
-GEMINI_RESULT=$(cat outputs/gemini_implementation_result.txt)
+GEMINI_RESULT=$(cat ai_workspace/outputs/gemini_implementation_result.txt)
 
 echo "検証対象となる実装内容の文字数: $(echo "$GEMINI_RESULT" | wc -c)"
 echo ""
@@ -25,7 +25,7 @@ echo "5. RSpecテストカバレッジ確認"
 echo ""
 
 # 検証結果をJSONで出力（実際の環境では、この部分でGemini実装結果を詳細分析）
-cat > outputs/claude_review_result.json << 'EOF'
+cat > ai_workspace/outputs/claude_review_result.json << 'EOF'
 {
   "overall_score": 85,
   "quality_check": "PASS",
@@ -49,14 +49,14 @@ cat > outputs/claude_review_result.json << 'EOF'
 }
 EOF
 
-echo "Claude検証完了: outputs/claude_review_result.json"
+echo "Claude検証完了: ai_workspace/outputs/claude_review_result.json"
 echo "--- 検証結果 ---"
-cat outputs/claude_review_result.json
+cat ai_workspace/outputs/claude_review_result.json
 
 echo ""
 echo "=== 検証サマリー ==="
-SCORE=$(cat outputs/claude_review_result.json | grep '"overall_score"' | grep -o '[0-9]*')
-STATUS=$(cat outputs/claude_review_result.json | grep '"status"' | cut -d'"' -f4)
+SCORE=$(cat ai_workspace/outputs/claude_review_result.json | grep '"overall_score"' | grep -o '[0-9]*')
+STATUS=$(cat ai_workspace/outputs/claude_review_result.json | grep '"status"' | cut -d'"' -f4)
 echo "総合スコア: $SCORE/100"
 echo "ステータス: $STATUS"
 

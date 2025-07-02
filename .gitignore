@@ -32,3 +32,23 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# AI連携システム関連ファイル
+# AI collaboration system files
+/outputs/
+/ai_workspace/outputs/
+*.json
+!/package.json
+!/config/*.json
+
+# 一時的なAI出力ファイル
+# Temporary AI output files
+gemini_implementation*.txt
+claude_analysis*.json
+claude_plan*.json
+claude_review*.json
+
+# 開発時の一時ファイル
+# Development temporary files
+*.backup
+*.tmp
