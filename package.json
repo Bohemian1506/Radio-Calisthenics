@@ -1,0 +1,31 @@
+{
+  "name": "battle-of-runteq",
+  "version": "1.0.0",
+  "description": "BattleOfRunteq - Claude-Gemini自律連携システム",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No JavaScript tests configured\"",
+    "lint": "echo \"No JavaScript linting configured\"",
+    "dev": "echo \"Rails development server - use docker-compose up instead\"",
+    "build": "echo \"Rails application - use bundle exec rails assets:precompile instead\""
+  },
+  "keywords": [
+    "rails",
+    "claude-code",
+    "gemini",
+    "ai-integration",
+    "learning"
+  ],
+  "author": "BattleOfRunteq Team",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bohemian1506/BattleOfRunteq.git"
+  }
+}
