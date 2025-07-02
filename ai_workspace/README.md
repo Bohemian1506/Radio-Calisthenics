@@ -1,6 +1,6 @@
 # AI Workspace
 
-このディレクトリは、BattleOfRunteqプロジェクトにおけるClaude-Gemini自律連携システムの作業領域です。
+このディレクトリは、Radio-CalisthenicsプロジェクトにおけるClaude-Gemini自律連携システムの作業領域です。
 
 ## ディレクトリ構成
 

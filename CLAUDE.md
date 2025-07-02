@@ -1,7 +1,9 @@
-# BattleOfRunteq - Claude-Gemini自律連携システム
+# Radio-Calisthenics - Claude-Gemini自律連携システム
 
 ## プロジェクト概要
-BattleOfRunteq（バトルオブランテック）は、初学者向けのイベント管理システムです。
+Radio-Calisthenics（ラジオ体操）は、ラジオ体操参加者向けのスタンプカード管理システムです。
+一日参加するごとに参加者にスタンプを押すデジタルスタンプカード機能を提供し、
+継続的な健康習慣をサポートします。
 プログラミング学習における実践的なWebアプリケーション開発を目的として設計されており、
 Claude Code と Gemini CLI の自律連携システムによる AI ペアプログラミングの実証実験プロジェクトでもあります。
 
@@ -55,7 +57,7 @@ Claude Code と Gemini CLI の自律連携システムによる AI ペアプロ�
 
 ### Claude → Gemini（実装指示）
 ```bash
-gemini -p "BattleOfRunteqプロジェクトで以下の計画で実装してください:
+gemini -p "Radio-Calisthenicsプロジェクトで以下の計画で実装してください:
 
 タスク: [具体的なタスク説明]
 実装手順:
@@ -91,12 +93,21 @@ claude_code_review "実装完了。レビューお願いします:
 
 #### 基本ワークフロー
 1. **Issue受信** → Claude分析・計画立案
-2. **実装指示** → Geminiで大規模コード実装
-3. **品質検証** → Claudeで統合・改善指摘
-4. **改善ループ** → LGTM達成まで継続
+2. **自動Issue振り分け** → Claudeが実現したい内容を分析し、自動でGeminiに実装指示を送信
+3. **Gemini実装** → 大規模コード実装・ファイル作成・修正
+4. **品質検証** → Claudeで統合・改善指摘
+5. **改善ループ** → LGTM達成まで継続
+
+#### 自動Issue振り分け機能
+Claudeに実現したいことを伝えると、以下の流れで自動的にGeminiに作業が振り分けられます：
+
+1. **要件分析**: Claudeがユーザーの要求を技術要件に変換
+2. **実装計画立案**: 詳細な実装手順・対象ファイル・技術要件を整理
+3. **自動Gemini指示**: 計画を基にGeminiに実装指示を自動送信
+4. **進捗管理**: Claudeが実装状況を監視・品質チェック
 
 #### Gemini呼び出しのタイミング例
-- **依頼受信時**: `gemini -p "Rails 8でイベント管理機能を実装したい。最適なアプローチは？"`
+- **依頼受信時**: `gemini -p "Rails 8でスタンプカード管理機能を実装したい。最適なアプローチは？"`
 - **エラー発生時**: `gemini -p "ActiveRecord::RecordInvalid エラーが発生。原因と解決法は？"`
 - **設計判断時**: `gemini -p "ユーザー認証にDevise以外の選択肢はあるか？メリット・デメリットは？"`
 - **実装前確認**: `gemini -p "このマイグレーションファイルに問題はないか？[ファイル内容]"`
@@ -141,7 +152,7 @@ gemini -p "以下のGemfileの依存関係に問題はないか？ [Gemfile内�
 ### プロジェクト開始時チェックリスト
 ```bash
 # 1. 技術スタック検証
-gemini -p "Rails 8 + PostgreSQL + Bootstrap 5.2の組み合わせで初学者向けイベント管理アプリ。技術的な注意点は？"
+gemini -p "Rails 8 + PostgreSQL + Bootstrap 5.2の組み合わせで初学者向けラジオ体操スタンプカードアプリ。技術的な注意点は？"
 
 # 2. 開発環境確認
 gemini -p "Docker + Rails 8の開発環境構築で一般的な落とし穴は？"
@@ -154,10 +165,10 @@ gemini -p "MVCパターンを重視した初学者向けRailsプロジェクト�
 #### Phase 1: 要件分析・設計
 ```bash
 # 要件の妥当性確認
-gemini -p "イベント管理システムで必須機能とあると良い機能を教えて"
+gemini -p "ラジオ体操スタンプカードシステムで必須機能とあると良い機能を教えて"
 
 # データベース設計検証
-gemini -p "Event, User, Registrationモデルの関連設計。初学者が理解しやすい設計パターンは？"
+gemini -p "User, StampCard, DailyStampモデルの関連設計。初学者が理解しやすい設計パターンは？"
 
 # アーキテクチャ検討
 gemini -p "Rails 8でのMVCパターン実装。初学者が混乱しやすいポイントは？"
@@ -166,19 +177,19 @@ gemini -p "Rails 8でのMVCパターン実装。初学者が混乱しやすい�
 #### Phase 2: 実装
 ```bash
 # 実装前検証
-gemini -p "rails generate model Event name:string description:text start_time:datetime このコマンドで生成されるファイルと注意点は？"
+gemini -p "rails generate model StampCard user:references date:date stamped_at:datetime このコマンドで生成されるファイルと注意点は？"
 
 # コード品質確認
-gemini -p "以下のEventモデルのコードレビューをお願いします [コード内容]"
+gemini -p "以下のStampCardモデルのコードレビューをお願いします [コード内容]"
 
 # テスト戦略相談
-gemini -p "Eventモデルに対するRSpecのテストケース。何をテストすべき？"
+gemini -p "StampCardモデルに対するRSpecのテストケース。何をテストすべき？"
 ```
 
 #### Phase 3: 統合・デバッグ
 ```bash
 # エラー解決
-gemini -p "NoMethodError in EventsController#create 'name' for nil:NilClass の原因と解決法は？"
+gemini -p "NoMethodError in StampCardsController#create 'date' for nil:NilClass の原因と解決法は？"
 
 # パフォーマンス確認
 gemini -p "N+1クエリ問題の発見方法とRailsでの解決パターンは？"
@@ -263,18 +274,18 @@ gemini -p "PG::ConnectionBad エラーが発生。Docker環境での対処法は
 ```bash
 # ファイル全体をレビュー
 gemini -p "以下のRailsコントローラーのコードレビューをお願いします:
-$(cat app/controllers/events_controller.rb)"
+$(cat app/controllers/stamp_cards_controller.rb)"
 
 # 特定部分のレビュー
 gemini -p "以下のValidation設定に問題はないですか？
-validates :name, presence: true, length: { maximum: 100 }
-validates :start_time, presence: true"
+validates :date, presence: true, uniqueness: { scope: :user_id }
+validates :stamped_at, presence: true"
 ```
 
 #### 設計・アーキテクチャ相談
 ```bash
 # データベース設計確認
-gemini -p "Event、User、Registrationテーブルの関連設計を確認してください:
+gemini -p "User、StampCard、DailyStampテーブルの関連設計を確認してください:
 $(cat db/schema.rb)"
 
 # ルーティング設計確認
@@ -285,23 +296,23 @@ $(cat config/routes.rb)"
 #### テスト戦略相談
 ```bash
 # テストケース提案
-gemini -p "以下のEventモデルに対して、どのようなRSpecテストケースが必要ですか？
-$(cat app/models/event.rb)"
+gemini -p "以下のStampCardモデルに対して、どのようなRSpecテストケースが必要ですか？
+$(cat app/models/stamp_card.rb)"
 
 # テストコードレビュー
 gemini -p "以下のRSpecテストコードの改善点を教えてください:
-$(cat spec/models/event_spec.rb)"
+$(cat spec/models/stamp_card_spec.rb)"
 ```
 
 #### パフォーマンス・セキュリティ確認
 ```bash
 # パフォーマンス分析
 gemini -p "以下のクエリでN+1問題は発生しますか？対策も教えてください:
-Event.includes(:users).where(status: 'active')"
+User.includes(:stamp_cards).where(active: true)"
 
 # セキュリティ確認
 gemini -p "以下のStrong Parametersにセキュリティ上の問題はありますか？
-params.require(:event).permit(:name, :description, :start_time, :location)"
+params.require(:stamp_card).permit(:user_id, :date, :stamped_at, :location)"
 ```
 
 ### レスポンス解釈ガイドライン
@@ -356,7 +367,7 @@ Error: Bundler::GemNotFound: Could not find gem 'bootstrap'"
 #### ❌ 誤用例1: AIに依存しすぎる
 ```bash
 # 問題のある質問
-gemini -p "イベント管理アプリを全部作って"
+gemini -p "ラジオ体操スタンプカードアプリを全部作って"
 ```
 **問題点**: 学習効果が薄い、要件が不明確
 **改善策**: 具体的な機能に分割して段階的に質問
@@ -394,22 +405,22 @@ gemini -p "以下のエラーメッセージの意味を教えて: [エラーメ
 #### レベル2: 実装相談（1〜3ヶ月）
 ```bash
 # 設計相談
-gemini -p "EventとUserの関連。has_many/belongs_toの設計で注意すべき点は？"
+gemini -p "StampCardとUserの関連。has_many/belongs_toの設計で注意すべき点は？"
 
 # コード改善
 gemini -p "以下のコントローラーコードの改善点を初学者向けに説明して: [コード]"
 
 # テスト相談
-gemini -p "Eventモデルの基本的なValidationテスト。RSpecでどう書く？"
+gemini -p "StampCardモデルの基本的なValidationテスト。RSpecでどう書く？"
 ```
 
 #### レベル3: 設計・アーキテクチャ（3ヶ月〜）
 ```bash
 # アーキテクチャ検討
-gemini -p "イベント参加機能の設計。中間テーブルを使うべき？"
+gemini -p "スタンプ記録機能の設計。日付管理はどう実装すべき？"
 
 # パフォーマンス相談
-gemini -p "イベント一覧表示でN+1クエリを防ぐ方法は？"
+gemini -p "スタンプカード一覧表示でN+1クエリを防ぐ方法は？"
 
 # セキュリティ確認
 gemini -p "ユーザー認証実装でセキュリティ上注意すべき点は？"
@@ -490,14 +501,14 @@ gemini -p "以下のgemfileの依存関係チェック（個人情報削除済�
 #### 効率的なGemini活用
 ```bash
 # ✅ 一度に複数の関連質問
-gemini -p "Rails Eventモデルについて以下を教えて:
+gemini -p "Rails StampCardモデルについて以下を教えて:
 1. 基本的なValidation設定
 2. User との関連付け方法
 3. 初学者が陥りやすいミス"
 
 # ❌ 連続した単発質問（API使用量が多い）
-gemini -p "Eventモデルのvalidationは？"
-gemini -p "EventとUserの関連は？"
+gemini -p "StampCardモデルのvalidationは？"
+gemini -p "StampCardとUserの関連は？"
 gemini -p "よくあるミスは？"
 ```
 
