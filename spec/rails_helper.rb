@@ -38,7 +38,7 @@ RSpec.configure do |config|
   # Include Devise test helpers
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :request
-  
+
   # Include rails-controller-testing
   config.include ActionController::TestCase::Behavior, type: :controller
 
