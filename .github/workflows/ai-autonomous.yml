@@ -39,9 +39,9 @@ jobs:
       
       - name: Setup environment
         run: |
-          # Create outputs directory
-          mkdir -p outputs
-          chmod +x scripts/*.sh
+          # Create outputs directory (now in ai_workspace)
+          mkdir -p ai_workspace/outputs
+          chmod +x ai_workspace/scripts/*.sh
           echo "Environment setup completed"
       
       - name: AI Autonomous Flow
@@ -56,12 +56,12 @@ jobs:
           echo "Title: $ISSUE_TITLE"
           
           # Execute AI pair flow
-          ./scripts/ai_pair_flow.sh "$ISSUE_TITLE: $ISSUE_BODY"
+          ./ai_workspace/scripts/ai_pair_flow.sh "$ISSUE_TITLE: $ISSUE_BODY"
           
           # Display results
           echo "=== AI Development Results ==="
           echo "Implementation completed. Results:"
-          ls -la outputs/
+          ls -la ai_workspace/outputs/
       
       - name: Create feature branch
         env:
@@ -120,13 +120,13 @@ jobs:
         run: |
           # Read AI implementation results for PR description
           IMPLEMENTATION_SUMMARY=""
-          if [ -f outputs/gemini_implementation.txt ]; then
-            IMPLEMENTATION_SUMMARY=$(head -20 outputs/gemini_implementation.txt)
+          if [ -f ai_workspace/outputs/gemini_implementation.txt ]; then
+            IMPLEMENTATION_SUMMARY=$(head -20 ai_workspace/outputs/gemini_implementation.txt)
           fi
           
           REVIEW_SUMMARY=""
-          if [ -f outputs/claude_review_*.json ]; then
-            REVIEW_FILE=$(ls outputs/claude_review_*.json | tail -1)
+          if [ -f ai_workspace/outputs/claude_review_*.json ]; then
+            REVIEW_FILE=$(ls ai_workspace/outputs/claude_review_*.json | tail -1)
             REVIEW_SUMMARY=$(cat $REVIEW_FILE)
           fi
           
@@ -188,8 +188,8 @@ jobs:
           FINAL_SCORE="未評価"
           FINAL_STATUS="完了"
           
-          if [ -f outputs/claude_review_*.json ]; then
-            REVIEW_FILE=$(ls outputs/claude_review_*.json | tail -1)
+          if [ -f ai_workspace/outputs/claude_review_*.json ]; then
+            REVIEW_FILE=$(ls ai_workspace/outputs/claude_review_*.json | tail -1)
             FINAL_SCORE=$(grep '"score"' $REVIEW_FILE | grep -o '[0-9]*' | head -1)
             FINAL_STATUS=$(grep '"status"' $REVIEW_FILE | cut -d'"' -f4)
           fi
