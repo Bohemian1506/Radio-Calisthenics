@@ -253,7 +253,7 @@ const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
 const weeklyChart = new Chart(weeklyCtx, {
     type: 'bar',
     data: {
-        labels: [<%= @monthly_stats[:stamps_by_week].map.with_index { |week, i| "'第#{i+1}週'" }.join(', ').html_safe %>],
+        labels: [<%= @monthly_stats[:stamps_by_week].map.with_index { |week, i| "'第#{i+1}週'" }.join(', ') %>],
         datasets: [{
             label: '参加数',
             data: [<%= @monthly_stats[:stamps_by_week].map { |week| week[:stamp_count] }.join(', ') %>],
