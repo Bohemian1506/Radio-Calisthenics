@@ -1,7 +1,7 @@
-# EventPay Manager ドキュメント
+# Radio-Calisthenics ドキュメント
 
 ## 📚 概要
-EventPay Manager の Claude Code Action 統合に関する包括的なドキュメント集です。
+Radio-Calisthenics の Claude Code Action 統合に関する包括的なドキュメント集です。
 
 ## 📖 ドキュメント一覧
 

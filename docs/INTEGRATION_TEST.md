@@ -3,7 +3,7 @@
 ## 🧪 テスト計画
 
 ### テスト環境
-- **リポジトリ**: EventPay Manager (BOR-)
+- **リポジトリ**: Radio-Calisthenics
 - **ブランチ**: feature/github-integration-setup
 - **GitHub Actions**: claude.yml設定済み
 - **権限設定**: .claude/permissions.json適用済み

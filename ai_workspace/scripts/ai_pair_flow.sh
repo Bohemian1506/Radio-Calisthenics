@@ -34,7 +34,7 @@ ROUTES_CONTENT=$(cat config/routes.rb 2>/dev/null || echo "Routes not found")
 # Claude分析をシミュレート（実際の環境では、ここでClaude Codeが詳細分析）
 cat > ai_workspace/outputs/claude_plan.json << EOF
 {
-  "analysis": "BattleOfRunteqプロジェクトの技術分析: Rails 8 + PostgreSQL + Bootstrap構成。$TASK_DESCRIPTION の実装は既存構造に適合。リスク評価: 低〜中程度",
+  "analysis": "Radio-Calisthenicsプロジェクトの技術分析: Rails 8 + PostgreSQL + Bootstrap構成。$TASK_DESCRIPTION の実装は既存構造に適合。リスク評価: 低〜中程度",
   "implementation_plan": {
     "steps": [
       "必要なコントローラー・モデルの生成",

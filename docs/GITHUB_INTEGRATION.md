@@ -1,7 +1,7 @@
 # GitHub統合セットアップガイド
 
 ## 📋 概要
-EventPay ManagerプロジェクトでClaude Code Actionを有効化するための手順書です。
+Radio-CalisthenicsプロジェクトでClaude Code Actionを有効化するための手順書です。
 
 ## 🔑 Anthropic API キーのSecrets設定
 
@@ -13,7 +13,7 @@ EventPay ManagerプロジェクトでClaude Code Actionを有効化するため�
 
 ### 2. GitHub SecretsへのAPIキー設定
 1. **GitHubリポジトリページに移動**
-   - `https://github.com/Bohemian1506/BOR-`
+   - `https://github.com/Bohemian1506/Radio-Calisthenics`
 
 2. **Settings タブをクリック**
    - リポジトリ上部のメニューから「Settings」を選択

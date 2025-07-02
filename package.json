@@ -1,7 +1,7 @@
 {
-  "name": "battle-of-runteq",
+  "name": "radio-calisthenics",
   "version": "1.0.0",
-  "description": "BattleOfRunteq - Claude-Gemini自律連携システム",
+  "description": "Radio-Calisthenics - ラジオ体操スタンプカード管理システム（Claude-Gemini自律連携システム）",
   "main": "index.js",
   "scripts": {
     "test": "echo \"No JavaScript tests configured\"",
@@ -16,7 +16,7 @@
     "ai-integration",
     "learning"
   ],
-  "author": "BattleOfRunteq Team",
+  "author": "Radio-Calisthenics Team",
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {},
@@ -26,6 +26,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Bohemian1506/BattleOfRunteq.git"
+    "url": "https://github.com/Bohemian1506/Radio-Calisthenics.git"
   }
 }
