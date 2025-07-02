@@ -1,0 +1,311 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <!-- ページヘッダー -->
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h1 class="h3 mb-2">📅 <%= @month.strftime('%Y年%m月') %> の詳細統計</h1>
+              <p class="text-muted mb-0">月次の参加状況を詳しく分析</p>
+            </div>
+            <div>
+              <%= link_to statistics_path, class: "btn btn-outline-primary" do %>
+                ← 統計トップに戻る
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月次ナビゲーション -->
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-center align-items-center gap-3">
+            <% prev_month = @month - 1.month %>
+            <%= link_to monthly_statistics_path(year: prev_month.year, month: prev_month.month), 
+                        class: "btn btn-outline-secondary" do %>
+              ← <%= prev_month.strftime('%Y年%m月') %>
+            <% end %>
+            
+            <h5 class="mb-0 mx-3"><%= @month.strftime('%Y年%m月') %></h5>
+            
+            <% next_month = @month + 1.month %>
+            <% if next_month <= Date.current.end_of_month %>
+              <%= link_to monthly_statistics_path(year: next_month.year, month: next_month.month), 
+                          class: "btn btn-outline-secondary" do %>
+                <%= next_month.strftime('%Y年%m月') %> →
+              <% end %>
+            <% else %>
+              <button class="btn btn-outline-secondary" disabled>
+                <%= next_month.strftime('%Y年%m月') %> →
+              </button>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- 月次統計サマリー -->
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-primary mb-3">
+            <span class="fs-1">📊</span>
+          </div>
+          <h5 class="card-title">参加数</h5>
+          <h2 class="text-primary mb-0"><%= @monthly_stats[:total_stamps] %></h2>
+          <small class="text-muted">/ <%= @monthly_stats[:days_in_month] %> 日</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-success mb-3">
+            <span class="fs-1">📈</span>
+          </div>
+          <h5 class="card-title">参加率</h5>
+          <h2 class="text-success mb-0"><%= @monthly_stats[:participation_rate].round(1) %>%</h2>
+          <small class="text-muted">月間参加率</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-info mb-3">
+            <span class="fs-1">⏰</span>
+          </div>
+          <h5 class="card-title">平均参加時刻</h5>
+          <h2 class="text-info mb-0">
+            <% if @monthly_stats[:average_time] %>
+              <%= Time.new(2000, 1, 1, 0, @monthly_stats[:average_time].to_i).strftime("%H:%M") %>
+            <% else %>
+              ---
+            <% end %>
+          </h2>
+          <small class="text-muted">平均時刻</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-warning mb-3">
+            <span class="fs-1">⏱️</span>
+          </div>
+          <h5 class="card-title">参加時間帯</h5>
+          <div class="small">
+            <div><strong>最早:</strong> <%= @monthly_stats[:earliest_time] || "---" %></div>
+            <div><strong>最遅:</strong> <%= @monthly_stats[:latest_time] || "---" %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月間カレンダー -->
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0">
+          <h5 class="mb-0">📅 <%= @month.strftime('%Y年%m月') %> カレンダー</h5>
+        </div>
+        <div class="card-body">
+          <div class="calendar-grid">
+            <!-- 曜日ヘッダー -->
+            <div class="row text-center fw-bold border-bottom pb-2 mb-3">
+              <div class="col">月</div>
+              <div class="col">火</div>
+              <div class="col">水</div>
+              <div class="col">木</div>
+              <div class="col">金</div>
+              <div class="col">土</div>
+              <div class="col text-danger">日</div>
+            </div>
+            
+            <!-- カレンダー日付 -->
+            <% @calendar_data.each do |week| %>
+              <div class="row text-center mb-2">
+                <% week.each do |day| %>
+                  <div class="col">
+                    <div class="calendar-day p-2 rounded <%= 
+                      day[:today] ? 'bg-warning' : 
+                      day[:stamped] ? 'bg-success text-white' : 
+                      day[:current_month] ? 'bg-light' : 'bg-transparent text-muted'
+                    %>">
+                      <div class="day-number"><%= day[:date].day %></div>
+                      <% if day[:stamped] && day[:current_month] %>
+                        <div class="stamp-time small">
+                          🌟 <%= day[:stamped_time] %>
+                        </div>
+                      <% end %>
+                      <% if day[:today] %>
+                        <div class="today-marker small">Today</div>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+          
+          <div class="row mt-4">
+            <div class="col-12">
+              <div class="d-flex justify-content-center gap-4 small">
+                <div><span class="badge bg-success">🌟</span> 参加済み</div>
+                <div><span class="badge bg-warning">Today</span> 今日</div>
+                <div><span class="badge bg-light text-dark">-</span> 未参加</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 週別統計 -->
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0">
+          <h5 class="mb-0">📊 週別参加状況</h5>
+        </div>
+        <div class="card-body">
+          <canvas id="weeklyChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 週別詳細テーブル -->
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0">
+          <h5 class="mb-0">📋 週別詳細データ</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>週</th>
+                  <th>期間</th>
+                  <th>参加数</th>
+                  <th>参加率</th>
+                  <th>状況</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @monthly_stats[:stamps_by_week].each_with_index do |week, index| %>
+                  <tr>
+                    <td><strong>第<%= index + 1 %>週</strong></td>
+                    <td>
+                      <%= week[:start_date].strftime('%m/%d') %> - 
+                      <%= week[:end_date].strftime('%m/%d') %>
+                    </td>
+                    <td>
+                      <span class="badge bg-primary"><%= week[:stamp_count] %></span>
+                    </td>
+                    <td>
+                      <% week_days = (week[:start_date]..week[:end_date]).select { |d| d.month == @month.month }.count %>
+                      <% week_rate = week_days > 0 ? (week[:stamp_count].to_f / week_days * 100).round(1) : 0 %>
+                      <span class="badge <%= week_rate >= 80 ? 'bg-success' : week_rate >= 50 ? 'bg-warning' : 'bg-secondary' %>">
+                        <%= week_rate %>%
+                      </span>
+                    </td>
+                    <td>
+                      <% if week_rate >= 80 %>
+                        <span class="text-success">🌟 素晴らしい</span>
+                      <% elsif week_rate >= 50 %>
+                        <span class="text-warning">👍 良い</span>
+                      <% else %>
+                        <span class="text-muted">💪 がんばろう</span>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js統合 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// 週別統計グラフ
+const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+const weeklyChart = new Chart(weeklyCtx, {
+    type: 'bar',
+    data: {
+        labels: [<%= @monthly_stats[:stamps_by_week].map.with_index { |week, i| "'第#{i+1}週'" }.join(', ').html_safe %>],
+        datasets: [{
+            label: '参加数',
+            data: [<%= @monthly_stats[:stamps_by_week].map { |week| week[:stamp_count] }.join(', ') %>],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: '<%= @month.strftime('%Y年%m月') %> 週別参加状況'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 7,
+                title: {
+                    display: true,
+                    text: '参加数'
+                }
+            }
+        }
+    }
+});
+</script>
+
+<style>
+.calendar-day {
+    min-height: 60px;
+    position: relative;
+}
+
+.day-number {
+    font-weight: bold;
+}
+
+.stamp-time {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.today-marker {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 0.7em;
+}
+</style>

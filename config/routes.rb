@@ -5,6 +5,14 @@ Rails.application.routes.draw do
   # スタンプカード機能
   resources :stamp_cards, only: [ :index, :create ]
 
+  # 統計機能
+  resources :statistics, only: [ :index ] do
+    collection do
+      get :monthly
+      get :yearly
+    end
+  end
+
   # 管理者機能
   namespace :admin do
     root "dashboard#index"

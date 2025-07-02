@@ -1,0 +1,300 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <!-- ページヘッダー -->
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h1 class="h3 mb-3">📊 あなたの統計情報</h1>
+          <p class="text-muted mb-0">ラジオ体操の参加状況を詳しく分析してみましょう</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- 励ましメッセージ -->
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm bg-gradient-primary text-white">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 me-3">
+              <span class="fs-1">💪</span>
+            </div>
+            <div class="flex-grow-1">
+              <h5 class="card-title mb-2">今日のメッセージ</h5>
+              <p class="card-text mb-0"><%= @motivational_message %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- 基本統計 -->
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-primary mb-3">
+            <span class="fs-1">🎯</span>
+          </div>
+          <h5 class="card-title">総スタンプ数</h5>
+          <h2 class="text-primary mb-0"><%= @current_user_stats[:total_stamps] %></h2>
+          <small class="text-muted">回参加</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-warning mb-3">
+            <span class="fs-1">🔥</span>
+          </div>
+          <h5 class="card-title">現在の連続記録</h5>
+          <h2 class="text-warning mb-0"><%= @current_user_stats[:consecutive_days] %></h2>
+          <small class="text-muted">日連続</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-success mb-3">
+            <span class="fs-1">📅</span>
+          </div>
+          <h5 class="card-title">今月の参加率</h5>
+          <h2 class="text-success mb-0"><%= @current_user_stats[:participation_rate_this_month].round(1) %>%</h2>
+          <small class="text-muted"><%= @current_user_stats[:current_month_stamps] %>/<%= Date.current.day %> 日</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-info mb-3">
+            <span class="fs-1">⏰</span>
+          </div>
+          <h5 class="card-title">平均参加時刻</h5>
+          <h2 class="text-info mb-0"><%= @current_user_stats[:average_participation_time] || "---" %></h2>
+          <small class="text-muted">平均時刻</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- 実績・バッジセクション -->
+    <div class="col-lg-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-transparent border-0">
+          <h5 class="mb-0">🏆 あなたの実績</h5>
+        </div>
+        <div class="card-body">
+          <% if @achievements.any? %>
+            <% @achievements.each do |achievement| %>
+              <div class="d-flex align-items-center mb-3 p-3 bg-light rounded">
+                <div class="flex-shrink-0 me-3">
+                  <span class="fs-3"><%= achievement[:icon] %></span>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="mb-1"><%= achievement[:title] %></h6>
+                  <p class="text-muted mb-0 small"><%= achievement[:description] %></p>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="text-center text-muted py-4">
+              <span class="fs-1">🌱</span>
+              <p class="mt-2">まだ実績がありません。<br>継続して参加すると実績が獲得できます！</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- 詳細統計セクション -->
+    <div class="col-lg-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-transparent border-0">
+          <h5 class="mb-0">📈 詳細統計</h5>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6 mb-3">
+              <h6 class="text-muted mb-1">今年の参加数</h6>
+              <h4 class="text-primary"><%= @current_user_stats[:current_year_stamps] %></h4>
+            </div>
+            <div class="col-6 mb-3">
+              <h6 class="text-muted mb-1">今年の参加率</h6>
+              <h4 class="text-success"><%= @current_user_stats[:participation_rate_this_year].round(1) %>%</h4>
+            </div>
+            <div class="col-6 mb-3">
+              <h6 class="text-muted mb-1">最長連続記録</h6>
+              <h4 class="text-warning"><%= @current_user_stats[:longest_streak] %></h4>
+            </div>
+            <div class="col-6 mb-3">
+              <h6 class="text-muted mb-1">参加開始日</h6>
+              <h6 class="text-info"><%= current_user.created_at.strftime("%Y/%m/%d") %></h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月次統計グラフ -->
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">📊 月次参加状況（過去12ヶ月）</h5>
+          <%= link_to "詳細を見る", monthly_statistics_path, class: "btn btn-outline-primary btn-sm" %>
+        </div>
+        <div class="card-body">
+          <canvas id="monthlyChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 年次統計グラフ -->
+  <% if @yearly_data.length > 1 %>
+    <div class="row">
+      <div class="col-12 mb-4">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">📈 年次参加状況</h5>
+            <%= link_to "詳細を見る", yearly_statistics_path, class: "btn btn-outline-primary btn-sm" %>
+          </div>
+          <div class="card-body">
+            <canvas id="yearlyChart" width="400" height="200"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- アクションボタン -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="mb-3">さらに詳しい統計を見る</h5>
+          <div class="d-flex justify-content-center gap-3">
+            <%= link_to monthly_statistics_path, class: "btn btn-primary" do %>
+              📅 月次統計
+            <% end %>
+            <%= link_to yearly_statistics_path, class: "btn btn-success" do %>
+              📊 年次統計
+            <% end %>
+            <%= link_to stamp_cards_path, class: "btn btn-outline-primary" do %>
+              🏃‍♂️ スタンプカードに戻る
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js統合 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// 月次統計グラフ
+const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+const monthlyChart = new Chart(monthlyCtx, {
+    type: 'line',
+    data: {
+        labels: [<%= @monthly_data.map { |m| "'#{m[:month].strftime('%Y/%m')}'" }.join(', ').html_safe %>],
+        datasets: [{
+            label: '参加数',
+            data: [<%= @monthly_data.map { |m| m[:stamp_count] }.join(', ') %>],
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.1
+        }, {
+            label: '参加率 (%)',
+            data: [<%= @monthly_data.map { |m| m[:participation_rate] }.join(', ') %>],
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            yAxisID: 'y1',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: '月次参加状況の推移'
+            },
+            legend: {
+                display: true
+            }
+        },
+        scales: {
+            y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    text: '参加数'
+                }
+            },
+            y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                    display: true,
+                    text: '参加率 (%)'
+                },
+                grid: {
+                    drawOnChartArea: false,
+                },
+                max: 100
+            }
+        }
+    }
+});
+
+<% if @yearly_data.length > 1 %>
+// 年次統計グラフ
+const yearlyCtx = document.getElementById('yearlyChart').getContext('2d');
+const yearlyChart = new Chart(yearlyCtx, {
+    type: 'bar',
+    data: {
+        labels: [<%= @yearly_data.map { |y| "'#{y[:year]}年'" }.join(', ').html_safe %>],
+        datasets: [{
+            label: '年間参加数',
+            data: [<%= @yearly_data.map { |y| y[:stamp_count] }.join(', ') %>],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: '年次参加数の推移'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: '参加数'
+                }
+            }
+        }
+    }
+});
+<% end %>
+</script>

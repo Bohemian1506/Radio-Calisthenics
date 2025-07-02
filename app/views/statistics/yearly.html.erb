@@ -1,0 +1,388 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <!-- ページヘッダー -->
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h1 class="h3 mb-2">📊 <%= @year %>年の詳細統計</h1>
+              <p class="text-muted mb-0">年間の参加状況を詳しく分析</p>
+            </div>
+            <div>
+              <%= link_to statistics_path, class: "btn btn-outline-primary" do %>
+                ← 統計トップに戻る
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 年次ナビゲーション -->
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-center align-items-center gap-3">
+            <% if @year > current_user.created_at.year %>
+              <%= link_to yearly_statistics_path(year: @year - 1), 
+                          class: "btn btn-outline-secondary" do %>
+                ← <%= @year - 1 %>年
+              <% end %>
+            <% else %>
+              <button class="btn btn-outline-secondary" disabled>
+                ← <%= @year - 1 %>年
+              </button>
+            <% end %>
+            
+            <h5 class="mb-0 mx-3"><%= @year %>年</h5>
+            
+            <% if @year < Date.current.year %>
+              <%= link_to yearly_statistics_path(year: @year + 1), 
+                          class: "btn btn-outline-secondary" do %>
+                <%= @year + 1 %>年 →
+              <% end %>
+            <% else %>
+              <button class="btn btn-outline-secondary" disabled>
+                <%= @year + 1 %>年 →
+              </button>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- 年次統計サマリー -->
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-primary mb-3">
+            <span class="fs-1">🎯</span>
+          </div>
+          <h5 class="card-title">年間参加数</h5>
+          <h2 class="text-primary mb-0"><%= @yearly_stats[:total_stamps] %></h2>
+          <small class="text-muted">/ <%= @yearly_stats[:days_in_year] %> 日</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-success mb-3">
+            <span class="fs-1">📈</span>
+          </div>
+          <h5 class="card-title">年間参加率</h5>
+          <h2 class="text-success mb-0"><%= @yearly_stats[:participation_rate].round(1) %>%</h2>
+          <small class="text-muted">年間参加率</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-warning mb-3">
+            <span class="fs-1">🔥</span>
+          </div>
+          <h5 class="card-title">年間最長連続</h5>
+          <h2 class="text-warning mb-0"><%= @yearly_stats[:longest_streak_in_year] %></h2>
+          <small class="text-muted">日連続</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <div class="text-info mb-3">
+            <span class="fs-1">⭐</span>
+          </div>
+          <h5 class="card-title">最も活発な月</h5>
+          <h4 class="text-info mb-0"><%= @yearly_stats[:most_active_month] || "---" %></h4>
+          <small class="text-muted">最高記録月</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 年間推移グラフ -->
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0">
+          <h5 class="mb-0">📊 <%= @year %>年 月別参加推移</h5>
+        </div>
+        <div class="card-body">
+          <canvas id="monthlyProgressChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月別参加率グラフ -->
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0">
+          <h5 class="mb-0">📈 <%= @year %>年 月別参加率</h5>
+        </div>
+        <div class="card-body">
+          <canvas id="monthlyRateChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月別詳細テーブル -->
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0">
+          <h5 class="mb-0">📋 <%= @year %>年 月別詳細データ</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>月</th>
+                  <th>参加数</th>
+                  <th>月間日数</th>
+                  <th>参加率</th>
+                  <th>評価</th>
+                  <th>アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @yearly_stats[:monthly_breakdown].each do |month_data| %>
+                  <tr>
+                    <td>
+                      <strong><%= month_data[:month] %>月</strong>
+                      <br>
+                      <small class="text-muted"><%= month_data[:month_name] %></small>
+                    </td>
+                    <td>
+                      <span class="badge bg-primary fs-6">
+                        <%= month_data[:stamp_count] %>
+                      </span>
+                    </td>
+                    <td>
+                      <%= month_data[:days_in_month] %>日
+                    </td>
+                    <td>
+                      <% rate = month_data[:participation_rate] %>
+                      <span class="badge <%= 
+                        rate >= 80 ? 'bg-success' : 
+                        rate >= 60 ? 'bg-warning' : 
+                        rate >= 40 ? 'bg-info' : 'bg-secondary' 
+                      %> fs-6">
+                        <%= rate.round(1) %>%
+                      </span>
+                    </td>
+                    <td>
+                      <% if rate >= 80 %>
+                        <span class="text-success">🌟 優秀</span>
+                      <% elsif rate >= 60 %>
+                        <span class="text-warning">👍 良好</span>
+                      <% elsif rate >= 40 %>
+                        <span class="text-info">💪 普通</span>
+                      <% else %>
+                        <span class="text-muted">📈 要改善</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <% month_date = Date.new(@year, month_data[:month], 1) %>
+                      <%= link_to monthly_statistics_path(year: @year, month: month_data[:month]), 
+                                  class: "btn btn-outline-primary btn-sm" do %>
+                        詳細
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 年間統計サマリー -->
+  <div class="row">
+    <div class="col-lg-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-transparent border-0">
+          <h5 class="mb-0">📊 <%= @year %>年の成果</h5>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6 mb-3">
+              <h6 class="text-muted mb-1">参加日数</h6>
+              <h4 class="text-primary"><%= @yearly_stats[:total_stamps] %>日</h4>
+            </div>
+            <div class="col-6 mb-3">
+              <h6 class="text-muted mb-1">不参加日数</h6>
+              <h4 class="text-secondary"><%= @yearly_stats[:days_in_year] - @yearly_stats[:total_stamps] %>日</h4>
+            </div>
+            <div class="col-6 mb-3">
+              <h6 class="text-muted mb-1">最高月間記録</h6>
+              <h4 class="text-warning">
+                <%= @yearly_stats[:monthly_breakdown].map { |m| m[:stamp_count] }.max %>日
+              </h4>
+            </div>
+            <div class="col-6 mb-3">
+              <h6 class="text-muted mb-1">平均月間記録</h6>
+              <h4 class="text-info">
+                <%= (@yearly_stats[:total_stamps].to_f / 12).round(1) %>日
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-transparent border-0">
+          <h5 class="mb-0">🎯 <%= @year %>年の目標達成度</h5>
+        </div>
+        <div class="card-body">
+          <% yearly_goal_days = 300 # 目標日数（年間300日参加） %>
+          <% achievement_rate = [@yearly_stats[:total_stamps].to_f / yearly_goal_days * 100, 100].min %>
+          
+          <div class="mb-3">
+            <div class="d-flex justify-content-between">
+              <span>年間目標 (<%= yearly_goal_days %>日)</span>
+              <span><%= achievement_rate.round(1) %>%</span>
+            </div>
+            <div class="progress" style="height: 20px;">
+              <div class="progress-bar <%= 
+                achievement_rate >= 80 ? 'bg-success' : 
+                achievement_rate >= 60 ? 'bg-warning' : 'bg-info' 
+              %>" 
+                   role="progressbar" 
+                   style="width: <%= achievement_rate %>%">
+                <%= @yearly_stats[:total_stamps] %>日
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <% if achievement_rate >= 80 %>
+              <h6 class="text-success">🎉 目標達成おめでとうございます！</h6>
+            <% elsif achievement_rate >= 60 %>
+              <h6 class="text-warning">👍 もう少しで目標達成です！</h6>
+            <% else %>
+              <h6 class="text-info">💪 来年はもっと頑張りましょう！</h6>
+            <% end %>
+            
+            <p class="text-muted small mb-0">
+              残り<%= [yearly_goal_days - @yearly_stats[:total_stamps], 0].max %>日で目標達成
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js統合 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// 月別参加数推移グラフ
+const monthlyProgressCtx = document.getElementById('monthlyProgressChart').getContext('2d');
+const monthlyProgressChart = new Chart(monthlyProgressCtx, {
+    type: 'line',
+    data: {
+        labels: [<%= @yearly_stats[:monthly_breakdown].map { |m| "'#{m[:month]}月'" }.join(', ').html_safe %>],
+        datasets: [{
+            label: '参加数',
+            data: [<%= @yearly_stats[:monthly_breakdown].map { |m| m[:stamp_count] }.join(', ') %>],
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.1,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: '<%= @year %>年 月別参加数の推移'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: '参加数'
+                }
+            }
+        }
+    }
+});
+
+// 月別参加率グラフ
+const monthlyRateCtx = document.getElementById('monthlyRateChart').getContext('2d');
+const monthlyRateChart = new Chart(monthlyRateCtx, {
+    type: 'bar',
+    data: {
+        labels: [<%= @yearly_stats[:monthly_breakdown].map { |m| "'#{m[:month]}月'" }.join(', ').html_safe %>],
+        datasets: [{
+            label: '参加率 (%)',
+            data: [<%= @yearly_stats[:monthly_breakdown].map { |m| m[:participation_rate] }.join(', ') %>],
+            backgroundColor: [<%= @yearly_stats[:monthly_breakdown].map { |m| 
+              rate = m[:participation_rate]
+              if rate >= 80
+                "'rgba(40, 167, 69, 0.8)'"
+              elsif rate >= 60
+                "'rgba(255, 193, 7, 0.8)'"
+              elsif rate >= 40
+                "'rgba(23, 162, 184, 0.8)'"
+              else
+                "'rgba(108, 117, 125, 0.8)'"
+              end
+            }.join(', ').html_safe %>],
+            borderColor: [<%= @yearly_stats[:monthly_breakdown].map { |m| 
+              rate = m[:participation_rate]
+              if rate >= 80
+                "'rgba(40, 167, 69, 1)'"
+              elsif rate >= 60
+                "'rgba(255, 193, 7, 1)'"
+              elsif rate >= 40
+                "'rgba(23, 162, 184, 1)'"
+              else
+                "'rgba(108, 117, 125, 1)'"
+              end
+            }.join(', ').html_safe %>],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: '<%= @year %>年 月別参加率'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                    display: true,
+                    text: '参加率 (%)'
+                }
+            }
+        }
+    }
+});
+</script>
