@@ -1,0 +1,173 @@
+<% content_for :title, "ユーザー詳細" %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">👤 ユーザー詳細</h1>
+        <div>
+          <%= link_to "ユーザー一覧に戻る", admin_users_path, class: "btn btn-outline-secondary me-2" %>
+          <%= link_to "ダッシュボード", admin_root_path, class: "btn btn-outline-primary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ユーザー基本情報 -->
+  <div class="row mb-4">
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">📝 基本情報</h5>
+        </div>
+        <div class="card-body">
+          <dl class="row">
+            <dt class="col-sm-5">メールアドレス:</dt>
+            <dd class="col-sm-7"><%= @user.email %></dd>
+            
+            <dt class="col-sm-5">権限:</dt>
+            <dd class="col-sm-7">
+              <% if @user.admin? %>
+                <span class="badge bg-danger">管理者</span>
+              <% else %>
+                <span class="badge bg-secondary">一般ユーザー</span>
+              <% end %>
+            </dd>
+            
+            <dt class="col-sm-5">登録日:</dt>
+            <dd class="col-sm-7"><%= @user.created_at.strftime("%Y年%m月%d日") %></dd>
+            
+            <dt class="col-sm-5">最終ログイン:</dt>
+            <dd class="col-sm-7">
+              <% if @user.current_sign_in_at %>
+                <%= @user.current_sign_in_at.strftime("%Y年%m月%d日 %H:%M") %>
+              <% else %>
+                <span class="text-muted">ログイン記録なし</span>
+              <% end %>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-8">
+      <!-- 統計情報 -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title">⭐ 総スタンプ数</h5>
+              <h2 class="text-success"><%= @user.total_stamps %></h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title">🔥 連続日数</h5>
+              <h2 class="text-primary"><%= @user.consecutive_days %></h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title">📅 最終スタンプ</h5>
+              <% last_stamp = @user.stamp_cards.order(:date).last %>
+              <% if last_stamp %>
+                <h4 class="text-info"><%= last_stamp.date.strftime("%m/%d") %></h4>
+              <% else %>
+                <h4 class="text-muted">未参加</h4>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月別統計 -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">📊 月別スタンプ統計</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <% @monthly_stats.each do |stat| %>
+                    <th class="text-center">
+                      <%= stat[:month].strftime("%Y/%m") %>
+                    </th>
+                  <% end %>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <% max_count = @monthly_stats.map { |s| s[:count] }.max %>
+                  <% max_count = 1 if max_count == 0 %>
+                  <% @monthly_stats.each do |stat| %>
+                    <td class="text-center">
+                      <div class="d-flex flex-column align-items-center">
+                        <div class="bg-success mb-1" 
+                             style="width: 30px; height: <%= (stat[:count].to_f / max_count * 60).round %>px; min-height: 3px;">
+                        </div>
+                        <small><%= stat[:count] %></small>
+                      </div>
+                    </td>
+                  <% end %>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- スタンプ記録一覧 -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">📋 スタンプ記録一覧</h5>
+        </div>
+        <div class="card-body">
+          <% if @stamp_cards.any? %>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>日付</th>
+                    <th>曜日</th>
+                    <th>スタンプ時刻</th>
+                    <th>記録時刻</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @stamp_cards.each do |stamp| %>
+                    <tr>
+                      <td><%= stamp.date.strftime("%Y年%m月%d日") %></td>
+                      <td><%= %w[日 月 火 水 木 金 土][stamp.date.wday] %>曜日</td>
+                      <td><%= stamp.stamped_at.strftime("%H:%M") %></td>
+                      <td>
+                        <small class="text-muted">
+                          <%= stamp.created_at.strftime("%H:%M:%S") %>
+                        </small>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <p class="text-muted text-center">このユーザーのスタンプ記録はまだありません。</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

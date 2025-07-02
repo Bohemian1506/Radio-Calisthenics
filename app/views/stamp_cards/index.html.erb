@@ -1,0 +1,156 @@
+<% content_for :title, "スタンプカード" %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">📅 ラジオ体操スタンプカード</h1>
+        <%= link_to "ログアウト", destroy_user_session_path, method: :delete, 
+                    class: "btn btn-outline-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- 統計情報 -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">🔥 連続日数</h5>
+          <h2 class="text-primary"><%= @consecutive_days %> 日</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">⭐ 総スタンプ数</h5>
+          <h2 class="text-success"><%= @total_stamps %> 個</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">📊 今月の参加率</h5>
+          <% participation_rate = (@total_stamps > 0) ? ((@total_stamps.to_f / Date.current.day) * 100).round(1) : 0 %>
+          <h2 class="text-info"><%= participation_rate %>%</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- スタンプ押印ボタン -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body text-center">
+          <% if @stamped_today %>
+            <h4 class="text-success">✅ 今日のスタンプは押印済みです！</h4>
+            <p class="text-muted">明日もがんばりましょう！</p>
+          <% else %>
+            <h4>🌅 今日のラジオ体操はお疲れ様でした！</h4>
+            <p class="mb-3">スタンプを押して記録しましょう</p>
+            <%= form_with url: stamp_cards_path, method: :post, local: true do |f| %>
+              <%= f.submit "✋ スタンプを押す", class: "btn btn-primary btn-lg" %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- カレンダー表示 -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">📅 <%= @current_month.strftime("%Y年%m月") %> のスタンプ記録</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered text-center">
+              <thead class="table-light">
+                <tr>
+                  <th>日</th>
+                  <th>月</th>
+                  <th>火</th>
+                  <th>水</th>
+                  <th>木</th>
+                  <th>金</th>
+                  <th>土</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @calendar_days.each do |week| %>
+                  <tr>
+                    <% week.each do |day| %>
+                      <td class="<%= day[:current_month] ? '' : 'text-muted' %> calendar-day">
+                        <div class="d-flex flex-column align-items-center">
+                          <span class="<%= 'fw-bold' if day[:date] == Date.current %>">
+                            <%= day[:date].day %>
+                          </span>
+                          <% if day[:stamped] && day[:current_month] %>
+                            <span class="badge bg-success mt-1">✓</span>
+                          <% elsif day[:date] == Date.current %>
+                            <span class="badge bg-primary mt-1">今日</span>
+                          <% end %>
+                        </div>
+                      </td>
+                    <% end %>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 最近のスタンプ記録 -->
+  <% if @stamp_cards.any? %>
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">📋 最近のスタンプ記録</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>日付</th>
+                    <th>スタンプ時刻</th>
+                    <th>曜日</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @stamp_cards.limit(10).each do |stamp| %>
+                    <tr>
+                      <td><%= stamp.date.strftime("%Y年%m月%d日") %></td>
+                      <td><%= stamp.stamped_at.strftime("%H:%M") %></td>
+                      <td><%= %w[日 月 火 水 木 金 土][stamp.date.wday] %>曜日</td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<style>
+.calendar-day {
+  height: 80px;
+  vertical-align: middle;
+}
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+</style>

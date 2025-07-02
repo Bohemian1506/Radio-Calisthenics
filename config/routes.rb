@@ -8,7 +8,8 @@ Rails.application.routes.draw do
   # 管理者機能
   namespace :admin do
     root "dashboard#index"
-    resources :settings, only: [ :index, :update ]
+    get "settings", to: "settings#index"
+    patch "settings", to: "settings#update"
     resources :users, only: [ :index, :show ]
   end
 

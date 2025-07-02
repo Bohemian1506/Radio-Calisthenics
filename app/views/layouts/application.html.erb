@@ -1,7 +1,7 @@
 <\!DOCTYPE html>
 <html>
   <head>
-    <title>EventPay Manager</title>
+    <title>Radio-Calisthenics</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -14,12 +14,23 @@
     <\!-- ナビゲーションバー -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container">
-        <%= link_to "EventPay Manager", root_path, class: "navbar-brand" %>
+        <%= link_to "🏃‍♀️ Radio-Calisthenics", root_path, class: "navbar-brand" %>
         
         <div class="navbar-nav ms-auto">
           <% if user_signed_in? %>
-            <%= link_to "イベント作成", "#", class: "nav-link" %>
-            <%= link_to "マイページ", "#", class: "nav-link" %>
+            <%= link_to "📅 スタンプカード", stamp_cards_path, class: "nav-link" %>
+            <% if current_user.admin? %>
+              <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                  🎯 管理者メニュー
+                </a>
+                <ul class="dropdown-menu">
+                  <li><%= link_to "📊 ダッシュボード", admin_root_path, class: "dropdown-item" %></li>
+                  <li><%= link_to "👥 ユーザー管理", admin_users_path, class: "dropdown-item" %></li>
+                  <li><%= link_to "⚙️ 設定", admin_settings_path, class: "dropdown-item" %></li>
+                </ul>
+              </div>
+            <% end %>
             <%= link_to "ログアウト", destroy_user_session_path, method: :delete, class: "nav-link" %>
           <% else %>
             <%= link_to "ログイン", new_user_session_path, class: "nav-link" %>
