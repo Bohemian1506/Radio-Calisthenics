@@ -14,10 +14,10 @@ class AdminSetting < ApplicationRecord
   end
 
   def self.participation_start_time
-    get_value('participation_start_time') || '06:00'
+    get_value("participation_start_time") || "06:00"
   end
 
   def self.participation_end_time
-    get_value('participation_end_time') || '06:30'
+    get_value("participation_end_time") || "06:30"
   end
 end

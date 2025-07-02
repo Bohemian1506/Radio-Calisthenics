@@ -3,13 +3,13 @@ Rails.application.routes.draw do
   root "home#index"
 
   # スタンプカード機能
-  resources :stamp_cards, only: [:index, :create]
-  
+  resources :stamp_cards, only: [ :index, :create ]
+
   # 管理者機能
   namespace :admin do
     root "dashboard#index"
-    resources :settings, only: [:index, :update]
-    resources :users, only: [:index, :show]
+    resources :settings, only: [ :index, :update ]
+    resources :users, only: [ :index, :show ]
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
