@@ -5,8 +5,11 @@
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2">📅 ラジオ体操スタンプカード</h1>
-        <%= link_to "ログアウト", destroy_user_session_path, method: :delete, 
-                    class: "btn btn-outline-secondary" %>
+        <div class="d-flex gap-2">
+          <%= link_to "📊 詳細統計", statistics_path, class: "btn btn-info" %>
+          <%= link_to "ログアウト", destroy_user_session_path, method: :delete, 
+                      class: "btn btn-outline-secondary" %>
+        </div>
       </div>
     </div>
   </div>
