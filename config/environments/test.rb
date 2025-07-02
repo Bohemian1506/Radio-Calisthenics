@@ -6,6 +6,9 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Disable Minitest test runner in favor of RSpec
+  config.generators.test_framework = :rspec
+
   # While tests run files are not watched, reloading is not necessary.
   config.enable_reloading = false
 
