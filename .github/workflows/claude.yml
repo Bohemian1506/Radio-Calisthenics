@@ -37,7 +37,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
+          # cache: 'npm' # Rails主体のプロジェクトなのでnpmキャッシュは不要
           
       - name: Setup GitHub CLI
         run: |
