@@ -8,3 +8,68 @@
 .card {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+// カレンダーのスタンプ画像スタイル
+.calendar-day {
+  min-height: 60px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.calendar-day.stamped {
+  background-image: url(asset-url('stamps/heart_stamp.svg'));
+  background-size: 24px 24px;
+  background-position: center bottom 5px;
+  background-repeat: no-repeat;
+}
+
+.calendar-day.unstamped {
+  background-image: url(asset-url('stamps/empty_stamp.svg'));
+  background-size: 20px 20px;
+  background-position: center bottom 5px;
+  background-repeat: no-repeat;
+}
+
+.stamp-image {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.empty-stamp-image {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.5;
+}
+
+// レスポンシブ対応
+@media (max-width: 768px) {
+  .calendar-day {
+    min-height: 50px;
+  }
+  
+  .calendar-day.stamped {
+    background-size: 20px 20px;
+  }
+  
+  .calendar-day.unstamped {
+    background-size: 16px 16px;
+  }
+  
+  .stamp-image {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .empty-stamp-image {
+    width: 16px;
+    height: 16px;
+  }
+}

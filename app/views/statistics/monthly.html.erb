@@ -141,14 +141,17 @@
                   <div class="col">
                     <div class="calendar-day p-2 rounded <%= 
                       day[:today] ? 'bg-warning' : 
-                      day[:stamped] ? 'bg-success text-white' : 
-                      day[:current_month] ? 'bg-light' : 'bg-transparent text-muted'
+                      day[:stamped] ? 'bg-success text-white stamped' : 
+                      day[:current_month] ? 'bg-light unstamped' : 'bg-transparent text-muted'
                     %>">
                       <div class="day-number"><%= day[:date].day %></div>
                       <% if day[:stamped] && day[:current_month] %>
+                        <%= image_tag "stamps/heart_stamp.svg", class: "stamp-image", alt: "参加済み" %>
                         <div class="stamp-time small">
-                          🌟 <%= day[:stamped_time] %>
+                          <%= day[:stamped_time] %>
                         </div>
+                      <% elsif day[:current_month] %>
+                        <%= image_tag "stamps/empty_stamp.svg", class: "empty-stamp-image", alt: "未参加" %>
                       <% end %>
                       <% if day[:today] %>
                         <div class="today-marker small">Today</div>
@@ -163,9 +166,19 @@
           <div class="row mt-4">
             <div class="col-12">
               <div class="d-flex justify-content-center gap-4 small">
-                <div><span class="badge bg-success">🌟</span> 参加済み</div>
+                <div>
+                  <span class="badge bg-success">
+                    <%= image_tag "stamps/heart_stamp.svg", style: "width: 16px; height: 16px;", alt: "参加済み" %>
+                  </span> 
+                  参加済み
+                </div>
                 <div><span class="badge bg-warning">Today</span> 今日</div>
-                <div><span class="badge bg-light text-dark">-</span> 未参加</div>
+                <div>
+                  <span class="badge bg-light text-dark">
+                    <%= image_tag "stamps/empty_stamp.svg", style: "width: 14px; height: 14px; opacity: 0.6;", alt: "未参加" %>
+                  </span> 
+                  未参加
+                </div>
               </div>
             </div>
           </div>
@@ -285,11 +298,6 @@ const weeklyChart = new Chart(weeklyCtx, {
 </script>
 
 <style>
-.calendar-day {
-    min-height: 60px;
-    position: relative;
-}
-
 .day-number {
     font-weight: bold;
 }

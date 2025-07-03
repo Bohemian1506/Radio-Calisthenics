@@ -88,15 +88,21 @@
                 <% @calendar_days.each do |week| %>
                   <tr>
                     <% week.each do |day| %>
-                      <td class="<%= day[:current_month] ? '' : 'text-muted' %> calendar-day">
+                      <td class="<%= day[:current_month] ? '' : 'text-muted' %> calendar-day <%= 
+                        day[:stamped] && day[:current_month] ? 'stamped' : 
+                        day[:current_month] ? 'unstamped' : ''
+                      %>">
                         <div class="d-flex flex-column align-items-center">
                           <span class="<%= 'fw-bold' if day[:date] == Date.current %>">
                             <%= day[:date].day %>
                           </span>
                           <% if day[:stamped] && day[:current_month] %>
-                            <span class="badge bg-success mt-1">✓</span>
-                          <% elsif day[:date] == Date.current %>
-                            <span class="badge bg-primary mt-1">今日</span>
+                            <%= image_tag "stamps/heart_stamp.svg", class: "stamp-image", alt: "参加済み" %>
+                          <% elsif day[:current_month] %>
+                            <%= image_tag "stamps/empty_stamp.svg", class: "empty-stamp-image", alt: "未参加" %>
+                          <% end %>
+                          <% if day[:date] == Date.current %>
+                            <span class="badge bg-primary mt-1 today-marker">今日</span>
                           <% end %>
                         </div>
                       </td>
@@ -151,9 +157,14 @@
 .calendar-day {
   height: 80px;
   vertical-align: middle;
+  position: relative;
 }
 .card {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   border: 1px solid rgba(0, 0, 0, 0.125);
+}
+.today-marker {
+  position: relative;
+  z-index: 2;
 }
 </style>
