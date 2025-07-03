@@ -254,7 +254,7 @@ generate_summary_file() {
     FILEPATH="$TARGET_DIR/$FILENAME"
     
     # ディレクトリ作成
-    mkdir -p "$TARGET_DIR"
+    mkdir -p "$TARGET_DIR" >/dev/null 2>&1
     
     # ファイル変更詳細分析
     analyze_file_changes
@@ -398,7 +398,9 @@ $LEARNING_POINTS
 EOF
 
     log "サマリーファイルを生成完了: $FILEPATH"
-    echo "$FILEPATH"
+    
+    # ファイルパスのみを返す（標準エラー出力ではなく戻り値で）
+    GENERATED_FILEPATH="$FILEPATH"
 }
 
 # メイン処理
@@ -415,10 +417,24 @@ main() {
     analyze_work_content
     
     # サマリーファイル生成
-    GENERATED_FILE=$(generate_summary_file)
+    generate_summary_file
+    GENERATED_FILE="$GENERATED_FILEPATH"
     
     log "=== 自動サマリー生成完了 ==="
     log "生成ファイル: $GENERATED_FILE"
+    
+    # 品質改善システム実行
+    local quality_script="$PROJECT_ROOT/scripts/analyze_summary_quality.sh"
+    if [[ -f "$quality_script" ]]; then
+        log "サマリー品質改善システム実行中..."
+        if "$quality_script" "$GENERATED_FILE" "$CURRENT_BRANCH"; then
+            log "✅ サマリー品質改善完了"
+        else
+            log "⚠️ 品質改善で問題が発生しましたが、基本サマリーは生成済みです"
+        fi
+    else
+        log "注意: 品質改善スクリプトが見つかりません"
+    fi
     
     # summariesディレクトリはgitignoreされているため、コミットには含まれない
     log "注意: サマリーファイルは .gitignore により追跡対象外です"
