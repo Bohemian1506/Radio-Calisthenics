@@ -19,13 +19,20 @@
   "author": "Radio-Calisthenics Team",
   "license": "MIT",
   "devDependencies": {},
-  "dependencies": {},
   "engines": {
     "node": ">=18.0.0",
     "bun": ">=1.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Bohemian1506/Radio-Calisthenics.git"
+    "url": "git+https://github.com/Bohemian1506/Radio-Calisthenics.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Bohemian1506/Radio-Calisthenics/issues"
+  },
+  "homepage": "https://github.com/Bohemian1506/Radio-Calisthenics#readme",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
   }
 }

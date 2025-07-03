@@ -7,25 +7,49 @@
 
 .card {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+// Bootstrap競合解決
+.btn {
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-outline-primary {
+  color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
 }
 
 // スタンプカード画像ベースのスタイル
 .stamp-card-container {
   position: relative;
   width: 100%;
-  max-width: 800px;
+  max-width: 600px !important;
   margin: 0 auto;
 }
 
 .stamp-card-background {
   position: relative;
   width: 100%;
+  max-width: 600px !important;
 }
 
 .stamp-card-image {
-  width: 100%;
-  height: auto;
-  display: block;
+  width: 100% !important;
+  max-width: 600px !important;
+  height: auto !important;
+  display: block !important;
 }
 
 .stamp-overlay {
@@ -75,7 +99,7 @@
     &[data-day="3"] { top: 22.5%; left: 57.1%; } // 水
     &[data-day="4"] { top: 22.5%; left: 71.4%; } // 木
     &[data-day="5"] { top: 22.5%; left: 85.7%; } // 金
-    &[data-day="6"] { top: 22.5%; left: 100%; }  // 土
+    &[data-day="6"] { top: 22.5%; left: 92.8%; }  // 土
   }
   
   // 2週目
@@ -86,7 +110,7 @@
     &[data-day="3"] { top: 36.5%; left: 57.1%; }
     &[data-day="4"] { top: 36.5%; left: 71.4%; }
     &[data-day="5"] { top: 36.5%; left: 85.7%; }
-    &[data-day="6"] { top: 36.5%; left: 100%; }
+    &[data-day="6"] { top: 36.5%; left: 92.8%; }
   }
   
   // 3週目
@@ -97,7 +121,7 @@
     &[data-day="3"] { top: 50.5%; left: 57.1%; }
     &[data-day="4"] { top: 50.5%; left: 71.4%; }
     &[data-day="5"] { top: 50.5%; left: 85.7%; }
-    &[data-day="6"] { top: 50.5%; left: 100%; }
+    &[data-day="6"] { top: 50.5%; left: 92.8%; }
   }
   
   // 4週目
@@ -108,7 +132,7 @@
     &[data-day="3"] { top: 64.5%; left: 57.1%; }
     &[data-day="4"] { top: 64.5%; left: 71.4%; }
     &[data-day="5"] { top: 64.5%; left: 85.7%; }
-    &[data-day="6"] { top: 64.5%; left: 100%; }
+    &[data-day="6"] { top: 64.5%; left: 92.8%; }
   }
   
   // 5週目
@@ -119,7 +143,7 @@
     &[data-day="3"] { top: 78.5%; left: 57.1%; }
     &[data-day="4"] { top: 78.5%; left: 71.4%; }
     &[data-day="5"] { top: 78.5%; left: 85.7%; }
-    &[data-day="6"] { top: 78.5%; left: 100%; }
+    &[data-day="6"] { top: 78.5%; left: 92.8%; }
   }
   
   // 位置調整（中央寄せ）
@@ -131,13 +155,20 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 25px;
 }
 
 .statistics-sidebar .card {
   flex: 1;
   display: flex;
   align-items: center;
+  min-height: 140px;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.statistics-sidebar .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .statistics-sidebar .card-body {
@@ -145,26 +176,75 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 1.75rem;
+}
+
+.statistics-sidebar .card-body h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.statistics-sidebar .card-body h2 {
+  font-weight: bold;
+  margin-bottom: 0;
+  font-size: 2.5rem;
+}
+
+// 一般的なカードスタイル
+.card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 // レスポンシブ対応
 @media (max-width: 991px) {
-  // タブレット以下で統計情報を横並びに戻す
+  .stamp-card-container {
+    max-width: 450px !important;
+    padding: 0 15px;
+  }
+  
+  .stamp-card-background {
+    max-width: 450px !important;
+  }
+  
+  .stamp-card-image {
+    max-width: 450px !important;
+  }
+  
+  // タブレット以下で統計情報を横並びに変更
   .statistics-sidebar {
     flex-direction: row;
-    gap: 15px;
+    gap: 10px;
   }
   
   .statistics-sidebar .card {
     flex: 1;
     margin-bottom: 0 !important;
+    min-height: 100px;
+  }
+  
+  .statistics-sidebar .card-body {
+    padding: 1rem;
   }
 }
 
 @media (max-width: 768px) {
   .stamp-card-container {
-    max-width: 100%;
+    max-width: 400px !important;
     padding: 0 10px;
+  }
+  
+  .stamp-card-background {
+    max-width: 400px !important;
+  }
+  
+  .stamp-card-image {
+    max-width: 400px !important;
   }
   
   .actual-stamp {
@@ -178,20 +258,42 @@
     margin-top: 1px;
   }
   
-  // モバイルで統計情報を縦並びに戻す
+  // モバイルで統計情報を横並びのまま維持
   .statistics-sidebar {
-    flex-direction: column;
-    gap: 0;
+    flex-direction: row;
+    gap: 8px;
   }
   
   .statistics-sidebar .card {
-    margin-bottom: 15px !important;
+    margin-bottom: 0 !important;
+    min-height: 80px;
+  }
+  
+  .statistics-sidebar .card-body {
+    padding: 0.75rem;
+  }
+  
+  .statistics-sidebar .card-title {
+    font-size: 0.9rem;
+  }
+  
+  .statistics-sidebar h2 {
+    font-size: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .stamp-card-container {
+    max-width: 350px !important;
     padding: 0 5px;
+  }
+  
+  .stamp-card-background {
+    max-width: 350px !important;
+  }
+  
+  .stamp-card-image {
+    max-width: 350px !important;
   }
   
   .actual-stamp {
