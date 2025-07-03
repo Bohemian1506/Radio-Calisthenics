@@ -1,0 +1,119 @@
+<% content_for :title, "バッジコレクション" %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5">🏆 バッジコレクション</h1>
+        <%= link_to "統計に戻る", statistics_path, class: "btn btn-outline-primary" %>
+      </div>
+
+      <!-- バッジ獲得統計 -->
+      <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="card bg-primary text-white">
+            <div class="card-body">
+              <h5 class="card-title">🎯 獲得数</h5>
+              <h2 class="mb-0"><%= @badge_stats[:total_earned] %> / <%= @badge_stats[:total_available] %></h2>
+              <small>コンプリート率: <%= @badge_stats[:completion_rate] %>%</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="card bg-success text-white">
+            <div class="card-body">
+              <h5 class="card-title">⭐ 最新バッジ</h5>
+              <% if @badge_stats[:latest_badge] %>
+                <p class="mb-0">
+                  <%= @badge_stats[:latest_badge].icon %> 
+                  <%= @badge_stats[:latest_badge].name %>
+                </p>
+              <% else %>
+                <p class="mb-0">まだ獲得していません</p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="mb-0">📊 カテゴリ別獲得状況</h6>
+            </div>
+            <div class="card-body">
+              <% @badge_stats[:by_type].each do |type_stat| %>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span><%= type_stat[:type_name] %></span>
+                  <span>
+                    <small class="text-muted"><%= type_stat[:earned] %>/<%= type_stat[:total] %></small>
+                    <span class="badge bg-<%= type_stat[:percentage] == 100 ? 'success' : 'secondary' %>">
+                      <%= type_stat[:percentage] %>%
+                    </span>
+                  </span>
+                </div>
+                <div class="progress mb-2" style="height: 6px;">
+                  <div class="progress-bar bg-<%= type_stat[:percentage] == 100 ? 'success' : 'primary' %>" 
+                       style="width: <%= type_stat[:percentage] %>%"></div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- バッジ一覧 -->
+      <div class="row">
+        <% Badge::BADGE_TYPES.each do |type_key, type_name| %>
+          <% type_badges = @all_badges.by_type(type_key.to_s) %>
+          <% next if type_badges.empty? %>
+          
+          <div class="col-12 mb-4">
+            <h3 class="border-bottom pb-2 mb-3">
+              <%= type_name %>
+              <span class="badge bg-secondary ms-2"><%= type_badges.count %></span>
+            </h3>
+            
+            <div class="row">
+              <% type_badges.each do |badge| %>
+                <% is_earned = @earned_badge_ids.include?(badge.id) %>
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                  <div class="card h-100 <%= is_earned ? 'border-success' : 'border-light' %> position-relative">
+                    <% unless is_earned %>
+                      <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-25 d-flex align-items-center justify-content-center" style="z-index: 10;">
+                        <i class="fas fa-lock text-white fa-2x"></i>
+                      </div>
+                    <% end %>
+                    
+                    <div class="card-body text-center">
+                      <div class="display-1 mb-3"><%= badge.icon %></div>
+                      <h6 class="card-title fw-bold"><%= badge.name %></h6>
+                      <p class="card-text text-muted small"><%= badge.description %></p>
+                      
+                      <% if is_earned %>
+                        <% earned_at = current_user.earned_badge_at(badge) %>
+                        <div class="badge bg-success">
+                          <%= earned_at.strftime("%Y/%m/%d") %> 獲得
+                        </div>
+                      <% else %>
+                        <% if badge.can_be_earned_by?(current_user) %>
+                          <div class="badge bg-warning text-dark">もうすぐ獲得！</div>
+                        <% else %>
+                          <div class="badge bg-secondary">未獲得</div>
+                        <% end %>
+                      <% end %>
+                    </div>
+                    
+                    <div class="card-footer bg-transparent">
+                      <%= link_to "詳細", badge_path(badge), class: "btn btn-sm btn-outline-primary w-100" %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -13,6 +13,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # バッジ機能
+  resources :badges, only: [ :index, :show ]
+
   # 管理者機能
   namespace :admin do
     root "dashboard#index"

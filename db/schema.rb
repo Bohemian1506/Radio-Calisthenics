@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_02_144602) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_03_070821) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_02_144602) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "badges", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description", null: false
+    t.string "icon", null: false
+    t.string "badge_type", null: false
+    t.json "conditions", null: false
+    t.boolean "active", default: true, null: false
+    t.integer "sort_order", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_badges_on_active"
+    t.index ["badge_type"], name: "index_badges_on_badge_type"
+    t.index ["sort_order"], name: "index_badges_on_sort_order"
+  end
+
   create_table "stamp_cards", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.date "date"
@@ -28,6 +43,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_02_144602) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_stamp_cards_on_user_id"
+  end
+
+  create_table "user_badges", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "badge_id", null: false
+    t.datetime "earned_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["badge_id"], name: "index_user_badges_on_badge_id"
+    t.index ["earned_at"], name: "index_user_badges_on_earned_at"
+    t.index ["user_id", "badge_id"], name: "index_user_badges_on_user_id_and_badge_id", unique: true
+    t.index ["user_id"], name: "index_user_badges_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -44,4 +71,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_02_144602) do
   end
 
   add_foreign_key "stamp_cards", "users"
+  add_foreign_key "user_badges", "badges"
+  add_foreign_key "user_badges", "users"
 end
