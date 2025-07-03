@@ -184,10 +184,38 @@ evaluate_summary_quality() {
     fi
 }
 
+# 強化コンテンツ生成システムの統合
+source_enhanced_generator() {
+    local enhanced_script="$PROJECT_ROOT/scripts/enhanced_content_generator.sh"
+    if [[ -f "$enhanced_script" ]]; then
+        source "$enhanced_script"
+        return 0
+    else
+        log "警告: 強化コンテンツ生成スクリプトが見つかりません"
+        return 1
+    fi
+}
+
 # 動的コンテンツ生成
 generate_enhanced_content() {
     local branch="$1"
     log "動的コンテンツ生成開始..."
+    
+    # 強化コンテンツ生成システムを利用
+    if source_enhanced_generator; then
+        local commit_hash=$(git rev-parse HEAD)
+        local commit_msg=$(git log --format='%s' -1)
+        local determined_work_type=$(determine_work_type "$commit_msg")
+        
+        generate_detailed_technical_content "$commit_hash" "$branch"
+        generate_contextual_background "$commit_msg" "$determined_work_type"
+        local changes=$(git show --name-only "$commit_hash")
+        generate_specific_learning_points "$changes" "$determined_work_type"
+        
+        log "強化コンテンツ生成完了"
+    else
+        log "基本コンテンツ生成を使用"
+    fi
     
     # Git分析実行
     analyze_detailed_git_history "$branch"
@@ -311,11 +339,35 @@ improve_summary_file() {
         esac
     done > "$temp_file"
     
-    # プレースホルダーの具体的内容への置換
-    sed -i 's/\[この作業を実施した背景や目的を記載\]/ブランチでの段階的実装による確実な開発プロセス実現/g' "$temp_file"
-    sed -i 's/\[なぜこの技術・手法を選択したか\]/段階的実装・品質確保・保守性向上を重視した技術選択/g' "$temp_file"
-    sed -i 's/\[重要な設計決定とその根拠\]/ユーザビリティ・拡張性・セキュリティを考慮した設計判断/g' "$temp_file"
-    sed -i 's/\[テスト・コードレビュー・検証方法\]/段階的テスト・継続的品質チェック・動作確認の徹底実施/g' "$temp_file"
+    # 強化コンテンツによるプレースホルダー置換
+    if [[ -n "$BACKGROUND_CONTEXT" ]]; then
+        sed -i "s/\[この作業を実施した背景や目的を記載\]/$BACKGROUND_CONTEXT/g" "$temp_file"
+    else
+        sed -i 's/\[この作業を実施した背景や目的を記載\]/ブランチでの段階的実装による確実な開発プロセス実現/g' "$temp_file"
+    fi
+    
+    if [[ -n "$TECHNICAL_REASONING" ]]; then
+        sed -i "s/\[なぜこの技術・手法を選択したか\]/$TECHNICAL_REASONING/g" "$temp_file"
+    else
+        sed -i 's/\[なぜこの技術・手法を選択したか\]/段階的実装・品質確保・保守性向上を重視した技術選択/g' "$temp_file"
+    fi
+    
+    if [[ -n "$IMPLEMENTATION_DETAILS" ]]; then
+        sed -i "s/\[重要な設計決定とその根拠\]/$IMPLEMENTATION_DETAILS/g" "$temp_file"
+    else
+        sed -i 's/\[重要な設計決定とその根拠\]/ユーザビリティ・拡張性・セキュリティを考慮した設計判断/g' "$temp_file"
+    fi
+    
+    if [[ -n "$IMPACT_ANALYSIS" ]]; then
+        sed -i "s/\[テスト・コードレビュー・検証方法\]/$IMPACT_ANALYSIS/g" "$temp_file"
+    else
+        sed -i 's/\[テスト・コードレビュー・検証方法\]/段階的テスト・継続的品質チェック・動作確認の徹底実施/g' "$temp_file"
+    fi
+    
+    # 定量的成果の自動挿入
+    if [[ -n "$QUANTITATIVE_RESULTS" ]]; then
+        sed -i "s/追加 \[X\] 行、削除 \[Y\] 行/$QUANTITATIVE_RESULTS/g" "$temp_file"
+    fi
     
     # 改善されたファイルで元ファイルを更新
     mv "$temp_file" "$summary_file"
