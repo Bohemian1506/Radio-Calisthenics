@@ -4,8 +4,17 @@
     <div class="col-12 mb-4">
       <div class="card border-0 shadow-sm">
         <div class="card-body">
-          <h1 class="h3 mb-3">📊 あなたの統計情報</h1>
-          <p class="text-muted mb-0">ラジオ体操の参加状況を詳しく分析してみましょう</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h1 class="h3 mb-3">📊 あなたの統計情報</h1>
+              <p class="text-muted mb-0">ラジオ体操の参加状況を詳しく分析してみましょう</p>
+            </div>
+            <div>
+              <%= link_to badges_path, class: "btn btn-outline-primary" do %>
+                🏆 バッジコレクション
+              <% end %>
+            </div>
+          </div>
         </div>
       </div>
     </div>

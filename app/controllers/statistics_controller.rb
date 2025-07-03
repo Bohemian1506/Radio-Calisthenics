@@ -73,37 +73,33 @@ class StatisticsController < ApplicationController
   end
 
   def calculate_achievements(user)
-    achievements = []
-
-    # 連続参加実績
-    consecutive_days = user.consecutive_days
-    if consecutive_days >= 30
-      achievements << { type: "streak", title: "継続の達人", description: "#{consecutive_days}日連続参加中！", icon: "🔥" }
-    elsif consecutive_days >= 7
-      achievements << { type: "streak", title: "一週間継続", description: "#{consecutive_days}日連続参加中", icon: "⭐" }
+    # 新しいバッジを自動チェック・付与
+    newly_earned_badges = user.check_and_award_new_badges!
+    
+    # ユーザーが獲得済みのバッジを取得
+    earned_badges = user.earned_badges.includes(:badge).limit(10)
+    
+    # バッジ情報をachievements形式に変換
+    achievements = earned_badges.map do |badge|
+      {
+        type: badge.badge_type,
+        title: badge.name,
+        description: badge.description,
+        icon: badge.icon,
+        earned_at: user.earned_badge_at(badge)
+      }
     end
 
-    # 月間皆勤賞
-    current_month_stamps = user.stamp_cards.where(date: Date.current.beginning_of_month..Date.current.end_of_month).count
-    days_passed = Date.current.day
-    if current_month_stamps == days_passed && days_passed > 1
-      achievements << { type: "perfect_month", title: "今月皆勤賞候補", description: "今月は毎日参加中！", icon: "👑" }
-    end
-
-    # 総参加数マイルストーン
-    total_stamps = user.stamp_cards.count
-    milestones = [ 10, 30, 50, 100, 200, 365, 500, 1000 ]
-    reached_milestone = milestones.select { |m| total_stamps >= m }.last
-    if reached_milestone
-      achievements << { type: "milestone", title: "#{reached_milestone}回参加達成", description: "通算#{total_stamps}回参加", icon: "🎯" }
-    end
-
-    # 早起き実績
-    morning_stamps = user.stamp_cards.joins("JOIN (SELECT setting_value FROM admin_settings WHERE setting_name = 'participation_start_time') AS start_time ON true")
-                        .where("TIME(stamped_at) <= TIME(start_time.setting_value) + INTERVAL '15 minutes'")
-                        .count
-    if morning_stamps >= 10
-      achievements << { type: "early_bird", title: "早起きの達人", description: "#{morning_stamps}回早起き参加", icon: "🌅" }
+    # 新しく獲得したバッジがあれば、フラッシュメッセージで通知
+    if newly_earned_badges.any?
+      newly_earned_badges.each do |badge|
+        flash[:badge_earned] ||= []
+        flash[:badge_earned] << {
+          name: badge.name,
+          description: badge.description,
+          icon: badge.icon
+        }
+      end
     end
 
     achievements
