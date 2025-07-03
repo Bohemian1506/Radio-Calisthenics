@@ -55,3 +55,6 @@ claude_review*.json
 
 # Summary directory - not tracked
 summaries/
+
+# Temporary screenshots directory
+tmp/screenshots/
