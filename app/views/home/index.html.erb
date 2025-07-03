@@ -1,16 +1,20 @@
 <div class="row">
   <div class="col-lg-8 mx-auto text-center">
-    <h1 class="display-4 text-primary mb-4">EventPay Manager</h1>
-    <p class="lead">イベント管理と決済を簡単に</p>
+    <h1 class="display-4 text-primary mb-4">🏃‍♀️ Radio-Calisthenics</h1>
+    <p class="lead">ラジオ体操の継続をサポートするデジタルスタンプカード</p>
     
     <% if user_signed_in? %>
       <div class="mt-4">
         <h3>ようこそ、<%= current_user.email %>さん！</h3>
-        <p>イベントの作成・管理を始めましょう。</p>
-        <button class="btn btn-primary btn-lg">イベントを作成する</button>
+        <p>今日のラジオ体操はお疲れ様でした。スタンプカードで記録を管理しましょう。</p>
+        <div class="d-flex justify-content-center gap-3 mt-4">
+          <%= link_to "📅 スタンプカードを見る", stamp_cards_path, class: "btn btn-primary btn-lg" %>
+          <%= link_to "📊 統計情報を見る", statistics_path, class: "btn btn-outline-primary btn-lg" %>
+        </div>
       </div>
     <% else %>
       <div class="mt-4">
+        <p class="mb-4">健康的な習慣を身につけるため、ラジオ体操の参加記録をデジタルスタンプカードで管理しましょう。</p>
         <%= link_to "今すぐ始める", new_user_registration_path, class: "btn btn-primary btn-lg me-3" %>
         <%= link_to "ログイン", new_user_session_path, class: "btn btn-outline-primary btn-lg" %>
       </div>

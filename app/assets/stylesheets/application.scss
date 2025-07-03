@@ -7,6 +7,28 @@
 
 .card {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+// Bootstrap競合解決
+.btn {
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-outline-primary {
+  color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
 }
 
 // スタンプカード画像ベースのスタイル
@@ -75,7 +97,7 @@
     &[data-day="3"] { top: 22.5%; left: 57.1%; } // 水
     &[data-day="4"] { top: 22.5%; left: 71.4%; } // 木
     &[data-day="5"] { top: 22.5%; left: 85.7%; } // 金
-    &[data-day="6"] { top: 22.5%; left: 100%; }  // 土
+    &[data-day="6"] { top: 22.5%; left: 92.8%; }  // 土
   }
   
   // 2週目
@@ -86,7 +108,7 @@
     &[data-day="3"] { top: 36.5%; left: 57.1%; }
     &[data-day="4"] { top: 36.5%; left: 71.4%; }
     &[data-day="5"] { top: 36.5%; left: 85.7%; }
-    &[data-day="6"] { top: 36.5%; left: 100%; }
+    &[data-day="6"] { top: 36.5%; left: 92.8%; }
   }
   
   // 3週目
@@ -97,7 +119,7 @@
     &[data-day="3"] { top: 50.5%; left: 57.1%; }
     &[data-day="4"] { top: 50.5%; left: 71.4%; }
     &[data-day="5"] { top: 50.5%; left: 85.7%; }
-    &[data-day="6"] { top: 50.5%; left: 100%; }
+    &[data-day="6"] { top: 50.5%; left: 92.8%; }
   }
   
   // 4週目
@@ -108,7 +130,7 @@
     &[data-day="3"] { top: 64.5%; left: 57.1%; }
     &[data-day="4"] { top: 64.5%; left: 71.4%; }
     &[data-day="5"] { top: 64.5%; left: 85.7%; }
-    &[data-day="6"] { top: 64.5%; left: 100%; }
+    &[data-day="6"] { top: 64.5%; left: 92.8%; }
   }
   
   // 5週目
@@ -119,7 +141,7 @@
     &[data-day="3"] { top: 78.5%; left: 57.1%; }
     &[data-day="4"] { top: 78.5%; left: 71.4%; }
     &[data-day="5"] { top: 78.5%; left: 85.7%; }
-    &[data-day="6"] { top: 78.5%; left: 100%; }
+    &[data-day="6"] { top: 78.5%; left: 92.8%; }
   }
   
   // 位置調整（中央寄せ）
