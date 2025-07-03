@@ -25,6 +25,7 @@ analyze_git_changes() {
     LATEST_COMMIT=$(git log --oneline -1)
     COMMIT_MESSAGE=$(git log --format="%s" -1)
     COMMIT_AUTHOR=$(git log --format="%an" -1)
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
     
     # 変更ファイル分析
     CHANGED_FILES=$(git diff --name-status HEAD~1 HEAD 2>/dev/null || echo "")
@@ -267,6 +268,7 @@ generate_summary_file() {
 
 **作業完了日**: $(date +'%Y年%m月%d日 %H:%M')  
 **作業分類**: $WORK_CATEGORY  
+**作業ブランチ**: \`$CURRENT_BRANCH\`  
 **コミット**: \`$LATEST_COMMIT\`  
 **作業者**: $COMMIT_AUTHOR  
 
@@ -276,7 +278,7 @@ generate_summary_file() {
 $(echo "$COMMIT_MESSAGE" | sed 's/^[a-z]*: //')
 
 ### 作業背景・目的
-[この作業を実施した背景や目的を記載]
+ブランチ \`$CURRENT_BRANCH\` での作業として実施。
 
 ## 📂 変更ファイル詳細
 
