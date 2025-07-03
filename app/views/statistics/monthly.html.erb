@@ -143,15 +143,15 @@
                       day[:today] ? 'bg-warning' : 
                       day[:stamped] ? 'bg-success text-white stamped' : 
                       day[:current_month] ? 'bg-light unstamped' : 'bg-transparent text-muted'
-                    %>">
-                      <div class="day-number"><%= day[:date].day %></div>
+                    %>" style="min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                      <div class="day-number" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 5px;"><%= day[:date].day %></div>
                       <% if day[:stamped] && day[:current_month] %>
-                        <%= image_tag "stamps/heart_stamp.svg", class: "stamp-image", alt: "参加済み" %>
-                        <div class="stamp-time small">
+                        <%= image_tag "stamps/heart_stamp.svg", class: "stamp-image", alt: "参加済み", style: "width: 30px; height: 30px; margin: 2px auto; display: block;" %>
+                        <div class="stamp-time small" style="position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 0.7rem;">
                           <%= day[:stamped_time] %>
                         </div>
                       <% elsif day[:current_month] %>
-                        <%= image_tag "stamps/empty_stamp.svg", class: "empty-stamp-image", alt: "未参加" %>
+                        <%= image_tag "stamps/empty_stamp.svg", class: "empty-stamp-image", alt: "未参加", style: "width: 30px; height: 30px; margin: 2px auto; display: block;" %>
                       <% end %>
                       <% if day[:today] %>
                         <div class="today-marker small">Today</div>
@@ -298,63 +298,84 @@ const weeklyChart = new Chart(weeklyCtx, {
 </script>
 
 <style>
-.calendar-day {
-    min-height: 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 5px;
+/* カレンダーグリッド全体 */
+.calendar-grid .row .col .calendar-day {
+    min-height: 80px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    padding: 5px !important;
 }
 
-.day-number {
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-bottom: 5px;
+/* 日付数字のスタイル強化 */
+.calendar-grid .calendar-day .day-number {
+    font-weight: bold !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 5px !important;
+    display: block !important;
+    text-align: center !important;
 }
 
-.stamp-image, .empty-stamp-image {
-    width: 30px;
-    height: 30px;
-    margin: 2px 0;
+/* スタンプ画像 */
+.calendar-grid .calendar-day .stamp-image, 
+.calendar-grid .calendar-day .empty-stamp-image {
+    width: 30px !important;
+    height: 30px !important;
+    margin: 2px auto !important;
+    display: block !important;
 }
 
-.stamp-time {
-    position: absolute;
-    bottom: 2px;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    font-size: 0.7rem;
+/* スタンプ時刻 */
+.calendar-grid .calendar-day .stamp-time {
+    position: absolute !important;
+    bottom: 2px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    white-space: nowrap !important;
+    font-size: 0.7rem !important;
 }
 
-.today-marker {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    font-size: 0.7em;
+/* 今日マーカー */
+.calendar-grid .calendar-day .today-marker {
+    position: absolute !important;
+    top: 2px !important;
+    right: 2px !important;
+    font-size: 0.7em !important;
+}
+
+/* グリッドのコラム幅を均等に */
+.calendar-grid .row {
+    --bs-gutter-x: 0.5rem !important;
+}
+
+.calendar-grid .col {
+    flex: 1 0 0% !important;
+    max-width: 14.28% !important;
+    padding: 0.25rem !important;
 }
 
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
-    .calendar-day {
-        min-height: 60px;
-        padding: 3px;
+    .calendar-grid .row .col .calendar-day {
+        min-height: 60px !important;
+        padding: 3px !important;
     }
     
-    .day-number {
-        font-size: 1rem;
-        margin-bottom: 3px;
+    .calendar-grid .calendar-day .day-number {
+        font-size: 1rem !important;
+        margin-bottom: 3px !important;
     }
     
-    .stamp-image, .empty-stamp-image {
-        width: 24px;
-        height: 24px;
+    .calendar-grid .calendar-day .stamp-image, 
+    .calendar-grid .calendar-day .empty-stamp-image {
+        width: 24px !important;
+        height: 24px !important;
     }
     
-    .stamp-time {
-        font-size: 0.6rem;
+    .calendar-grid .calendar-day .stamp-time {
+        font-size: 0.6rem !important;
     }
 }
 </style>
