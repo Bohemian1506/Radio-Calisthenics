@@ -1,6 +1,6 @@
 <% content_for :title, "スタンプカード" %>
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
   <div class="row">
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
@@ -34,10 +34,10 @@
     </div>
   </div>
 
-  <!-- スタンプカード画像表示 + 統計情報 -->
+  <!-- スタンプカード画像表示 -->
   <div class="row">
     <!-- スタンプカード部分 -->
-    <div class="col-lg-7 col-md-7 mb-4">
+    <div class="col-lg-9 col-md-8 mb-4">
       <div class="card">
         <div class="card-header">
           <h5 class="mb-0">📅 <%= @current_month.strftime("%Y年%m月") %> のスタンプ記録</h5>
@@ -74,32 +74,42 @@
       </div>
     </div>
     
-    <!-- 統計情報部分 -->
-    <div class="col-lg-5 col-md-5 mb-4">
-      <div class="statistics-sidebar">
-        <!-- 連続日数 -->
-        <div class="card text-center">
-          <div class="card-body">
-            <h5 class="card-title">🔥 連続日数</h5>
-            <h2 class="text-warning"><%= @consecutive_days %> 日</h2>
-          </div>
+    <!-- 空白スペース -->
+    <div class="col-lg-3 col-md-4"></div>
+  </div>
+  
+  <!-- 統計情報部分 -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <h3 class="mb-3">📊 あなたの統計情報</h3>
+    </div>
+    <!-- 連続日数 -->
+    <div class="col-lg-4 col-md-4 col-sm-6 mb-4">
+      <div class="card text-center h-100">
+        <div class="card-body">
+          <h5 class="card-title">🔥 連続日数</h5>
+          <h2 class="text-warning"><%= @consecutive_days %> 日</h2>
         </div>
-        
-        <!-- 総スタンプ数 -->
-        <div class="card text-center">
-          <div class="card-body">
-            <h5 class="card-title">⭐ 総スタンプ数</h5>
-            <h2 class="text-success"><%= @total_stamps %> 個</h2>
-          </div>
+      </div>
+    </div>
+    
+    <!-- 総スタンプ数 -->
+    <div class="col-lg-4 col-md-4 col-sm-6 mb-4">
+      <div class="card text-center h-100">
+        <div class="card-body">
+          <h5 class="card-title">⭐ 総スタンプ数</h5>
+          <h2 class="text-success"><%= @total_stamps %> 個</h2>
         </div>
-        
-        <!-- 今月の参加率 -->
-        <div class="card text-center">
-          <div class="card-body">
-            <h5 class="card-title">📊 今月の参加率</h5>
-            <% participation_rate = (@total_stamps > 0) ? ((@total_stamps.to_f / Date.current.day) * 100).round(1) : 0 %>
-            <h2 class="text-primary"><%= participation_rate %>%</h2>
-          </div>
+      </div>
+    </div>
+    
+    <!-- 今月の参加率 -->
+    <div class="col-lg-4 col-md-4 col-sm-12 mb-4">
+      <div class="card text-center h-100">
+        <div class="card-body">
+          <h5 class="card-title">📊 今月の参加率</h5>
+          <% participation_rate = (@total_stamps > 0) ? ((@total_stamps.to_f / Date.current.day) * 100).round(1) : 0 %>
+          <h2 class="text-primary"><%= participation_rate %>%</h2>
         </div>
       </div>
     </div>

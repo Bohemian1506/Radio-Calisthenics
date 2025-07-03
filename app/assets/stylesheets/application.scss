@@ -35,7 +35,7 @@
 .stamp-card-container {
   position: relative;
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
@@ -148,45 +148,26 @@
   transform: translate(-50%, -50%);
 }
 
-// 統計情報サイドバーのスタイル
-.statistics-sidebar {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+// 統計情報カードの共通スタイル
+.card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-.statistics-sidebar .card {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  min-height: 120px;
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.statistics-sidebar .card-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 1.5rem;
+.card-body h2 {
+  font-weight: bold;
+  margin-bottom: 0;
 }
 
 // レスポンシブ対応
 @media (max-width: 991px) {
-  // タブレット以下で統計情報を横並びに戻す
-  .statistics-sidebar {
-    flex-direction: row;
-    gap: 10px;
-  }
-  
-  .statistics-sidebar .card {
-    flex: 1;
-    margin-bottom: 0 !important;
-    min-height: 100px;
-  }
-  
-  .statistics-sidebar .card-body {
-    padding: 1rem;
+  .stamp-card-container {
+    max-width: 100%;
+    padding: 0 15px;
   }
 }
 
@@ -207,26 +188,12 @@
     margin-top: 1px;
   }
   
-  // モバイルで統計情報を横並びのまま維持
-  .statistics-sidebar {
-    flex-direction: row;
-    gap: 8px;
-  }
-  
-  .statistics-sidebar .card {
-    margin-bottom: 0 !important;
-    min-height: 80px;
-  }
-  
-  .statistics-sidebar .card-body {
-    padding: 0.75rem;
-  }
-  
-  .statistics-sidebar .card-title {
+  // モバイルで統計情報カードのサイズ調整
+  .card-title {
     font-size: 0.9rem;
   }
   
-  .statistics-sidebar h2 {
+  .card-body h2 {
     font-size: 1.5rem;
   }
 }
