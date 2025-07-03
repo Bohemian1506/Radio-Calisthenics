@@ -157,57 +157,57 @@
   
   // 1週目（日-土）
   &[data-week="0"] {
-    &[data-day="0"] { top: 22.5%; left: 11.5%; } // 日
-    &[data-day="1"] { top: 22.5%; left: 23.5%; } // 月
-    &[data-day="2"] { top: 22.5%; left: 35.5%; } // 火
-    &[data-day="3"] { top: 22.5%; left: 47.5%; } // 水
-    &[data-day="4"] { top: 22.5%; left: 59.5%; } // 木
-    &[data-day="5"] { top: 22.5%; left: 71.5%; } // 金
-    &[data-day="6"] { top: 22.5%; left: 83.5%; }  // 土
+    &[data-day="0"] { top: 40%; left: 15%; } // 日
+    &[data-day="1"] { top: 40%; left: 27%; } // 月
+    &[data-day="2"] { top: 40%; left: 39%; } // 火
+    &[data-day="3"] { top: 40%; left: 51%; } // 水
+    &[data-day="4"] { top: 40%; left: 63%; } // 木
+    &[data-day="5"] { top: 40%; left: 75%; } // 金
+    &[data-day="6"] { top: 40%; left: 87%; }  // 土
   }
   
   // 2週目
   &[data-week="1"] {
-    &[data-day="0"] { top: 36.5%; left: 11.5%; }
-    &[data-day="1"] { top: 36.5%; left: 23.5%; }
-    &[data-day="2"] { top: 36.5%; left: 35.5%; }
-    &[data-day="3"] { top: 36.5%; left: 47.5%; }
-    &[data-day="4"] { top: 36.5%; left: 59.5%; }
-    &[data-day="5"] { top: 36.5%; left: 71.5%; }
-    &[data-day="6"] { top: 36.5%; left: 83.5%; }
+    &[data-day="0"] { top: 56%; left: 15%; }
+    &[data-day="1"] { top: 56%; left: 27%; }
+    &[data-day="2"] { top: 56%; left: 39%; }
+    &[data-day="3"] { top: 56%; left: 51%; }
+    &[data-day="4"] { top: 56%; left: 63%; }
+    &[data-day="5"] { top: 56%; left: 75%; }
+    &[data-day="6"] { top: 56%; left: 87%; }
   }
   
   // 3週目
   &[data-week="2"] {
-    &[data-day="0"] { top: 50.5%; left: 11.5%; }
-    &[data-day="1"] { top: 50.5%; left: 23.5%; }
-    &[data-day="2"] { top: 50.5%; left: 35.5%; }
-    &[data-day="3"] { top: 50.5%; left: 47.5%; }
-    &[data-day="4"] { top: 50.5%; left: 59.5%; }
-    &[data-day="5"] { top: 50.5%; left: 71.5%; }
-    &[data-day="6"] { top: 50.5%; left: 83.5%; }
+    &[data-day="0"] { top: 72%; left: 15%; }
+    &[data-day="1"] { top: 72%; left: 27%; }
+    &[data-day="2"] { top: 72%; left: 39%; }
+    &[data-day="3"] { top: 72%; left: 51%; }
+    &[data-day="4"] { top: 72%; left: 63%; }
+    &[data-day="5"] { top: 72%; left: 75%; }
+    &[data-day="6"] { top: 72%; left: 87%; }
   }
   
   // 4週目
   &[data-week="3"] {
-    &[data-day="0"] { top: 64.5%; left: 11.5%; }
-    &[data-day="1"] { top: 64.5%; left: 23.5%; }
-    &[data-day="2"] { top: 64.5%; left: 35.5%; }
-    &[data-day="3"] { top: 64.5%; left: 47.5%; }
-    &[data-day="4"] { top: 64.5%; left: 59.5%; }
-    &[data-day="5"] { top: 64.5%; left: 71.5%; }
-    &[data-day="6"] { top: 64.5%; left: 83.5%; }
+    &[data-day="0"] { top: 88%; left: 15%; }
+    &[data-day="1"] { top: 88%; left: 27%; }
+    &[data-day="2"] { top: 88%; left: 39%; }
+    &[data-day="3"] { top: 88%; left: 51%; }
+    &[data-day="4"] { top: 88%; left: 63%; }
+    &[data-day="5"] { top: 88%; left: 75%; }
+    &[data-day="6"] { top: 88%; left: 87%; }
   }
   
   // 5週目
   &[data-week="4"] {
-    &[data-day="0"] { top: 78.5%; left: 11.5%; }
-    &[data-day="1"] { top: 78.5%; left: 23.5%; }
-    &[data-day="2"] { top: 78.5%; left: 35.5%; }
-    &[data-day="3"] { top: 78.5%; left: 47.5%; }
-    &[data-day="4"] { top: 78.5%; left: 59.5%; }
-    &[data-day="5"] { top: 78.5%; left: 71.5%; }
-    &[data-day="6"] { top: 78.5%; left: 83.5%; }
+    &[data-day="0"] { top: 102%; left: 15%; }
+    &[data-day="1"] { top: 102%; left: 27%; }
+    &[data-day="2"] { top: 102%; left: 39%; }
+    &[data-day="3"] { top: 102%; left: 51%; }
+    &[data-day="4"] { top: 102%; left: 63%; }
+    &[data-day="5"] { top: 102%; left: 75%; }
+    &[data-day="6"] { top: 102%; left: 87%; }
   }
   
   // 位置調整（中央寄せ）
@@ -216,22 +216,18 @@
 
 // 日付数字表示
 .date-number {
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: bold;
-  color: #2c3e50;
-  background-color: rgba(255, 255, 255, 0.8);
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
   border-radius: 50%;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 4;
-  border: 1px solid #bdc3c7;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 // スタンプ時刻表示
@@ -536,10 +532,9 @@
   }
   
   .date-number {
-    font-size: 8px;
-    width: 14px;
-    height: 14px;
-    top: -6px;
+    font-size: 10px;
+    width: 18px;
+    height: 18px;
   }
   
   .stamp-time {
