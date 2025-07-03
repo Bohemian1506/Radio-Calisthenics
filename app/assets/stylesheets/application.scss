@@ -89,6 +89,66 @@
   z-index: 3;
 }
 
+// 月・年・ユーザー名オーバーレイ
+.month-year-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.calendar-year {
+  position: absolute;
+  top: 8.5%;
+  left: 75%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2c3e50;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.calendar-month-number {
+  position: absolute;
+  top: 8.5%;
+  left: 85%;
+  transform: translateX(-50%);
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #e74c3c;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.calendar-month-text {
+  position: absolute;
+  top: 8.5%;
+  left: 92%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2c3e50;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.calendar-user-name {
+  position: absolute;
+  top: 13%;
+  left: 83%;
+  transform: translateX(-50%);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #34495e;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+  max-width: 120px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 // 各日付の位置座標（5週間×7日のグリッド）
 // 画像内のカレンダー部分に対応する位置を計算
 .stamp-position {
@@ -152,6 +212,95 @@
   
   // 位置調整（中央寄せ）
   transform: translate(-50%, -50%);
+}
+
+// 日付数字表示
+.date-number {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: bold;
+  color: #2c3e50;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  border: 1px solid #bdc3c7;
+}
+
+// スタンプ時刻表示
+.stamp-time {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 7px;
+  font-weight: 600;
+  color: #27ae60;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 1px 3px;
+  border-radius: 3px;
+  white-space: nowrap;
+  z-index: 4;
+  border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+// 空のスタンプ表示
+.empty-stamp {
+  width: 20px;
+  height: 20px;
+  opacity: 0.3;
+  z-index: 2;
+}
+
+// 今日マーカーの強化
+.today-indicator {
+  font-size: 8px;
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  padding: 1px 4px;
+  border-radius: 8px;
+  margin-top: 32px;
+  z-index: 5;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  animation: pulse 2s infinite;
+}
+
+// カレンダー日付の状態別スタイル
+.stamp-position {
+  &.today {
+    .date-number {
+      background: linear-gradient(45deg, #3498db, #2980b9);
+      color: white;
+      border-color: #2980b9;
+      box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+    }
+  }
+  
+  &.stamped {
+    .date-number {
+      background: linear-gradient(45deg, #27ae60, #229954);
+      color: white;
+      border-color: #229954;
+    }
+  }
+  
+  &.other-month {
+    opacity: 0.4;
+    
+    .date-number {
+      color: #95a5a6;
+      background-color: rgba(149, 165, 166, 0.1);
+      border-color: #bdc3c7;
+    }
+  }
 }
 
 // 統計情報サイドバーのスタイル
@@ -286,6 +435,82 @@
   }
 }
 
+// アニメーション定義
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stampBounce {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+// ホバー効果とアニメーション
+.stamp-position {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    .date-number {
+      transform: translateX(-50%) scale(1.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .actual-stamp {
+      transform: scale(1.1);
+      filter: brightness(1.1);
+    }
+  }
+  
+  .actual-stamp {
+    animation: stampBounce 0.6s ease-out;
+    transition: all 0.3s ease;
+  }
+  
+  .date-number {
+    transition: all 0.3s ease;
+  }
+  
+  .stamp-time {
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+  }
+}
+
+// 月間ナビゲーションボタンのホバー効果
+.month-navigation {
+  .btn {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+// 統計カードのアニメーション
+.statistics-sidebar .card {
+  animation: fadeInUp 0.6s ease-out;
+  
+  &:nth-child(1) { animation-delay: 0.1s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.3s; }
+}
+
+// レスポンシブ対応の強化
 @media (max-width: 480px) {
   .stamp-card-container {
     max-width: 350px !important;
@@ -305,8 +530,52 @@
     height: 14px;
   }
   
+  .empty-stamp {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .date-number {
+    font-size: 8px;
+    width: 14px;
+    height: 14px;
+    top: -6px;
+  }
+  
+  .stamp-time {
+    font-size: 6px;
+    top: 20px;
+  }
+  
   .today-indicator {
     font-size: 7px;
     padding: 1px 3px;
+    margin-top: 24px;
+  }
+  
+  // 月・年・ユーザー名オーバーレイのモバイル調整
+  .calendar-year {
+    font-size: 0.9rem;
+  }
+  
+  .calendar-month-number {
+    font-size: 1.4rem;
+  }
+  
+  .calendar-month-text {
+    font-size: 0.9rem;
+  }
+  
+  .calendar-user-name {
+    font-size: 0.7rem;
+    max-width: 100px;
+  }
+  
+  // 月間ナビゲーションのモバイル調整
+  .month-navigation {
+    .btn {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+    }
   }
 }
