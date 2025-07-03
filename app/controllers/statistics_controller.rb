@@ -208,9 +208,9 @@ class StatisticsController < ApplicationController
 
     calendar_data = []
 
-    # カレンダーの開始日（月曜日から開始）
-    start_date = month_start.beginning_of_week(:monday)
-    end_date = month_end.end_of_week(:monday)
+    # カレンダーの開始日（日曜日から開始）
+    start_date = month_start.beginning_of_week(:sunday)
+    end_date = month_end.end_of_week(:sunday)
 
     (start_date..end_date).each_slice(7) do |week|
       week_data = week.map do |date|
@@ -320,10 +320,10 @@ class StatisticsController < ApplicationController
   def calculate_weekly_breakdown(stamps, month)
     weeks = []
     month_start = month.to_date.beginning_of_month
-    current_date = month_start.beginning_of_week(:monday)
+    current_date = month_start.beginning_of_week(:sunday)
 
     while current_date <= month.to_date.end_of_month
-      week_end = [ current_date.end_of_week(:monday), month.to_date.end_of_month ].min
+      week_end = [ current_date.end_of_week(:sunday), month.to_date.end_of_month ].min
       week_stamps = stamps.where(date: current_date..week_end).count
 
       weeks << {
@@ -333,7 +333,7 @@ class StatisticsController < ApplicationController
         week_number: ((current_date - month_start) / 7).to_i + 1
       }
 
-      current_date = current_date.next_week(:monday)
+      current_date = current_date.next_week(:sunday)
     end
 
     weeks
