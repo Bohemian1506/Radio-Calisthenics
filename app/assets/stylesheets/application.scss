@@ -35,19 +35,21 @@
 .stamp-card-container {
   position: relative;
   width: 100%;
-  max-width: 650px;
+  max-width: 500px !important;
   margin: 0 auto;
 }
 
 .stamp-card-background {
   position: relative;
   width: 100%;
+  max-width: 500px !important;
 }
 
 .stamp-card-image {
-  width: 100%;
-  height: auto;
-  display: block;
+  width: 100% !important;
+  max-width: 500px !important;
+  height: auto !important;
+  display: block !important;
 }
 
 .stamp-overlay {
@@ -195,8 +197,16 @@
 // レスポンシブ対応
 @media (max-width: 991px) {
   .stamp-card-container {
-    max-width: 100%;
+    max-width: 450px !important;
     padding: 0 15px;
+  }
+  
+  .stamp-card-background {
+    max-width: 450px !important;
+  }
+  
+  .stamp-card-image {
+    max-width: 450px !important;
   }
   
   // タブレット以下で統計情報を横並びに変更
@@ -218,8 +228,16 @@
 
 @media (max-width: 768px) {
   .stamp-card-container {
-    max-width: 100%;
+    max-width: 400px !important;
     padding: 0 10px;
+  }
+  
+  .stamp-card-background {
+    max-width: 400px !important;
+  }
+  
+  .stamp-card-image {
+    max-width: 400px !important;
   }
   
   .actual-stamp {
@@ -259,7 +277,16 @@
 
 @media (max-width: 480px) {
   .stamp-card-container {
+    max-width: 350px !important;
     padding: 0 5px;
+  }
+  
+  .stamp-card-background {
+    max-width: 350px !important;
+  }
+  
+  .stamp-card-image {
+    max-width: 350px !important;
   }
   
   .actual-stamp {
