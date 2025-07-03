@@ -39,7 +39,7 @@ class User < ApplicationRecord
 
   # バッジ関連メソッド
   def earned_badges
-    badges.joins(:user_badges).where(user_badges: { user: self }).order("user_badges.earned_at DESC")
+    user_badges.includes(:badge).order(earned_at: :desc).map(&:badge)
   end
 
   def earned_badges_by_type(badge_type)
