@@ -35,21 +35,25 @@
 .stamp-card-container {
   position: relative;
   width: 100%;
-  max-width: 600px !important;
+  max-width: 600px;
   margin: 0 auto;
+  display: flex;
+  justify-content: center;
 }
 
 .stamp-card-background {
   position: relative;
   width: 100%;
-  max-width: 600px !important;
+  max-width: 600px;
+  display: flex;
+  justify-content: center;
 }
 
 .stamp-card-image {
-  width: 100% !important;
-  max-width: 600px !important;
-  height: auto !important;
-  display: block !important;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  display: block;
 }
 
 .stamp-overlay {
