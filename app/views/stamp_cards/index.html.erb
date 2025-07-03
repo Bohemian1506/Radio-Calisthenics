@@ -21,13 +21,28 @@
     </div>
   </div>
 
+  <!-- 励ましメッセージ -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="alert alert-info">
+        <strong>💪 <%= encouragement_message(@consecutive_days) %></strong>
+      </div>
+    </div>
+  </div>
+
   <!-- スタンプカード画像表示 + 統計情報 -->
   <div class="row">
     <!-- スタンプカード部分 -->
     <div class="col-lg-8 col-md-7 mb-4">
       <div class="card">
-        <div class="card-header py-2">
-          <h6 class="mb-0 text-muted">📅 <%= @current_month.strftime("%Y年%m月") %> のスタンプ記録</h6>
+        <div class="card-header py-2 d-flex justify-content-between align-items-center">
+          <h6 class="mb-0 text-muted">📅 <%= format_month_display(@current_month) %> のスタンプ記録</h6>
+          <!-- 月間ナビゲーション -->
+          <div class="month-navigation">
+            <%= month_navigation_link(@previous_month, :previous) %>
+            <span class="mx-2">|</span>
+            <%= month_navigation_link(@next_month, :next) %>
+          </div>
         </div>
         <div class="card-body py-3">
           <div class="stamp-card-container">
@@ -36,23 +51,45 @@
               <%= image_tag "cards/stamp_card.png", class: "stamp-card-image", alt: "ラジオ体操カード" %>
             </div>
             
-            <!-- 各日付のスタンプを重ねる -->
+            <!-- 月・年・ユーザー名オーバーレイ -->
+            <div class="month-year-overlay">
+              <div class="calendar-year"><%= format_year_display(@current_month) %></div>
+              <div class="calendar-month-number"><%= format_month_number(@current_month) %></div>
+              <div class="calendar-month-text">月</div>
+              <div class="calendar-user-name"><%= current_user.email.split('@').first %></div>
+            </div>
+            
+            <!-- 日付・スタンプオーバーレイ -->
             <div class="stamp-overlay">
               <% @calendar_days.each_with_index do |week, week_index| %>
                 <% week.each_with_index do |day, day_index| %>
-                  <% if day[:current_month] %>
-                    <div class="stamp-position" 
-                         data-week="<%= week_index %>" 
-                         data-day="<%= day_index %>"
-                         data-date="<%= day[:date].day %>">
-                      <% if day[:stamped] %>
-                        <%= image_tag "stamps/heart_stamp.svg", class: "actual-stamp", alt: "参加済み" %>
-                      <% end %>
-                      <% if day[:date] == Date.current %>
-                        <span class="today-indicator">今日</span>
-                      <% end %>
+                  <div class="stamp-position <%= calendar_day_classes(day) %>" 
+                       data-week="<%= week_index %>" 
+                       data-day="<%= day_index %>"
+                       data-date="<%= day[:date].day %>">
+                    
+                    <!-- 日付数字 -->
+                    <div class="date-number">
+                      <%= format_day_number(day[:date]) %>
                     </div>
-                  <% end %>
+                    
+                    <!-- スタンプアイコン -->
+                    <% if day[:stamped] %>
+                      <%= image_tag "stamps/heart_stamp.svg", class: "actual-stamp", alt: "参加済み" %>
+                      <!-- 時刻表示 -->
+                      <div class="stamp-time">
+                        <%= format_stamp_time(day[:stamped_at]) %>
+                      </div>
+                    <% else %>
+                      <!-- 未実施の場合は空のスタンプ枠を表示 -->
+                      <%= image_tag "stamps/empty_stamp.svg", class: "empty-stamp", alt: "未実施" if day[:current_month] %>
+                    <% end %>
+                    
+                    <!-- 今日マーカー -->
+                    <% if today?(day[:date]) %>
+                      <span class="today-indicator">今日</span>
+                    <% end %>
+                  </div>
                 <% end %>
               <% end %>
             </div>
@@ -84,8 +121,8 @@
         <div class="card text-center" style="flex: 1; min-height: 150px;">
           <div class="card-body" style="padding: 2rem; display: flex; flex-direction: column; justify-content: center;">
             <h5 class="card-title" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">📊 今月の参加率</h5>
-            <% participation_rate = (@total_stamps > 0) ? ((@total_stamps.to_f / Date.current.day) * 100).round(1) : 0 %>
-            <h2 class="text-primary" style="font-size: 3rem; font-weight: bold; margin: 0;"><%= participation_rate %>%</h2>
+            <h2 class="<%= participation_rate_color_class(@monthly_participation_rate) %>" style="font-size: 3rem; font-weight: bold; margin: 0;"><%= @monthly_participation_rate %>%</h2>
+            <small class="text-muted">(<%= @monthly_stamps %>日参加)</small>
           </div>
         </div>
       </div>
