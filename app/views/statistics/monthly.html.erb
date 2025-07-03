@@ -298,8 +298,26 @@ const weeklyChart = new Chart(weeklyCtx, {
 </script>
 
 <style>
+.calendar-day {
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 5px;
+}
+
 .day-number {
     font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.stamp-image, .empty-stamp-image {
+    width: 30px;
+    height: 30px;
+    margin: 2px 0;
 }
 
 .stamp-time {
@@ -308,6 +326,7 @@ const weeklyChart = new Chart(weeklyCtx, {
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
+    font-size: 0.7rem;
 }
 
 .today-marker {
@@ -315,5 +334,27 @@ const weeklyChart = new Chart(weeklyCtx, {
     top: 2px;
     right: 2px;
     font-size: 0.7em;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .calendar-day {
+        min-height: 60px;
+        padding: 3px;
+    }
+    
+    .day-number {
+        font-size: 1rem;
+        margin-bottom: 3px;
+    }
+    
+    .stamp-image, .empty-stamp-image {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .stamp-time {
+        font-size: 0.6rem;
+    }
 }
 </style>
