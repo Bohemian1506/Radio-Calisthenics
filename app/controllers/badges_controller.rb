@@ -4,7 +4,7 @@ class BadgesController < ApplicationController
 
   def index
     @all_badges = Badge.active.ordered
-    @user_badges = current_user.earned_badges.includes(:user_badges)
+    @user_badges = current_user.earned_badges
     @earned_badge_ids = current_user.badges.pluck(:id)
 
     # バッジ獲得統計
