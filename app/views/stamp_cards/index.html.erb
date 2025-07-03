@@ -39,14 +39,14 @@
     <!-- スタンプカード部分 -->
     <div class="col-lg-8 col-md-7 mb-4">
       <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">📅 <%= @current_month.strftime("%Y年%m月") %> のスタンプ記録</h5>
+        <div class="card-header py-2">
+          <h6 class="mb-0 text-muted">📅 <%= @current_month.strftime("%Y年%m月") %> のスタンプ記録</h6>
         </div>
-        <div class="card-body">
+        <div class="card-body py-3">
           <div class="stamp-card-container">
             <!-- 背景のスタンプカード画像 -->
             <div class="stamp-card-background">
-              <%= image_tag "cards/stamp_card.png", class: "stamp-card-image", alt: "ラジオ体操カード" %>
+              <%= image_tag "cards/stamp_card.png", class: "stamp-card-image", alt: "ラジオ体操カード", style: "width: 800px !important; max-width: 800px !important; height: auto !important;" %>
             </div>
             
             <!-- 各日付のスタンプを重ねる -->
@@ -76,29 +76,29 @@
     
     <!-- 統計情報部分 -->
     <div class="col-lg-4 col-md-5 mb-4">
-      <div class="statistics-sidebar">
+      <div class="statistics-sidebar" style="display: flex; flex-direction: column; gap: 30px; height: 100%;">
         <!-- 連続日数 -->
-        <div class="card text-center mb-3">
-          <div class="card-body">
-            <h5 class="card-title">🔥 連続日数</h5>
-            <h2 class="text-warning"><%= @consecutive_days %> 日</h2>
+        <div class="card text-center" style="flex: 1; min-height: 150px;">
+          <div class="card-body" style="padding: 2rem; display: flex; flex-direction: column; justify-content: center;">
+            <h5 class="card-title" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">🔥 連続日数</h5>
+            <h2 class="text-warning" style="font-size: 3rem; font-weight: bold; margin: 0;"><%= @consecutive_days %> 日</h2>
           </div>
         </div>
         
         <!-- 総スタンプ数 -->
-        <div class="card text-center mb-3">
-          <div class="card-body">
-            <h5 class="card-title">⭐ 総スタンプ数</h5>
-            <h2 class="text-success"><%= @total_stamps %> 個</h2>
+        <div class="card text-center" style="flex: 1; min-height: 150px;">
+          <div class="card-body" style="padding: 2rem; display: flex; flex-direction: column; justify-content: center;">
+            <h5 class="card-title" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">⭐ 総スタンプ数</h5>
+            <h2 class="text-success" style="font-size: 3rem; font-weight: bold; margin: 0;"><%= @total_stamps %> 個</h2>
           </div>
         </div>
         
         <!-- 今月の参加率 -->
-        <div class="card text-center">
-          <div class="card-body">
-            <h5 class="card-title">📊 今月の参加率</h5>
+        <div class="card text-center" style="flex: 1; min-height: 150px;">
+          <div class="card-body" style="padding: 2rem; display: flex; flex-direction: column; justify-content: center;">
+            <h5 class="card-title" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">📊 今月の参加率</h5>
             <% participation_rate = (@total_stamps > 0) ? ((@total_stamps.to_f / Date.current.day) * 100).round(1) : 0 %>
-            <h2 class="text-primary"><%= participation_rate %>%</h2>
+            <h2 class="text-primary" style="font-size: 3rem; font-weight: bold; margin: 0;"><%= participation_rate %>%</h2>
           </div>
         </div>
       </div>
