@@ -8,7 +8,7 @@
         <%= link_to "統計に戻る", statistics_path, class: "btn btn-outline-primary" %>
       </div>
 
-      <\!-- バッジ獲得統計 -->
+      <!-- バッジ獲得統計 -->
       <div class="row mb-4">
         <div class="col-md-3 col-sm-6 mb-3">
           <div class="card bg-primary text-white">
@@ -42,7 +42,7 @@
               <h6 class="mb-0">📊 カテゴリ別獲得状況</h6>
             </div>
             <div class="card-body">
-              <% @badge_stats[:by_type].each do  < /dev/null | type_stat| %>
+              <% @badge_stats[:by_type].each do |type_stat| %>
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <span><%= type_stat[:type_name] %></span>
                   <span>
@@ -62,7 +62,7 @@
         </div>
       </div>
 
-      <\!-- バッジ一覧 -->
+      <!-- バッジ一覧 -->
       <div class="row">
         <% Badge::BADGE_TYPES.each do |type_key, type_name| %>
           <% type_badges = @all_badges.by_type(type_key.to_s) %>
