@@ -398,6 +398,8 @@ $LEARNING_POINTS
 EOF
 
     log "サマリーファイルを生成完了: $FILEPATH"
+    
+    # ファイルパスのみを返す
     echo "$FILEPATH"
 }
 
@@ -419,6 +421,19 @@ main() {
     
     log "=== 自動サマリー生成完了 ==="
     log "生成ファイル: $GENERATED_FILE"
+    
+    # 品質改善システム実行
+    local quality_script="$PROJECT_ROOT/scripts/analyze_summary_quality.sh"
+    if [[ -f "$quality_script" ]]; then
+        log "サマリー品質改善システム実行中..."
+        if "$quality_script" "$GENERATED_FILE" "$CURRENT_BRANCH"; then
+            log "✅ サマリー品質改善完了"
+        else
+            log "⚠️ 品質改善で問題が発生しましたが、基本サマリーは生成済みです"
+        fi
+    else
+        log "注意: 品質改善スクリプトが見つかりません"
+    fi
     
     # summariesディレクトリはgitignoreされているため、コミットには含まれない
     log "注意: サマリーファイルは .gitignore により追跡対象外です"
