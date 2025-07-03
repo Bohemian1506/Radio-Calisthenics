@@ -10,13 +10,13 @@ class StatisticsController < ApplicationController
   end
 
   def monthly
-    @month = params[:month] ? Date.parse("#{params[:year]}-#{params[:month]}-01") : Date.current.beginning_of_month
+    @month = params[:month] ? Date.parse("#{params[:year]}-#{params[:month]}-01") : Date.current.to_date.beginning_of_month
     @monthly_stats = detailed_monthly_statistics(current_user, @month)
     @calendar_data = generate_monthly_calendar_data(current_user, @month)
   end
 
   def yearly
-    @year = params[:year] ? params[:year].to_i : Date.current.year
+    @year = params[:year] ? params[:year].to_i : Date.current.to_date.year
     @yearly_stats = detailed_yearly_statistics(current_user, @year)
     @monthly_breakdown = generate_yearly_breakdown(current_user, @year)
   end
@@ -24,13 +24,14 @@ class StatisticsController < ApplicationController
   private
 
   def calculate_user_statistics(user)
+    current_date = Date.current.to_date
     {
       total_stamps: user.stamp_cards.count,
       consecutive_days: user.consecutive_days,
-      current_month_stamps: user.stamp_cards.where(date: Date.current.beginning_of_month..Date.current.end_of_month).count,
-      current_year_stamps: user.stamp_cards.where(date: Date.current.beginning_of_year..Date.current.end_of_year).count,
-      participation_rate_this_month: calculate_monthly_participation_rate(user, Date.current),
-      participation_rate_this_year: calculate_yearly_participation_rate(user, Date.current.year),
+      current_month_stamps: user.stamp_cards.where(date: current_date.beginning_of_month..current_date.end_of_month).count,
+      current_year_stamps: user.stamp_cards.where(date: current_date.beginning_of_year..current_date.end_of_year).count,
+      participation_rate_this_month: calculate_monthly_participation_rate(user, current_date),
+      participation_rate_this_year: calculate_yearly_participation_rate(user, current_date.year),
       longest_streak: calculate_longest_streak(user),
       average_participation_time: calculate_average_participation_time(user)
     }
@@ -56,7 +57,7 @@ class StatisticsController < ApplicationController
   def calculate_yearly_statistics(user)
     years_data = []
     registration_year = user.created_at.year
-    (registration_year..Date.current.year).each do |year|
+    (registration_year..Date.current.to_date.year).each do |year|
       year_start = Date.new(year, 1, 1)
       year_end = Date.new(year, 12, 31)
       stamp_count = user.stamp_cards.where(date: year_start..year_end).count
@@ -76,11 +77,13 @@ class StatisticsController < ApplicationController
     # 新しいバッジを自動チェック・付与
     newly_earned_badges = user.check_and_award_new_badges!
 
-    # ユーザーが獲得済みのバッジを取得
-    earned_badges = user.earned_badges.includes(:badge).limit(10)
+    # ユーザーが獲得済みのバッジを取得（最新10件）
+    earned_badges = user.earned_badges.first(10)
 
     # バッジ情報をachievements形式に変換
-    achievements = earned_badges.map do |badge|
+    achievements = earned_badges.filter_map do |badge|
+      next unless badge&.respond_to?(:badge_type) && badge&.respond_to?(:name)
+      
       {
         type: badge.badge_type,
         title: badge.name,
@@ -93,6 +96,8 @@ class StatisticsController < ApplicationController
     # 新しく獲得したバッジがあれば、フラッシュメッセージで通知
     if newly_earned_badges.any?
       newly_earned_badges.each do |badge|
+        next unless badge&.respond_to?(:name)
+        
         flash[:badge_earned] ||= []
         flash[:badge_earned] << {
           name: badge.name,
@@ -103,18 +108,23 @@ class StatisticsController < ApplicationController
     end
 
     achievements
+  rescue => e
+    Rails.logger.error "Error in calculate_achievements: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    []
   end
 
   def generate_motivational_message(user)
     consecutive_days = user.consecutive_days
     total_stamps = user.stamp_cards.count
-    participation_rate_this_month = calculate_monthly_participation_rate(user, Date.current)
+    participation_rate_this_month = calculate_monthly_participation_rate(user, Date.current.to_date)
 
     messages = []
 
     # 連続参加に基づくメッセージ
+    current_date = Date.current.to_date
     if consecutive_days == 0
-      if user.stamp_cards.exists?(date: Date.current - 1.day)
+      if user.stamp_cards.exists?(date: current_date - 1.day)
         messages << "昨日参加されましたね！今日も続けてみませんか？"
       else
         messages << "新しいスタートを切りましょう！今日からラジオ体操を始めませんか？"
@@ -148,8 +158,8 @@ class StatisticsController < ApplicationController
   end
 
   def detailed_monthly_statistics(user, month)
-    month_start = month.beginning_of_month
-    month_end = month.end_of_month
+    month_start = month.to_date.beginning_of_month
+    month_end = month.to_date.end_of_month
 
     stamps_in_month = user.stamp_cards.where(date: month_start..month_end)
 
@@ -191,8 +201,8 @@ class StatisticsController < ApplicationController
   end
 
   def generate_monthly_calendar_data(user, month)
-    month_start = month.beginning_of_month
-    month_end = month.end_of_month
+    month_start = month.to_date.beginning_of_month
+    month_end = month.to_date.end_of_month
 
     stamps = user.stamp_cards.where(date: month_start..month_end).pluck(:date, :stamped_at).to_h
 
@@ -209,7 +219,7 @@ class StatisticsController < ApplicationController
           current_month: date.month == month.month,
           stamped: stamps.key?(date),
           stamped_time: stamps[date]&.strftime("%H:%M"),
-          today: date == Date.current
+          today: date == Date.current.to_date
         }
       end
       calendar_data << week_data
@@ -237,8 +247,8 @@ class StatisticsController < ApplicationController
   end
 
   def calculate_monthly_participation_rate(user, month)
-    month_start = month.beginning_of_month
-    month_end = [ month.end_of_month, Date.current ].min
+    month_start = month.to_date.beginning_of_month
+    month_end = [ month.to_date.end_of_month, Date.current.to_date ].min
 
     days_passed = (month_start..month_end).count
     stamps_count = user.stamp_cards.where(date: month_start..month_end).count
@@ -249,7 +259,7 @@ class StatisticsController < ApplicationController
 
   def calculate_yearly_participation_rate(user, year)
     year_start = Date.new(year, 1, 1)
-    year_end = [ Date.new(year, 12, 31), Date.current ].min
+    year_end = [ Date.new(year, 12, 31), Date.current.to_date ].min
 
     days_passed = (year_start..year_end).count
     stamps_count = user.stamp_cards.where(date: year_start..year_end).count
@@ -309,11 +319,11 @@ class StatisticsController < ApplicationController
 
   def calculate_weekly_breakdown(stamps, month)
     weeks = []
-    month_start = month.beginning_of_month
+    month_start = month.to_date.beginning_of_month
     current_date = month_start.beginning_of_week(:monday)
 
-    while current_date <= month.end_of_month
-      week_end = [ current_date.end_of_week(:monday), month.end_of_month ].min
+    while current_date <= month.to_date.end_of_month
+      week_end = [ current_date.end_of_week(:monday), month.to_date.end_of_month ].min
       week_stamps = stamps.where(date: current_date..week_end).count
 
       weeks << {
