@@ -75,10 +75,10 @@ class StatisticsController < ApplicationController
   def calculate_achievements(user)
     # 新しいバッジを自動チェック・付与
     newly_earned_badges = user.check_and_award_new_badges!
-    
+
     # ユーザーが獲得済みのバッジを取得
     earned_badges = user.earned_badges.includes(:badge).limit(10)
-    
+
     # バッジ情報をachievements形式に変換
     achievements = earned_badges.map do |badge|
       {

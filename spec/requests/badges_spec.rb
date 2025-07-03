@@ -1,18 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe "Badges", type: :request do
-  describe "GET /index" do
-    it "returns http success" do
-      get "/badges/index"
-      expect(response).to have_http_status(:success)
+  let(:badge) { create(:badge, :milestone_badge) }
+
+  describe "GET /badges" do
+    it "redirects to login when not authenticated" do
+      get "/badges"
+      expect(response).to have_http_status(:redirect)
     end
   end
 
-  describe "GET /show" do
-    it "returns http success" do
-      get "/badges/show"
-      expect(response).to have_http_status(:success)
+  describe "GET /badges/:id" do
+    it "redirects to login when not authenticated" do
+      get "/badges/#{badge.id}"
+      expect(response).to have_http_status(:redirect)
     end
   end
-
 end

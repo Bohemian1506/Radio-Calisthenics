@@ -38,7 +38,7 @@ class Badge < ApplicationRecord
   def can_be_earned_by?(user)
     return false unless active?
     return false if earned_by?(user)
-    
+
     check_conditions(user)
   end
 
@@ -80,8 +80,8 @@ class Badge < ApplicationRecord
     current_month = Date.current.beginning_of_month
     stamps_this_month = user.stamp_cards.where(date: current_month..current_month.end_of_month).count
     days_in_month = current_month.end_of_month.day
-    days_passed = [Date.current.day, days_in_month].min
-    
+    days_passed = [ Date.current.day, days_in_month ].min
+
     required_ratio = conditions["required_ratio"]&.to_f || 1.0
     (stamps_this_month.to_f / days_passed) >= required_ratio
   end
@@ -90,7 +90,7 @@ class Badge < ApplicationRecord
     # 早起き参加の条件チェック
     required_count = conditions["required_count"]&.to_i || 0
     cutoff_time = conditions["cutoff_time"] || "07:00"
-    
+
     early_stamps = user.stamp_cards.where("TIME(stamped_at) <= ?", cutoff_time).count
     early_stamps >= required_count
   end
@@ -98,7 +98,7 @@ class Badge < ApplicationRecord
   def check_weekend_warrior_conditions(user)
     # 週末参加の条件チェック
     required_count = conditions["required_count"]&.to_i || 0
-    
+
     weekend_stamps = user.stamp_cards.where(
       "EXTRACT(DOW FROM date) IN (0, 6)"  # 日曜日(0)と土曜日(6)
     ).count
@@ -109,17 +109,17 @@ class Badge < ApplicationRecord
     # 季節限定バッジの条件チェック
     season = conditions["season"]
     required_count = conditions["required_count"]&.to_i || 0
-    
+
     season_range = get_season_date_range(season)
     return false unless season_range
-    
+
     seasonal_stamps = user.stamp_cards.where(date: season_range).count
     seasonal_stamps >= required_count
   end
 
   def get_season_date_range(season)
     current_year = Date.current.year
-    
+
     case season
     when "spring"
       Date.new(current_year, 3, 1)..Date.new(current_year, 5, 31)

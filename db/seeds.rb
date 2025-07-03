@@ -39,7 +39,7 @@ badges_data = [
     conditions: { required_days: 100 },
     sort_order: 4
   },
-  
+
   # マイルストーンバッジ
   {
     name: "体操デビュー",
@@ -81,7 +81,7 @@ badges_data = [
     conditions: { required_count: 365 },
     sort_order: 14
   },
-  
+
   # 月間皆勤バッジ
   {
     name: "今月皆勤賞",
@@ -91,7 +91,7 @@ badges_data = [
     conditions: { required_ratio: 1.0 },
     sort_order: 20
   },
-  
+
   # 早起きバッジ
   {
     name: "早起きの鳥",
@@ -109,7 +109,7 @@ badges_data = [
     conditions: { required_count: 30, cutoff_time: "07:00" },
     sort_order: 31
   },
-  
+
   # 週末参加バッジ
   {
     name: "週末戦士",
@@ -119,7 +119,7 @@ badges_data = [
     conditions: { required_count: 10 },
     sort_order: 40
   },
-  
+
   # 季節限定バッジ
   {
     name: "春の体操",

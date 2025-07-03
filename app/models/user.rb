@@ -39,14 +39,14 @@ class User < ApplicationRecord
 
   # バッジ関連メソッド
   def earned_badges
-    badges.joins(:user_badges).where(user_badges: { user: self }).order('user_badges.earned_at DESC')
+    badges.joins(:user_badges).where(user_badges: { user: self }).order("user_badges.earned_at DESC")
   end
 
   def earned_badges_by_type(badge_type)
     badges.joins(:user_badges).where(
       user_badges: { user: self },
       badges: { badge_type: badge_type }
-    ).order('user_badges.earned_at DESC')
+    ).order("user_badges.earned_at DESC")
   end
 
   def latest_badge
@@ -63,14 +63,14 @@ class User < ApplicationRecord
 
   def check_and_award_new_badges!
     newly_earned = []
-    
+
     Badge.active.find_each do |badge|
       if badge.can_be_earned_by?(self)
         user_badge = UserBadge.award_badge_to_user(self, badge)
         newly_earned << badge if user_badge
       end
     end
-    
+
     newly_earned
   end
 

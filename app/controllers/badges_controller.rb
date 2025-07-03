@@ -1,12 +1,12 @@
 class BadgesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_badge, only: [:show]
+  before_action :set_badge, only: [ :show ]
 
   def index
     @all_badges = Badge.active.ordered
     @user_badges = current_user.earned_badges.includes(:user_badges)
     @earned_badge_ids = current_user.badges.pluck(:id)
-    
+
     # バッジ獲得統計
     @badge_stats = {
       total_earned: current_user.badge_count,
@@ -22,7 +22,7 @@ class BadgesController < ApplicationController
     @is_earned = @user_badge.present?
     @earned_at = @user_badge&.earned_at
     @can_earn = @badge.can_be_earned_by?(current_user) unless @is_earned
-    
+
     # 同じタイプの他のバッジ
     @related_badges = Badge.active.by_type(@badge.badge_type).where.not(id: @badge.id).ordered.limit(5)
   end
@@ -44,7 +44,7 @@ class BadgesController < ApplicationController
     Badge::BADGE_TYPES.keys.map do |type|
       earned_count = current_user.badge_count_by_type(type.to_s)
       total_count = @all_badges.by_type(type.to_s).count
-      
+
       {
         type: type,
         type_name: Badge::BADGE_TYPES[type],
