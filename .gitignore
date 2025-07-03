@@ -52,3 +52,6 @@ claude_review*.json
 # Development temporary files
 *.backup
 *.tmp
+
+# Summary directory - not tracked
+summaries/
