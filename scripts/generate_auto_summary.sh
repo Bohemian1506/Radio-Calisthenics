@@ -254,7 +254,7 @@ generate_summary_file() {
     FILEPATH="$TARGET_DIR/$FILENAME"
     
     # ディレクトリ作成
-    mkdir -p "$TARGET_DIR"
+    mkdir -p "$TARGET_DIR" >/dev/null 2>&1
     
     # ファイル変更詳細分析
     analyze_file_changes
@@ -399,8 +399,8 @@ EOF
 
     log "サマリーファイルを生成完了: $FILEPATH"
     
-    # ファイルパスのみを返す
-    echo "$FILEPATH"
+    # ファイルパスのみを返す（標準エラー出力ではなく戻り値で）
+    GENERATED_FILEPATH="$FILEPATH"
 }
 
 # メイン処理
@@ -417,7 +417,8 @@ main() {
     analyze_work_content
     
     # サマリーファイル生成
-    GENERATED_FILE=$(generate_summary_file)
+    generate_summary_file
+    GENERATED_FILE="$GENERATED_FILEPATH"
     
     log "=== 自動サマリー生成完了 ==="
     log "生成ファイル: $GENERATED_FILE"
