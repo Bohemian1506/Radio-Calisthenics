@@ -83,7 +83,7 @@ class StatisticsController < ApplicationController
     # バッジ情報をachievements形式に変換
     achievements = earned_badges.filter_map do |badge|
       next unless badge&.respond_to?(:badge_type) && badge&.respond_to?(:name)
-      
+
       {
         type: badge.badge_type,
         title: badge.name,
@@ -97,7 +97,7 @@ class StatisticsController < ApplicationController
     if newly_earned_badges.any?
       newly_earned_badges.each do |badge|
         next unless badge&.respond_to?(:name)
-        
+
         flash[:badge_earned] ||= []
         flash[:badge_earned] << {
           name: badge.name,
