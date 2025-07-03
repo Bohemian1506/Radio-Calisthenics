@@ -37,7 +37,7 @@
   <!-- スタンプカード画像表示 + 統計情報 -->
   <div class="row">
     <!-- スタンプカード部分 -->
-    <div class="col-lg-8 col-md-7 mb-4">
+    <div class="col-lg-7 col-md-7 mb-4">
       <div class="card">
         <div class="card-header">
           <h5 class="mb-0">📅 <%= @current_month.strftime("%Y年%m月") %> のスタンプ記録</h5>
@@ -75,18 +75,18 @@
     </div>
     
     <!-- 統計情報部分 -->
-    <div class="col-lg-4 col-md-5 mb-4">
+    <div class="col-lg-5 col-md-5 mb-4">
       <div class="statistics-sidebar">
         <!-- 連続日数 -->
-        <div class="card text-center mb-3">
+        <div class="card text-center">
           <div class="card-body">
             <h5 class="card-title">🔥 連続日数</h5>
-            <h2 class="text-primary"><%= @consecutive_days %> 日</h2>
+            <h2 class="text-warning"><%= @consecutive_days %> 日</h2>
           </div>
         </div>
         
         <!-- 総スタンプ数 -->
-        <div class="card text-center mb-3">
+        <div class="card text-center">
           <div class="card-body">
             <h5 class="card-title">⭐ 総スタンプ数</h5>
             <h2 class="text-success"><%= @total_stamps %> 個</h2>
@@ -98,7 +98,7 @@
           <div class="card-body">
             <h5 class="card-title">📊 今月の参加率</h5>
             <% participation_rate = (@total_stamps > 0) ? ((@total_stamps.to_f / Date.current.day) * 100).round(1) : 0 %>
-            <h2 class="text-info"><%= participation_rate %>%</h2>
+            <h2 class="text-primary"><%= participation_rate %>%</h2>
           </div>
         </div>
       </div>
