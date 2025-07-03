@@ -176,8 +176,8 @@ evaluate_summary_quality() {
     
     log "品質評価完了: スコア $QUALITY_SCORE/100"
     
-    # 改善が必要かどうか判定
-    if [[ "$QUALITY_SCORE" -lt 70 ]]; then
+    # 改善が必要かどうか判定（プレースホルダーがある場合は必ず改善）
+    if [[ "$generic_placeholders" -gt 0 ]] || [[ "$QUALITY_SCORE" -lt 85 ]]; then
         return 1  # 改善必要
     else
         return 0  # 品質OK
