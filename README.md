@@ -15,11 +15,36 @@ Radio-Calisthenics（ラジオ体操）は、ラジオ体操参加者向けの�
 - **AI連携**: Claude Code + Gemini CLI
 
 ## 🎯 主要機能
-- ユーザー認証・管理
-- デジタルスタンプカード機能
-- 日別参加記録管理
-- 参加履歴表示
-- 継続記録可視化
+
+### ✅ 実装済み機能
+- **ユーザー認証・管理** (Phase 1)
+- **デジタルスタンプカード機能** (Phase 2)
+- **日別参加記録管理** (Phase 2)
+- **参加履歴表示** (Phase 2)
+- **詳細統計・分析機能** (Phase 3)
+- **Chart.js による可視化** (Phase 3)
+- **実績・バッジシステム** (Phase 4)
+- **PR自動生成システム** (Phase 3)
+
+### 🔄 実装準備中
+- **カレンダー画像生成機能** (Phase 5) - ImageMagick統合
+
+### 📋 今後の計画
+- **ソーシャル・コミュニティ機能** (Phase 6)
+- **高度データ分析・活用機能** (Phase 7)
+- **ゲーミフィケーション強化** (Phase 8-10)
+
+## 📊 Phase構成
+詳細な開発状況については [`PHASE_OVERVIEW.md`](./PHASE_OVERVIEW.md) をご確認ください。
+
+| Phase | 機能 | 状況 | 主要成果 |
+|-------|------|------|----------|
+| 1 | 基盤構築 | ✅ 完了 | 認証・Docker環境 |
+| 2 | スタンプカード基本機能 | ✅ 完了 | RESTful設計・管理機能 |
+| 3 | 統計・分析機能 | ✅ 完了 | Chart.js・PR自動生成 |
+| 4 | バッジシステム拡張 | ✅ 完了 | 6種類バッジ実装 |
+| 5 | カレンダー画像生成 | 🔄 実装中 | ImageMagick統合 |
+| 6-10 | 大規模機能拡張 | 📋 計画中 | 75個Issue再構成 |
 
 ## 🏃‍♂️ 開発開始
 ### 前提条件
@@ -65,14 +90,21 @@ docker-compose exec web bundle exec rubocop
 ```
 Radio-Calisthenics/
 ├── app/                    # Rails アプリケーション
-│   ├── controllers/        # コントローラー
-│   ├── models/            # モデル（User, StampCard, DailyStamp等）
-│   └── views/             # ビューテンプレート
+│   ├── controllers/        # コントローラー (StampCards, Statistics, Admin)
+│   ├── models/            # モデル（User, StampCard, Badge等）
+│   ├── views/             # ビューテンプレート
+│   └── services/          # サービス層（統計計算・画像生成等）
 ├── spec/                  # RSpec テストファイル
 ├── db/                    # データベース関連
+├── summaries/             # 学習記録・Phase文書（一元管理）
+│   └── phases/           # Phase別実装記録・管理文書
+│       ├── PHASE_OVERVIEW.md      # Phase全体構成
+│       ├── PHASE5_CALENDAR_IMAGE.md # Phase5詳細計画
+│       ├── PHASE_HISTORY.md       # Phase変更履歴
+│       └── CALENDAR_IMAGE_IMPLEMENTATION_PLAN.md # 実装計画
 ├── ai_workspace/          # AI連携作業領域
 ├── docs/                  # プロジェクトドキュメント
-├── CLAUDE.md             # AI連携システム詳細ガイド
+├── CLAUDE.md             # AI連携システム詳細ガイド・Phase管理ルール
 └── README.md             # このファイル
 ```
 
@@ -84,9 +116,23 @@ Radio-Calisthenics/
 5. テスト駆動開発の実践
 
 ## 📚 ドキュメント
-- [CLAUDE.md](./CLAUDE.md) - AI連携システム詳細ガイド
+
+### プロジェクト管理文書
+- [summaries/phases/PHASE_OVERVIEW.md](./summaries/phases/PHASE_OVERVIEW.md) - Phase全体構成・実装状況
+- [summaries/phases/PHASE5_CALENDAR_IMAGE.md](./summaries/phases/PHASE5_CALENDAR_IMAGE.md) - カレンダー画像生成機能詳細
+- [summaries/phases/PHASE_HISTORY.md](./summaries/phases/PHASE_HISTORY.md) - Phase変更履歴・教訓
+- [CLAUDE.md](./CLAUDE.md) - AI連携システム詳細ガイド・Phase管理ルール
+
+### 技術文書
 - [docs/](./docs/) - 技術ドキュメント集
+- [summaries/phases/](./summaries/phases/) - Phase別実装記録（**必読：Phase管理文書**）
 - [ai_workspace/](./ai_workspace/) - AI連携作業領域
+
+### 開発者向け
+- **Phase文書は[summaries/phases/](./summaries/phases/)で一元管理**
+- Phase別実装記録により学習効果を最大化
+- AI連携システムによる効率的開発プロセス
+- 段階的機能拡張による確実な成長
 
 ## 🤝 コントリビューション
 このプロジェクトは学習目的のため、プルリクエストを歓迎します。
