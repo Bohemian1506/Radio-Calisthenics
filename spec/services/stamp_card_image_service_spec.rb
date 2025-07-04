@@ -43,7 +43,7 @@ RSpec.describe StampCardImageService, type: :service do
 
     it 'generates an image successfully' do
       image = service.generate
-      
+
       expect(image).to be_a(MiniMagick::Image)
       expect(image.width).to eq(1000)
       expect(image.height).to eq(1480)
@@ -53,30 +53,30 @@ RSpec.describe StampCardImageService, type: :service do
     it 'returns the same image on multiple calls' do
       image1 = service.generate
       image2 = service.generate
-      
+
       expect(image1).to eq(image2)
     end
   end
 
   describe '#save_to_file' do
     let(:temp_path) { Rails.root.join('tmp', 'test_stamp_card.png') }
-    
+
     after do
       File.delete(temp_path) if File.exist?(temp_path)
     end
 
     it 'saves the generated image to file' do
       service.save_to_file(temp_path)
-      
+
       expect(File.exist?(temp_path)).to be true
       expect(File.size(temp_path)).to be > 0
     end
 
     it 'generates image if not already generated' do
       expect(service.image).to be_nil
-      
+
       service.save_to_file(temp_path)
-      
+
       expect(service.image).to be_a(MiniMagick::Image)
       expect(File.exist?(temp_path)).to be true
     end
@@ -86,7 +86,7 @@ RSpec.describe StampCardImageService, type: :service do
     describe '#load_background_image' do
       it 'loads the background image' do
         service.send(:load_background_image)
-        
+
         expect(service.image).to be_a(MiniMagick::Image)
         expect(service.image.width).to eq(1000)
         expect(service.image.height).to eq(1480)
@@ -114,7 +114,7 @@ RSpec.describe StampCardImageService, type: :service do
         expect {
           service.send(:draw_year_month)
         }.not_to raise_error
-        
+
         expect(service.image).to be_a(MiniMagick::Image)
       end
     end
@@ -128,7 +128,7 @@ RSpec.describe StampCardImageService, type: :service do
         expect {
           service.send(:draw_user_name)
         }.not_to raise_error
-        
+
         expect(service.image).to be_a(MiniMagick::Image)
       end
 
@@ -137,7 +137,7 @@ RSpec.describe StampCardImageService, type: :service do
 
         it 'does not draw anything' do
           allow(service).to receive(:validate_parameters)
-          
+
           expect {
             service.send(:draw_user_name)
           }.not_to raise_error
@@ -154,7 +154,7 @@ RSpec.describe StampCardImageService, type: :service do
 
       it 'logs and re-raises the error' do
         expect(Rails.logger).to receive(:error).with(/StampCardImageService failed/)
-        
+
         expect {
           service.generate
         }.to raise_error(StandardError, 'MiniMagick error')
