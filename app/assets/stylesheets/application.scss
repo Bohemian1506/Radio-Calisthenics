@@ -141,72 +141,116 @@
   // 基準となる位置計算
   // 週インデックス（0-4）と日インデックス（0-6）から位置を算出
   
-  // 1週目（日-土）- 少し右と下に調整
+  // 1週目（日-土）- 実際のカード画像セル位置に合わせて調整
   &[data-week="0"] {
-    &[data-day="0"] { top: 45% !important; left: 16% !important; } // 日
-    &[data-day="1"] { top: 45% !important; left: 28% !important; } // 月
-    &[data-day="2"] { top: 45% !important; left: 40% !important; } // 火
-    &[data-day="3"] { top: 45% !important; left: 52% !important; } // 水
-    &[data-day="4"] { top: 45% !important; left: 64% !important; } // 木
-    &[data-day="5"] { top: 45% !important; left: 76% !important; } // 金
-    &[data-day="6"] { top: 45% !important; left: 88% !important; }  // 土
+    &[data-day="0"] { top: 43% !important; left: 11% !important; } // 日
+    &[data-day="1"] { top: 43% !important; left: 24% !important; } // 月
+    &[data-day="2"] { top: 43% !important; left: 37% !important; } // 火
+    &[data-day="3"] { top: 43% !important; left: 50% !important; } // 水
+    &[data-day="4"] { top: 43% !important; left: 63% !important; } // 木
+    &[data-day="5"] { top: 43% !important; left: 76% !important; } // 金
+    &[data-day="6"] { top: 43% !important; left: 89% !important; }  // 土
   }
   
   // 2週目
   &[data-week="1"] {
-    &[data-day="0"] { top: 53% !important; left: 15% !important; }
-    &[data-day="1"] { top: 53% !important; left: 27% !important; }
-    &[data-day="2"] { top: 53% !important; left: 39% !important; }
-    &[data-day="3"] { top: 53% !important; left: 51% !important; }
-    &[data-day="4"] { top: 53% !important; left: 63% !important; }
-    &[data-day="5"] { top: 53% !important; left: 75% !important; }
-    &[data-day="6"] { top: 53% !important; left: 87% !important; }
+    &[data-day="0"] { top: 51% !important; left: 11% !important; }
+    &[data-day="1"] { top: 51% !important; left: 24% !important; }
+    &[data-day="2"] { top: 51% !important; left: 37% !important; }
+    &[data-day="3"] { top: 51% !important; left: 50% !important; }
+    &[data-day="4"] { top: 51% !important; left: 63% !important; }
+    &[data-day="5"] { top: 51% !important; left: 76% !important; }
+    &[data-day="6"] { top: 51% !important; left: 89% !important; }
   }
   
-  // 3週目 - 少し右に調整
+  // 3週目
   &[data-week="2"] {
-    &[data-day="0"] { top: 62% !important; left: 16% !important; }
-    &[data-day="1"] { top: 62% !important; left: 28% !important; }
-    &[data-day="2"] { top: 62% !important; left: 40% !important; }
-    &[data-day="3"] { top: 62% !important; left: 52% !important; }
-    &[data-day="4"] { top: 62% !important; left: 64% !important; }
-    &[data-day="5"] { top: 62% !important; left: 76% !important; }
-    &[data-day="6"] { top: 62% !important; left: 88% !important; }
+    &[data-day="0"] { top: 59% !important; left: 11% !important; }
+    &[data-day="1"] { top: 59% !important; left: 24% !important; }
+    &[data-day="2"] { top: 59% !important; left: 37% !important; }
+    &[data-day="3"] { top: 59% !important; left: 50% !important; }
+    &[data-day="4"] { top: 59% !important; left: 63% !important; }
+    &[data-day="5"] { top: 59% !important; left: 76% !important; }
+    &[data-day="6"] { top: 59% !important; left: 89% !important; }
   }
   
-  // 4週目 - 右と上に調整
+  // 4週目
   &[data-week="3"] {
-    &[data-day="0"] { top: 70% !important; left: 16% !important; }
-    &[data-day="1"] { top: 70% !important; left: 28% !important; }
-    &[data-day="2"] { top: 70% !important; left: 40% !important; }
-    &[data-day="3"] { top: 70% !important; left: 52% !important; }
-    &[data-day="4"] { top: 70% !important; left: 64% !important; }
-    &[data-day="5"] { top: 70% !important; left: 76% !important; }
-    &[data-day="6"] { top: 70% !important; left: 88% !important; }
+    &[data-day="0"] { top: 67% !important; left: 11% !important; }
+    &[data-day="1"] { top: 67% !important; left: 24% !important; }
+    &[data-day="2"] { top: 67% !important; left: 37% !important; }
+    &[data-day="3"] { top: 67% !important; left: 50% !important; }
+    &[data-day="4"] { top: 67% !important; left: 63% !important; }
+    &[data-day="5"] { top: 67% !important; left: 76% !important; }
+    &[data-day="6"] { top: 67% !important; left: 89% !important; }
   }
   
-  // 5週目 - 右と上に調整
+  // 5週目
   &[data-week="4"] {
-    &[data-day="0"] { top: 79% !important; left: 16% !important; }
-    &[data-day="1"] { top: 79% !important; left: 28% !important; }
-    &[data-day="2"] { top: 79% !important; left: 40% !important; }
-    &[data-day="3"] { top: 79% !important; left: 52% !important; }
-    &[data-day="4"] { top: 79% !important; left: 64% !important; }
-    &[data-day="5"] { top: 79% !important; left: 76% !important; }
-    &[data-day="6"] { top: 79% !important; left: 88% !important; }
+    &[data-day="0"] { top: 75% !important; left: 11% !important; }
+    &[data-day="1"] { top: 75% !important; left: 24% !important; }
+    &[data-day="2"] { top: 75% !important; left: 37% !important; }
+    &[data-day="3"] { top: 75% !important; left: 50% !important; }
+    &[data-day="4"] { top: 75% !important; left: 63% !important; }
+    &[data-day="5"] { top: 75% !important; left: 76% !important; }
+    &[data-day="6"] { top: 75% !important; left: 89% !important; }
   }
   
   // 位置調整（中央寄せ）
   transform: translate(-50%, -50%);
 }
 
-// 日付数字表示
+// 日付数字表示（常時表示）
 .date-number {
   font-size: 22px;
   font-weight: bold;
   color: white !important;
   z-index: 4;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+// スタンプオーバーレイ（押印済みの日のみ）
+.stamp-overlay-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  animation: stampAppear 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.participation-stamp {
+  font-size: 28px;
+  font-weight: 900;
+  color: #dc3545 !important;
+  text-shadow: 
+    1px 1px 0px rgba(255, 255, 255, 0.9),
+    2px 2px 4px rgba(0, 0, 0, 0.6);
+  opacity: 0.95;
+  border: 2px solid #dc3545;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(1px);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+}
+
+@keyframes stampAppear {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0) rotate(-10deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2) rotate(5deg);
+  }
+  100% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
 }
 
 
@@ -288,6 +332,13 @@
     max-width: 450px !important;
   }
   
+  // スタンプスタイルのタブレット調整
+  .participation-stamp {
+    font-size: 24px;
+    width: 32px;
+    height: 32px;
+  }
+  
   // タブレット以下で統計情報を横並びに変更
   .statistics-sidebar {
     flex-direction: row;
@@ -319,15 +370,11 @@
     max-width: 400px !important;
   }
   
-  .actual-stamp {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .today-indicator {
-    font-size: 8px;
-    padding: 1px 4px;
-    margin-top: 1px;
+  // スタンプスタイルのモバイル調整
+  .participation-stamp {
+    font-size: 18px;
+    width: 26px;
+    height: 26px;
   }
   
   // モバイルで統計情報を横並びのまま維持
@@ -424,29 +471,14 @@
     max-width: 350px !important;
   }
   
-  .actual-stamp {
-    width: 14px;
-    height: 14px;
-  }
-  
-  .empty-stamp {
-    width: 14px;
-    height: 14px;
-  }
-  
   .date-number {
     font-size: 18px !important;
   }
   
-  .stamp-time {
-    font-size: 6px;
-    top: 20px;
-  }
-  
-  .today-indicator {
-    font-size: 7px;
-    padding: 1px 3px;
-    margin-top: 24px;
+  .participation-stamp {
+    font-size: 16px;
+    width: 22px;
+    height: 22px;
   }
   
   // 月・年・ユーザー名オーバーレイのモバイル調整

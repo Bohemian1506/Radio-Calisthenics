@@ -68,10 +68,17 @@
                        data-day="<%= day_index %>"
                        data-date="<%= day[:date].day %>">
                     
-                    <!-- 日付数字 -->
+                    <!-- 常に日付数字を表示 -->
                     <div class="date-number">
                       <%= format_day_number(day[:date]) %>
                     </div>
+                    
+                    <% if day[:stamped] %>
+                      <!-- スタンプ済みの日にはスタンプ画像をオーバーレイ -->
+                      <div class="stamp-overlay-image">
+                        <div class="participation-stamp">斉</div>
+                      </div>
+                    <% end %>
                     
                   </div>
                 <% end %>
