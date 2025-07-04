@@ -74,7 +74,6 @@ RSpec.describe UserBadge, type: :model do
 
     context "when user can earn the badge" do
       before do
-        allow(user).to receive(:total_stamps).and_return(10)
         allow(badge).to receive(:can_be_earned_by?).with(user).and_return(true)
       end
 

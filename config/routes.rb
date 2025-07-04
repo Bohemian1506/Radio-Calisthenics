@@ -2,9 +2,6 @@ Rails.application.routes.draw do
   devise_for :users
   root "home#index"
 
-  # スタンプカード機能
-  resources :stamp_cards, only: [ :index, :create ]
-
   # 統計機能
   resources :statistics, only: [ :index ] do
     collection do
