@@ -157,17 +157,113 @@
 </div>
 
 <style>
-.calendar-day {
-  height: 80px;
-  vertical-align: middle;
+/* スタンプカード画像オーバーレイ専用の日付中央配置 */
+.stamp-card-container {
   position: relative;
+  display: inline-block;
+  width: 100%;
 }
+
+.stamp-card-background {
+  position: relative;
+  width: 100%;
+}
+
+.stamp-card-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* CSS Gridを無効化 - application.scssの座標指定を優先 */
+.stamp-overlay {
+  /* application.scssで定義済みのため無効化 */
+}
+
+/* stamp-positionもapplication.scssで定義済みのため無効化 */
+.stamp-position {
+  /* application.scssで詳細に定義済み */
+}
+
+.stamp-position .date-number {
+  position: relative !important;
+  z-index: 100 !important;
+  font-weight: bold !important;
+  font-size: 1.2rem !important;
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+  pointer-events: none;
+}
+
+/* スタンプ画像は日付位置に影響させない */
+.stamp-position .stamp-overlay-image {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, 15px) !important;
+  z-index: 50 !important;
+}
+
+.stamp-position .participation-stamp {
+  background: rgba(255, 215, 0, 0.9);
+  color: #d4691b;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+  border: 2px solid #d4691b;
+}
+
 .card {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   border: 1px solid rgba(0, 0, 0, 0.125);
 }
+
 .today-marker {
   position: relative;
   z-index: 2;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .stamp-overlay {
+    top: 17%;
+    left: 3%;
+    width: 94%;
+    height: 72%;
+  }
+  
+  .stamp-position .date-number {
+    font-size: 1rem !important;
+  }
+  
+  .stamp-position .participation-stamp {
+    width: 16px;
+    height: 16px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .stamp-overlay {
+    top: 15%;
+    left: 2%;
+    width: 96%;
+    height: 74%;
+  }
+  
+  .stamp-position .date-number {
+    font-size: 0.9rem !important;
+  }
+  
+  .stamp-position .participation-stamp {
+    width: 14px;
+    height: 14px;
+    font-size: 0.6rem;
+  }
 }
 </style>

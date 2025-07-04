@@ -141,59 +141,59 @@
   // 基準となる位置計算
   // 週インデックス（0-4）と日インデックス（0-6）から位置を算出
   
-  // 1週目（日-土）- 実際のカード画像セル位置に合わせて調整
+  // 1-4週目をほんの少し下に微調整
   &[data-week="0"] {
-    &[data-day="0"] { top: 43% !important; left: 11% !important; } // 日
-    &[data-day="1"] { top: 43% !important; left: 24% !important; } // 月
-    &[data-day="2"] { top: 43% !important; left: 37% !important; } // 火
-    &[data-day="3"] { top: 43% !important; left: 50% !important; } // 水
-    &[data-day="4"] { top: 43% !important; left: 63% !important; } // 木
-    &[data-day="5"] { top: 43% !important; left: 76% !important; } // 金
-    &[data-day="6"] { top: 43% !important; left: 89% !important; }  // 土
+    &[data-day="0"] { top: 41.5% !important; left: 11% !important; } // 日
+    &[data-day="1"] { top: 41.5% !important; left: 24% !important; } // 月
+    &[data-day="2"] { top: 41.5% !important; left: 37% !important; } // 火
+    &[data-day="3"] { top: 41.5% !important; left: 50% !important; } // 水
+    &[data-day="4"] { top: 41.5% !important; left: 63% !important; } // 木
+    &[data-day="5"] { top: 41.5% !important; left: 76% !important; } // 金
+    &[data-day="6"] { top: 41.5% !important; left: 89% !important; }  // 土
   }
   
   // 2週目
   &[data-week="1"] {
-    &[data-day="0"] { top: 51% !important; left: 11% !important; }
-    &[data-day="1"] { top: 51% !important; left: 24% !important; }
-    &[data-day="2"] { top: 51% !important; left: 37% !important; }
-    &[data-day="3"] { top: 51% !important; left: 50% !important; }
-    &[data-day="4"] { top: 51% !important; left: 63% !important; }
-    &[data-day="5"] { top: 51% !important; left: 76% !important; }
-    &[data-day="6"] { top: 51% !important; left: 89% !important; }
+    &[data-day="0"] { top: 50.5% !important; left: 11% !important; }
+    &[data-day="1"] { top: 50.5% !important; left: 24% !important; }
+    &[data-day="2"] { top: 50.5% !important; left: 37% !important; }
+    &[data-day="3"] { top: 50.5% !important; left: 50% !important; }
+    &[data-day="4"] { top: 50.5% !important; left: 63% !important; }
+    &[data-day="5"] { top: 50.5% !important; left: 76% !important; }
+    &[data-day="6"] { top: 50.5% !important; left: 89% !important; }
   }
   
   // 3週目
   &[data-week="2"] {
-    &[data-day="0"] { top: 59% !important; left: 11% !important; }
-    &[data-day="1"] { top: 59% !important; left: 24% !important; }
-    &[data-day="2"] { top: 59% !important; left: 37% !important; }
-    &[data-day="3"] { top: 59% !important; left: 50% !important; }
-    &[data-day="4"] { top: 59% !important; left: 63% !important; }
-    &[data-day="5"] { top: 59% !important; left: 76% !important; }
-    &[data-day="6"] { top: 59% !important; left: 89% !important; }
+    &[data-day="0"] { top: 59.5% !important; left: 11% !important; }
+    &[data-day="1"] { top: 59.5% !important; left: 24% !important; }
+    &[data-day="2"] { top: 59.5% !important; left: 37% !important; }
+    &[data-day="3"] { top: 59.5% !important; left: 50% !important; }
+    &[data-day="4"] { top: 59.5% !important; left: 63% !important; }
+    &[data-day="5"] { top: 59.5% !important; left: 76% !important; }
+    &[data-day="6"] { top: 59.5% !important; left: 89% !important; }
   }
   
   // 4週目
   &[data-week="3"] {
-    &[data-day="0"] { top: 67% !important; left: 11% !important; }
-    &[data-day="1"] { top: 67% !important; left: 24% !important; }
-    &[data-day="2"] { top: 67% !important; left: 37% !important; }
-    &[data-day="3"] { top: 67% !important; left: 50% !important; }
-    &[data-day="4"] { top: 67% !important; left: 63% !important; }
-    &[data-day="5"] { top: 67% !important; left: 76% !important; }
-    &[data-day="6"] { top: 67% !important; left: 89% !important; }
+    &[data-day="0"] { top: 68.5% !important; left: 11% !important; }
+    &[data-day="1"] { top: 68.5% !important; left: 24% !important; }
+    &[data-day="2"] { top: 68.5% !important; left: 37% !important; }
+    &[data-day="3"] { top: 68.5% !important; left: 50% !important; }
+    &[data-day="4"] { top: 68.5% !important; left: 63% !important; }
+    &[data-day="5"] { top: 68.5% !important; left: 76% !important; }
+    &[data-day="6"] { top: 68.5% !important; left: 89% !important; }
   }
   
   // 5週目
   &[data-week="4"] {
-    &[data-day="0"] { top: 75% !important; left: 11% !important; }
-    &[data-day="1"] { top: 75% !important; left: 24% !important; }
-    &[data-day="2"] { top: 75% !important; left: 37% !important; }
-    &[data-day="3"] { top: 75% !important; left: 50% !important; }
-    &[data-day="4"] { top: 75% !important; left: 63% !important; }
-    &[data-day="5"] { top: 75% !important; left: 76% !important; }
-    &[data-day="6"] { top: 75% !important; left: 89% !important; }
+    &[data-day="0"] { top: 76% !important; left: 11% !important; }
+    &[data-day="1"] { top: 76% !important; left: 24% !important; }
+    &[data-day="2"] { top: 76% !important; left: 37% !important; }
+    &[data-day="3"] { top: 76% !important; left: 50% !important; }
+    &[data-day="4"] { top: 76% !important; left: 63% !important; }
+    &[data-day="5"] { top: 76% !important; left: 76% !important; }
+    &[data-day="6"] { top: 76% !important; left: 89% !important; }
   }
   
   // 位置調整（中央寄せ）
