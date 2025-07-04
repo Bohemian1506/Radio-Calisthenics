@@ -66,55 +66,33 @@ class Badge < ApplicationRecord
   end
 
   def check_streak_conditions(user)
-    required_days = conditions["required_days"]&.to_i || 0
-    user.consecutive_days >= required_days
+    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
+    false
   end
 
   def check_milestone_conditions(user)
-    required_count = conditions["required_count"]&.to_i || 0
-    user.total_stamps >= required_count
+    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
+    false
   end
 
   def check_perfect_month_conditions(user)
-    # 月間皆勤賞の条件チェック
-    current_month = Date.current.beginning_of_month
-    stamps_this_month = user.stamp_cards.where(date: current_month..current_month.end_of_month).count
-    days_in_month = current_month.end_of_month.day
-    days_passed = [ Date.current.day, days_in_month ].min
-
-    required_ratio = conditions["required_ratio"]&.to_f || 1.0
-    (stamps_this_month.to_f / days_passed) >= required_ratio
+    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
+    false
   end
 
   def check_early_bird_conditions(user)
-    # 早起き参加の条件チェック
-    required_count = conditions["required_count"]&.to_i || 0
-    cutoff_time = conditions["cutoff_time"] || "07:00"
-
-    early_stamps = user.stamp_cards.where("TIME(stamped_at) <= ?", cutoff_time).count
-    early_stamps >= required_count
+    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
+    false
   end
 
   def check_weekend_warrior_conditions(user)
-    # 週末参加の条件チェック
-    required_count = conditions["required_count"]&.to_i || 0
-
-    weekend_stamps = user.stamp_cards.where(
-      "EXTRACT(DOW FROM date) IN (0, 6)"  # 日曜日(0)と土曜日(6)
-    ).count
-    weekend_stamps >= required_count
+    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
+    false
   end
 
   def check_seasonal_conditions(user)
-    # 季節限定バッジの条件チェック
-    season = conditions["season"]
-    required_count = conditions["required_count"]&.to_i || 0
-
-    season_range = get_season_date_range(season)
-    return false unless season_range
-
-    seasonal_stamps = user.stamp_cards.where(date: season_range).count
-    seasonal_stamps >= required_count
+    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
+    false
   end
 
   def get_season_date_range(season)

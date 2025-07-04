@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_03_070821) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_04_104507) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -34,15 +34,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_03_070821) do
     t.index ["active"], name: "index_badges_on_active"
     t.index ["badge_type"], name: "index_badges_on_badge_type"
     t.index ["sort_order"], name: "index_badges_on_sort_order"
-  end
-
-  create_table "stamp_cards", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.date "date"
-    t.datetime "stamped_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_stamp_cards_on_user_id"
   end
 
   create_table "user_badges", force: :cascade do |t|
@@ -70,7 +61,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_03_070821) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "stamp_cards", "users"
   add_foreign_key "user_badges", "badges"
   add_foreign_key "user_badges", "users"
 end

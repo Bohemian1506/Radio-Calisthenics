@@ -1,0 +1,34 @@
+{
+  "current_phase": 1,
+  "completed_phases": [1],
+  "next_phase_trigger": "次のphaseを始めてください",
+  "phase_details": {
+    "1": {
+      "name": "CSS完全クリーンアップ",
+      "branch": "feature/css-cleanup",
+      "status": "completed",
+      "pr_url": "https://github.com/Bohemian1506/Radio-Calisthenics/pull/28",
+      "completed_at": "2025-07-04T19:00:00+09:00"
+    },
+    "2": {
+      "name": "スタンプ機能の完全削除",
+      "branch": "feature/remove-stamp-feature",
+      "status": "pending"
+    },
+    "3": {
+      "name": "ImageMagick/MiniMagick導入",
+      "branch": "feature/add-imagemagick",
+      "status": "pending"
+    },
+    "4": {
+      "name": "カレンダーヘッダー実装",
+      "branch": "feature/calendar-header-display",
+      "status": "pending"
+    },
+    "5": {
+      "name": "カレンダー日付表示実装",
+      "branch": "feature/calendar-dates-display",
+      "status": "pending"
+    }
+  }
+}
