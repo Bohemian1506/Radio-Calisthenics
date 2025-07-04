@@ -1,16 +1,16 @@
 class Admin::DashboardController < Admin::BaseController
   def index
     @total_users = User.count
-    @total_stamps = 0 # StampCard.count # TODO: スタンプ機能復活時に有効化
-    @today_stamps = 0 # StampCard.where(date: Date.current).count # TODO: スタンプ機能復活時に有効化
-    @active_users = 0 # User.joins(:stamp_cards)
-    #     .where(stamp_cards: { date: 1.week.ago..Date.current })
-    #     .distinct
-    #     .count # TODO: スタンプ機能復活時に有効化
+    @total_stamps = StampCard.count
+    @today_stamps = StampCard.where(date: Date.current).count
+    @active_users = User.joins(:stamp_cards)
+                       .where(stamp_cards: { date: 1.week.ago..Date.current })
+                       .distinct
+                       .count
 
-    @recent_stamps = [] # StampCard.includes(:user)
-    #         .order(created_at: :desc)
-    #         .limit(10) # TODO: スタンプ機能復活時に有効化
+    @recent_stamps = StampCard.includes(:user)
+                              .order(created_at: :desc)
+                              .limit(10)
 
     @daily_stats = generate_daily_stats
   end
@@ -21,7 +21,7 @@ class Admin::DashboardController < Admin::BaseController
     7.days.ago.to_date.upto(Date.current).map do |date|
       {
         date: date,
-        count: 0 # StampCard.where(date: date).count # TODO: スタンプ機能復活時に有効化
+        count: StampCard.where(date: date).count
       }
     end
   end

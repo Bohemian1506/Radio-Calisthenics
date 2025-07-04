@@ -66,33 +66,79 @@ class Badge < ApplicationRecord
   end
 
   def check_streak_conditions(user)
-    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
-    false
+    return false unless conditions["days"]
+
+    required_days = conditions["days"].to_i
+    user.consecutive_days >= required_days
   end
 
   def check_milestone_conditions(user)
-    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
-    false
+    return false unless conditions["total_stamps"]
+
+    required_stamps = conditions["total_stamps"].to_i
+    user.total_stamps >= required_stamps
   end
 
   def check_perfect_month_conditions(user)
-    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
-    false
+    return false unless conditions["months"]
+
+    required_months = conditions["months"].to_i
+    perfect_months = 0
+
+    # 過去12ヶ月をチェック
+    (0..11).each do |i|
+      month = i.months.ago.beginning_of_month
+      month_end = month.end_of_month
+
+      # その月の日数を取得
+      days_in_month = month_end.day
+
+      # その月のスタンプ数を取得
+      stamps_in_month = user.stamp_cards.where(date: month..month_end).count
+
+      perfect_months += 1 if stamps_in_month == days_in_month
+    end
+
+    perfect_months >= required_months
   end
 
   def check_early_bird_conditions(user)
-    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
-    false
+    return false unless conditions["hour"] && conditions["count"]
+
+    required_hour = conditions["hour"].to_i
+    required_count = conditions["count"].to_i
+
+    early_stamps = user.stamp_cards.where(
+      "EXTRACT(HOUR FROM stamped_at) <= ?", required_hour
+    ).count
+
+    early_stamps >= required_count
   end
 
   def check_weekend_warrior_conditions(user)
-    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
-    false
+    return false unless conditions["weekends"]
+
+    required_weekends = conditions["weekends"].to_i
+    weekend_stamps = 0
+
+    user.stamp_cards.each do |stamp|
+      weekend_stamps += 1 if stamp.date.saturday? || stamp.date.sunday?
+    end
+
+    weekend_stamps >= required_weekends
   end
 
   def check_seasonal_conditions(user)
-    # スタンプカード機能が削除されたため、バッジは一時的に取得不可
-    false
+    return false unless conditions["season"] && conditions["stamps"]
+
+    season = conditions["season"]
+    required_stamps = conditions["stamps"].to_i
+    date_range = get_season_date_range(season)
+
+    return false unless date_range
+
+    seasonal_stamps = user.stamp_cards.where(date: date_range).count
+    seasonal_stamps >= required_stamps
   end
 
   def get_season_date_range(season)
