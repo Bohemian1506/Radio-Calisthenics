@@ -5,7 +5,9 @@ RUN apt-get update -qq && \
     apt-get install -y \
       nodejs \
       npm \
-      postgresql-client && \
+      postgresql-client \
+      imagemagick \
+      libmagickwand-dev && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

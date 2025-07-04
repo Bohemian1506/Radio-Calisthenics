@@ -74,7 +74,7 @@ jobs:
 
     steps:
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config google-chrome-stable
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config google-chrome-stable imagemagick libmagickwand-dev fonts-liberation
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -89,8 +89,20 @@ jobs:
         env:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432
+          CI: true
           # REDIS_URL: redis://localhost:6379/0
         run: |
+          # Debug ImageMagick installation
+          echo "ImageMagick location check:"
+          which identify || echo "identify not found in PATH"
+          which mogrify || echo "mogrify not found in PATH"
+          echo "PATH: $PATH"
+          identify -version || echo "Failed to run identify -version"
+          
+          # List available fonts
+          echo "Available fonts:"
+          identify -list font | grep -i liberation || echo "Liberation fonts not found"
+          
           bin/rails db:test:prepare
           bundle exec rspec
 
