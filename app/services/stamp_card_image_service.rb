@@ -1,6 +1,13 @@
 require "mini_magick"
 
 class StampCardImageService
+  # Check ImageMagick availability
+  def self.imagemagick_available?
+    MiniMagick.cli_version
+    true
+  rescue StandardError
+    false
+  end
   attr_reader :user, :year, :month, :image
 
   def initialize(user:, year:, month:)
