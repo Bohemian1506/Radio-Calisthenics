@@ -68,27 +68,18 @@
                        data-day="<%= day_index %>"
                        data-date="<%= day[:date].day %>">
                     
-                    <!-- 日付数字 -->
+                    <!-- 常に日付数字を表示 -->
                     <div class="date-number">
                       <%= format_day_number(day[:date]) %>
                     </div>
                     
-                    <!-- スタンプアイコン -->
                     <% if day[:stamped] %>
-                      <%= image_tag "stamps/heart_stamp.svg", class: "actual-stamp", alt: "参加済み" %>
-                      <!-- 時刻表示 -->
-                      <div class="stamp-time">
-                        <%= format_stamp_time(day[:stamped_at]) %>
+                      <!-- スタンプ済みの日にはスタンプ画像をオーバーレイ -->
+                      <div class="stamp-overlay-image">
+                        <div class="participation-stamp">斉</div>
                       </div>
-                    <% else %>
-                      <!-- 未実施の場合は空のスタンプ枠を表示 -->
-                      <%= image_tag "stamps/empty_stamp.svg", class: "empty-stamp", alt: "未実施" if day[:current_month] %>
                     <% end %>
                     
-                    <!-- 今日マーカー -->
-                    <% if today?(day[:date]) %>
-                      <span class="today-indicator">今日</span>
-                    <% end %>
                   </div>
                 <% end %>
               <% end %>
