@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   resources :stamp_cards, except: [ :show, :edit, :update ] do
     collection do
       get :monthly
+      post :generate_image
+      get :download_image
     end
   end
 
