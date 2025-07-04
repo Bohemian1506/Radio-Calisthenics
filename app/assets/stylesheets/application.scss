@@ -200,9 +200,9 @@
   transform: translate(-50%, -50%);
 }
 
-// 日付数字表示（常時表示）
+// 日付数字表示（常時表示）- さらに大きく
 .date-number {
-  font-size: 22px;
+  font-size: 36px;
   font-weight: bold;
   color: white !important;
   z-index: 4;
@@ -472,7 +472,7 @@
   }
   
   .date-number {
-    font-size: 18px !important;
+    font-size: 28px !important;
   }
   
   .participation-stamp {
