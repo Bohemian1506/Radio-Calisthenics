@@ -74,7 +74,7 @@ jobs:
 
     steps:
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config google-chrome-stable imagemagick libmagickwand-dev
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config google-chrome-stable imagemagick libmagickwand-dev fonts-liberation
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -98,6 +98,10 @@ jobs:
           which mogrify || echo "mogrify not found in PATH"
           echo "PATH: $PATH"
           identify -version || echo "Failed to run identify -version"
+          
+          # List available fonts
+          echo "Available fonts:"
+          identify -list font | grep -i liberation || echo "Liberation fonts not found"
           
           bin/rails db:test:prepare
           bundle exec rspec

@@ -63,7 +63,7 @@ class StampCardImageService
     year_month_text = "#{@year}年#{@month}月"
 
     @image = @image.combine_options do |c|
-      c.font "DejaVu-Sans"
+      c.font select_font
       c.pointsize 36
       c.fill "black"
       c.gravity "northwest"
@@ -87,7 +87,7 @@ class StampCardImageService
     display_name = display_name.truncate(15, omission: "...")
 
     @image = @image.combine_options do |c|
-      c.font "DejaVu-Sans"
+      c.font select_font
       c.pointsize 24
       c.fill "black"
       c.gravity "northeast"
@@ -100,5 +100,19 @@ class StampCardImageService
   def font_available?
     font_path = Rails.root.join("app", "assets", "fonts", "NotoSansCJK-Regular.ttc")
     File.exist?(font_path)
+  end
+
+  def select_font
+    # Try to use different fonts based on environment
+    if ENV["CI"]
+      # Use Liberation fonts on CI (installed via fonts-liberation package)
+      "Liberation-Sans"
+    elsif Rails.env.development? || Rails.env.test?
+      # Use DejaVu fonts on Docker development
+      "DejaVu-Sans"
+    else
+      # Production default
+      "Helvetica"
+    end
   end
 end

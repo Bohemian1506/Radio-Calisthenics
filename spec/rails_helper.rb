@@ -13,8 +13,7 @@ require 'rspec/rails'
 # Configure ImageMagick for CI environment
 if ENV['CI']
   ENV['PATH'] = "/usr/bin:/usr/local/bin:#{ENV['PATH']}"
-  # Explicitly set ImageMagick path for CI
-  MiniMagick.cli_prefix = ''
+  # Remove cli_prefix setting - it causes issues with empty string
 end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
