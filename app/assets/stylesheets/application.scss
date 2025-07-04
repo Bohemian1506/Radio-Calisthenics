@@ -73,21 +73,7 @@
   flex-direction: column;
 }
 
-.actual-stamp {
-  width: 24px;
-  height: 24px;
-  z-index: 2;
-}
 
-.today-indicator {
-  font-size: 10px;
-  background-color: #007bff;
-  color: white;
-  padding: 2px 6px;
-  border-radius: 10px;
-  margin-top: 2px;
-  z-index: 3;
-}
 
 // 月・年・ユーザー名オーバーレイ
 .month-year-overlay {
@@ -155,59 +141,59 @@
   // 基準となる位置計算
   // 週インデックス（0-4）と日インデックス（0-6）から位置を算出
   
-  // 1週目（日-土）
+  // 1週目（日-土）- 少し右と下に調整
   &[data-week="0"] {
-    &[data-day="0"] { top: 40%; left: 15%; } // 日
-    &[data-day="1"] { top: 40%; left: 27%; } // 月
-    &[data-day="2"] { top: 40%; left: 39%; } // 火
-    &[data-day="3"] { top: 40%; left: 51%; } // 水
-    &[data-day="4"] { top: 40%; left: 63%; } // 木
-    &[data-day="5"] { top: 40%; left: 75%; } // 金
-    &[data-day="6"] { top: 40%; left: 87%; }  // 土
+    &[data-day="0"] { top: 45% !important; left: 16% !important; } // 日
+    &[data-day="1"] { top: 45% !important; left: 28% !important; } // 月
+    &[data-day="2"] { top: 45% !important; left: 40% !important; } // 火
+    &[data-day="3"] { top: 45% !important; left: 52% !important; } // 水
+    &[data-day="4"] { top: 45% !important; left: 64% !important; } // 木
+    &[data-day="5"] { top: 45% !important; left: 76% !important; } // 金
+    &[data-day="6"] { top: 45% !important; left: 88% !important; }  // 土
   }
   
   // 2週目
   &[data-week="1"] {
-    &[data-day="0"] { top: 56%; left: 15%; }
-    &[data-day="1"] { top: 56%; left: 27%; }
-    &[data-day="2"] { top: 56%; left: 39%; }
-    &[data-day="3"] { top: 56%; left: 51%; }
-    &[data-day="4"] { top: 56%; left: 63%; }
-    &[data-day="5"] { top: 56%; left: 75%; }
-    &[data-day="6"] { top: 56%; left: 87%; }
+    &[data-day="0"] { top: 53% !important; left: 15% !important; }
+    &[data-day="1"] { top: 53% !important; left: 27% !important; }
+    &[data-day="2"] { top: 53% !important; left: 39% !important; }
+    &[data-day="3"] { top: 53% !important; left: 51% !important; }
+    &[data-day="4"] { top: 53% !important; left: 63% !important; }
+    &[data-day="5"] { top: 53% !important; left: 75% !important; }
+    &[data-day="6"] { top: 53% !important; left: 87% !important; }
   }
   
-  // 3週目
+  // 3週目 - 少し右に調整
   &[data-week="2"] {
-    &[data-day="0"] { top: 72%; left: 15%; }
-    &[data-day="1"] { top: 72%; left: 27%; }
-    &[data-day="2"] { top: 72%; left: 39%; }
-    &[data-day="3"] { top: 72%; left: 51%; }
-    &[data-day="4"] { top: 72%; left: 63%; }
-    &[data-day="5"] { top: 72%; left: 75%; }
-    &[data-day="6"] { top: 72%; left: 87%; }
+    &[data-day="0"] { top: 62% !important; left: 16% !important; }
+    &[data-day="1"] { top: 62% !important; left: 28% !important; }
+    &[data-day="2"] { top: 62% !important; left: 40% !important; }
+    &[data-day="3"] { top: 62% !important; left: 52% !important; }
+    &[data-day="4"] { top: 62% !important; left: 64% !important; }
+    &[data-day="5"] { top: 62% !important; left: 76% !important; }
+    &[data-day="6"] { top: 62% !important; left: 88% !important; }
   }
   
-  // 4週目
+  // 4週目 - 右と上に調整
   &[data-week="3"] {
-    &[data-day="0"] { top: 88%; left: 15%; }
-    &[data-day="1"] { top: 88%; left: 27%; }
-    &[data-day="2"] { top: 88%; left: 39%; }
-    &[data-day="3"] { top: 88%; left: 51%; }
-    &[data-day="4"] { top: 88%; left: 63%; }
-    &[data-day="5"] { top: 88%; left: 75%; }
-    &[data-day="6"] { top: 88%; left: 87%; }
+    &[data-day="0"] { top: 70% !important; left: 16% !important; }
+    &[data-day="1"] { top: 70% !important; left: 28% !important; }
+    &[data-day="2"] { top: 70% !important; left: 40% !important; }
+    &[data-day="3"] { top: 70% !important; left: 52% !important; }
+    &[data-day="4"] { top: 70% !important; left: 64% !important; }
+    &[data-day="5"] { top: 70% !important; left: 76% !important; }
+    &[data-day="6"] { top: 70% !important; left: 88% !important; }
   }
   
-  // 5週目
+  // 5週目 - 右と上に調整
   &[data-week="4"] {
-    &[data-day="0"] { top: 102%; left: 15%; }
-    &[data-day="1"] { top: 102%; left: 27%; }
-    &[data-day="2"] { top: 102%; left: 39%; }
-    &[data-day="3"] { top: 102%; left: 51%; }
-    &[data-day="4"] { top: 102%; left: 63%; }
-    &[data-day="5"] { top: 102%; left: 75%; }
-    &[data-day="6"] { top: 102%; left: 87%; }
+    &[data-day="0"] { top: 79% !important; left: 16% !important; }
+    &[data-day="1"] { top: 79% !important; left: 28% !important; }
+    &[data-day="2"] { top: 79% !important; left: 40% !important; }
+    &[data-day="3"] { top: 79% !important; left: 52% !important; }
+    &[data-day="4"] { top: 79% !important; left: 64% !important; }
+    &[data-day="5"] { top: 79% !important; left: 76% !important; }
+    &[data-day="6"] { top: 79% !important; left: 88% !important; }
   }
   
   // 位置調整（中央寄せ）
@@ -216,85 +202,22 @@
 
 // 日付数字表示
 .date-number {
-  font-size: 12px;
+  font-size: 22px;
   font-weight: bold;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: white !important;
   z-index: 4;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
 }
 
-// スタンプ時刻表示
-.stamp-time {
-  position: absolute;
-  top: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 7px;
-  font-weight: 600;
-  color: #27ae60;
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 1px 3px;
-  border-radius: 3px;
-  white-space: nowrap;
-  z-index: 4;
-  border: 1px solid rgba(39, 174, 96, 0.3);
-}
 
-// 空のスタンプ表示
-.empty-stamp {
-  width: 20px;
-  height: 20px;
-  opacity: 0.3;
-  z-index: 2;
-}
-
-// 今日マーカーの強化
-.today-indicator {
-  font-size: 8px;
-  background: linear-gradient(45deg, #3498db, #2980b9);
-  color: white;
-  padding: 1px 4px;
-  border-radius: 8px;
-  margin-top: 32px;
-  z-index: 5;
-  font-weight: bold;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  animation: pulse 2s infinite;
-}
 
 // カレンダー日付の状態別スタイル
 .stamp-position {
-  &.today {
-    .date-number {
-      background: linear-gradient(45deg, #3498db, #2980b9);
-      color: white;
-      border-color: #2980b9;
-      box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
-    }
-  }
-  
-  &.stamped {
-    .date-number {
-      background: linear-gradient(45deg, #27ae60, #229954);
-      color: white;
-      border-color: #229954;
-    }
-  }
-  
   &.other-month {
     opacity: 0.4;
     
     .date-number {
-      color: #95a5a6;
-      background-color: rgba(149, 165, 166, 0.1);
-      border-color: #bdc3c7;
+      color: #95a5a6 !important;
     }
   }
 }
@@ -432,11 +355,6 @@
 }
 
 // アニメーション定義
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
 
 @keyframes fadeInUp {
   from {
@@ -459,22 +377,7 @@
 .stamp-position {
   transition: all 0.3s ease;
   
-  &:hover {
-    .date-number {
-      transform: translateX(-50%) scale(1.1);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-    
-    .actual-stamp {
-      transform: scale(1.1);
-      filter: brightness(1.1);
-    }
-  }
   
-  .actual-stamp {
-    animation: stampBounce 0.6s ease-out;
-    transition: all 0.3s ease;
-  }
   
   .date-number {
     transition: all 0.3s ease;
@@ -532,9 +435,7 @@
   }
   
   .date-number {
-    font-size: 10px;
-    width: 18px;
-    height: 18px;
+    font-size: 18px !important;
   }
   
   .stamp-time {
