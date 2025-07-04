@@ -44,7 +44,12 @@ class StampCardImageService
     end
 
     @image = MiniMagick::Image.open(background_path)
-    Rails.logger.info "Background image loaded: #{@image.width}x#{@image.height} pixels"
+    # Safely get image dimensions without identify command if possible
+    begin
+      Rails.logger.info "Background image loaded: #{@image.width}x#{@image.height} pixels"
+    rescue MiniMagick::Error => e
+      Rails.logger.info "Background image loaded (dimensions unavailable: #{e.message})"
+    end
   end
 
   def draw_year_month
