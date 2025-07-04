@@ -1,0 +1,269 @@
+<% content_for :title, "スタンプカード" %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">📅 スタンプカード</h1>
+        <div>
+          <%= link_to "📊 統計情報", statistics_path, class: "btn btn-outline-primary me-2" %>
+          <%= link_to "🏆 バッジ", badges_path, class: "btn btn-outline-info me-2" %>
+          <% if current_user.admin? %>
+            <%= link_to "🎯 管理画面", admin_root_path, class: "btn btn-outline-secondary" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月間統計サマリー -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-md-3 mb-3">
+              <h5 class="text-primary">📅 今月の参加</h5>
+              <h3><%= @monthly_stats[:total_stamps] %>/<%= @monthly_stats[:days_passed] %>日</h3>
+              <small class="text-muted">参加率: <%= @monthly_stats[:participation_rate] %>%</small>
+            </div>
+            <div class="col-md-3 mb-3">
+              <h5 class="text-success">⭐ 総参加日数</h5>
+              <h3><%= @user_stats[:total_stamps] %>日</h3>
+            </div>
+            <div class="col-md-3 mb-3">
+              <h5 class="text-warning">🔥 連続日数</h5>
+              <h3><%= @user_stats[:consecutive_days] %>日</h3>
+            </div>
+            <div class="col-md-3 mb-3">
+              <h5 class="text-info">🏆 最長記録</h5>
+              <h3><%= @user_stats[:longest_streak] %>日</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月間ナビゲーション -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <% prev_month = @monthly_stats[:month] - 1.month %>
+            <%= link_to stamp_cards_path(year: prev_month.year, month: prev_month.month), 
+                        class: "btn btn-outline-primary" do %>
+              <i class="bi bi-chevron-left"></i> <%= prev_month.strftime("%Y年%m月") %>
+            <% end %>
+            
+            <h4 class="mb-0">
+              <%= @monthly_stats[:month].strftime("%Y年%m月") %>のスタンプカード
+            </h4>
+            
+            <% next_month = @monthly_stats[:month] + 1.month %>
+            <% if next_month <= Date.current.beginning_of_month %>
+              <%= link_to stamp_cards_path(year: next_month.year, month: next_month.month), 
+                          class: "btn btn-outline-primary" do %>
+                <%= next_month.strftime("%Y年%m月") %> <i class="bi bi-chevron-right"></i>
+              <% end %>
+            <% else %>
+              <span class="btn btn-outline-secondary disabled">
+                <%= next_month.strftime("%Y年%m月") %> <i class="bi bi-chevron-right"></i>
+              </span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- カレンダー表示 -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="calendar-container">
+            <!-- 曜日ヘッダー -->
+            <div class="row mb-2">
+              <% %w[日 月 火 水 木 金 土].each_with_index do |day, index| %>
+                <div class="col text-center">
+                  <strong class="<%= 'text-danger' if index == 0 %><%= 'text-primary' if index == 6 %>">
+                    <%= day %>
+                  </strong>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- カレンダー本体 -->
+            <% @calendar_data.each do |week| %>
+              <div class="row mb-1">
+                <% week.each do |day_data| %>
+                  <div class="col calendar-day p-1">
+                    <div class="calendar-cell border rounded p-2 position-relative h-100 
+                                <%= 'bg-light text-muted' unless day_data[:current_month] %>
+                                <%= 'border-primary bg-primary bg-opacity-10' if day_data[:today] %>
+                                <%= 'bg-success bg-opacity-20 border-success' if day_data[:stamped] %>">
+                      
+                      <!-- 日付 -->
+                      <div class="d-flex justify-content-between align-items-start">
+                        <small class="<%= 'text-danger' if day_data[:date].sunday? && day_data[:current_month] %>
+                                     <%= 'text-primary' if day_data[:date].saturday? && day_data[:current_month] %>">
+                          <%= day_data[:date].day %>
+                        </small>
+                        
+                        <!-- 今日マーク -->
+                        <% if day_data[:today] %>
+                          <span class="badge bg-primary rounded-pill">今日</span>
+                        <% end %>
+                      </div>
+
+                      <!-- スタンプ表示 -->
+                      <div class="text-center mt-1">
+                        <% if day_data[:stamped] %>
+                          <div class="stamp-mark">
+                            <span class="text-success fs-4">✓</span>
+                            <% if day_data[:stamped_time] %>
+                              <small class="d-block text-muted"><%= day_data[:stamped_time] %></small>
+                            <% end %>
+                          </div>
+                        <% elsif day_data[:can_stamp] %>
+                          <%= form_with model: StampCard.new, url: stamp_cards_path, class: "stamp-form" do |form| %>
+                            <%= form.hidden_field :date, value: day_data[:date] %>
+                            <%= form.submit "スタンプ", class: "btn btn-sm btn-outline-primary" %>
+                          <% end %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 今日のスタンプ -->
+  <% if @monthly_stats[:can_stamp_today] %>
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card border-primary">
+          <div class="card-body text-center">
+            <h5 class="card-title text-primary">今日のラジオ体操はいかがでしたか？</h5>
+            <p class="card-text">今日のスタンプを押して記録を残しましょう！</p>
+            <%= form_with model: StampCard.new, url: stamp_cards_path, class: "d-inline" do |form| %>
+              <%= form.hidden_field :date, value: Date.current %>
+              <%= form.submit "📅 今日のスタンプを押す", 
+                              class: "btn btn-primary btn-lg",
+                              data: { confirm: "今日のスタンプを押しますか？" } %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- ユーザー統計 -->
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">🏆 あなたの記録</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0">
+            <li class="mb-2">
+              <strong>総参加日数:</strong> <%= @user_stats[:total_stamps] %>日
+            </li>
+            <li class="mb-2">
+              <strong>現在の連続日数:</strong> <%= @user_stats[:consecutive_days] %>日
+            </li>
+            <li class="mb-2">
+              <strong>最長連続記録:</strong> <%= @user_stats[:longest_streak] %>日
+            </li>
+            <li class="mb-2">
+              <strong>今月の参加:</strong> <%= @user_stats[:stamps_this_month] %>日
+            </li>
+            <li class="mb-2">
+              <strong>今年の参加:</strong> <%= @user_stats[:stamps_this_year] %>日
+            </li>
+            <% if @user_stats[:average_time] %>
+              <li>
+                <strong>平均参加時刻:</strong> <%= @user_stats[:average_time] %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">💪 応援メッセージ</h5>
+        </div>
+        <div class="card-body">
+          <% if @user_stats[:consecutive_days] >= 30 %>
+            <p class="text-success mb-0">
+              <strong>素晴らしい！</strong><br>
+              <%= @user_stats[:consecutive_days] %>日連続参加は本当に立派です！継続は力なりですね。
+            </p>
+          <% elsif @user_stats[:consecutive_days] >= 7 %>
+            <p class="text-primary mb-0">
+              <strong>お疲れ様！</strong><br>
+              <%= @user_stats[:consecutive_days] %>日連続参加中です。この調子で続けていきましょう！
+            </p>
+          <% elsif @user_stats[:consecutive_days] > 0 %>
+            <p class="text-info mb-0">
+              <strong>いいペースです！</strong><br>
+              <%= @user_stats[:consecutive_days] %>日連続参加中。習慣化まであと少しです。
+            </p>
+          <% else %>
+            <p class="text-muted mb-0">
+              <strong>今日から始めましょう！</strong><br>
+              ラジオ体操で健康的な毎日をスタートしませんか？
+            </p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .calendar-day {
+    min-height: 100px;
+  }
+  
+  .calendar-cell {
+    min-height: 90px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .calendar-cell:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .stamp-form {
+    margin: 0;
+  }
+  
+  .stamp-mark {
+    animation: stamp-bounce 0.6s ease-in-out;
+  }
+  
+  @keyframes stamp-bounce {
+    0%, 20%, 60%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    80% {
+      transform: translateY(-5px);
+    }
+  }
+</style>

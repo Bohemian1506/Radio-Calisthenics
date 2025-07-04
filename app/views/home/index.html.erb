@@ -8,8 +8,7 @@
         <h3>ようこそ、<%= current_user.email %>さん！</h3>
         <p>今日のラジオ体操はお疲れ様でした。スタンプカードで記録を管理しましょう。</p>
         <div class="d-flex justify-content-center gap-3 mt-4">
-          <%# TODO: スタンプ機能復活時に有効化 %>
-          <%# link_to "📅 スタンプカードを見る", stamp_cards_path, class: "btn btn-primary btn-lg" %>
+          <%= link_to "📅 スタンプカードを見る", stamp_cards_path, class: "btn btn-primary btn-lg" %>
           <%= link_to "📊 統計情報を見る", statistics_path, class: "btn btn-primary btn-lg" %>
           <%= link_to "🏆 バッジを見る", badges_path, class: "btn btn-outline-primary btn-lg" %>
         </div>
