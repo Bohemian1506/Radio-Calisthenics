@@ -35,6 +35,126 @@ class StampCardsController < ApplicationController
     end
   end
 
+  def generate_image
+    @month = parse_month_params
+
+    begin
+      # Validate that user has stamps for the requested month
+      stamps_count = current_user.stamp_cards.where(date: @month.beginning_of_month..@month.end_of_month).count
+      if stamps_count == 0
+        raise StandardError, "指定された月にスタンプデータがありません"
+      end
+
+      service = StampCardImageService.new(
+        user: current_user,
+        year: @month.year,
+        month: @month.month
+      )
+
+      image = service.generate
+
+      # Generate temporary file for download with error handling
+      temp_file = Tempfile.new([ "stamp_card_#{current_user.id}_#{@month.year}_#{@month.month}", ".png" ])
+      service.save_to_file(temp_file.path)
+
+      # Verify file was created successfully
+      unless File.exist?(temp_file.path) && File.size(temp_file.path) > 0
+        raise StandardError, "画像ファイルの作成に失敗しました"
+      end
+
+      # Store temp file path in session for download action
+      session[:stamp_card_image_path] = temp_file.path
+
+      respond_to do |format|
+        format.json { render json: { status: "success", message: "画像を生成しました" } }
+        format.html { redirect_to stamp_cards_path(year: @month.year, month: @month.month), notice: "スタンプカード画像を生成しました" }
+      end
+    rescue ArgumentError => e
+      Rails.logger.error "Image generation parameter error: #{e.message}"
+      error_message = "パラメータエラー: #{e.message}"
+      respond_to do |format|
+        format.json { render json: { status: "error", message: error_message }, status: :bad_request }
+        format.html { redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message }
+      end
+    rescue StandardError => e
+      Rails.logger.error "Image generation failed: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n") if Rails.env.development?
+
+      # Specific error messages for better user experience
+      error_message = case e.message
+      when /指定された月にスタンプデータがありません/
+                       "指定された月にスタンプデータがありません。まずはスタンプを押してから画像を生成してください。"
+      when /Background image not found/
+                       "テンプレート画像が見つかりません。管理者にお問い合わせください。"
+      when /ImageMagick/
+                       "画像処理エンジンでエラーが発生しました。しばらく時間をおいて再度お試しください。"
+      else
+                       "画像生成に失敗しました。しばらく時間をおいて再度お試しください。"
+      end
+
+      respond_to do |format|
+        format.json { render json: { status: "error", message: error_message }, status: :unprocessable_entity }
+        format.html { redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message }
+      end
+    end
+  end
+
+  def download_image
+    begin
+      image_path = session[:stamp_card_image_path]
+
+      # Validate session contains image path
+      unless image_path
+        Rails.logger.warn "Download attempted without image path in session for user #{current_user.id}"
+        redirect_to stamp_cards_path, alert: "画像が生成されていません。まず画像を生成してからダウンロードしてください。"
+        return
+      end
+
+      # Validate file exists and is readable
+      unless File.exist?(image_path)
+        Rails.logger.warn "Download attempted but file not found: #{image_path} for user #{current_user.id}"
+        session.delete(:stamp_card_image_path)
+        redirect_to stamp_cards_path, alert: "ダウンロードする画像が見つかりません。画像を再生成してください。"
+        return
+      end
+
+      # Validate file size
+      if File.size(image_path) == 0
+        Rails.logger.warn "Download attempted but file is empty: #{image_path} for user #{current_user.id}"
+        File.delete(image_path) rescue nil
+        session.delete(:stamp_card_image_path)
+        redirect_to stamp_cards_path, alert: "画像ファイルが破損しています。画像を再生成してください。"
+        return
+      end
+
+      month = parse_month_params
+      filename = "stamp_card_#{month.year}_#{month.month}.png"
+
+      # Send file with proper error handling
+      send_file image_path,
+                filename: filename,
+                type: "image/png",
+                disposition: "attachment"
+
+      Rails.logger.info "Image download successful for user #{current_user.id}: #{filename}"
+
+    rescue StandardError => e
+      Rails.logger.error "Download failed for user #{current_user.id}: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n") if Rails.env.development?
+      redirect_to stamp_cards_path, alert: "ダウンロード中にエラーが発生しました。しばらく時間をおいて再度お試しください。"
+    ensure
+      # Clean up temp file and session in ensure block
+      if session[:stamp_card_image_path]
+        begin
+          File.delete(session[:stamp_card_image_path]) if File.exist?(session[:stamp_card_image_path])
+        rescue StandardError => e
+          Rails.logger.warn "Failed to clean up temp file: #{e.message}"
+        end
+        session.delete(:stamp_card_image_path)
+      end
+    end
+  end
+
   private
 
   def stamp_card_params
@@ -44,8 +164,24 @@ class StampCardsController < ApplicationController
   def parse_month_params
     if params[:year].present? && params[:month].present?
       begin
-        Date.new(params[:year].to_i, params[:month].to_i, 1)
-      rescue ArgumentError
+        year = params[:year].to_i
+        month = params[:month].to_i
+
+        # Validate reasonable year range
+        if year < 2020 || year > Date.current.year + 1
+          Rails.logger.warn "Invalid year parameter: #{year} for user #{current_user&.id}"
+          return Date.current.beginning_of_month
+        end
+
+        # Validate month range
+        if month < 1 || month > 12
+          Rails.logger.warn "Invalid month parameter: #{month} for user #{current_user&.id}"
+          return Date.current.beginning_of_month
+        end
+
+        Date.new(year, month, 1)
+      rescue ArgumentError => e
+        Rails.logger.warn "Date parsing error: #{e.message} for params #{params[:year]}/#{params[:month]}"
         Date.current.beginning_of_month
       end
     else

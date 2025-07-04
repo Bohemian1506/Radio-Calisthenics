@@ -50,7 +50,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex justify-content-between align-items-center mb-3">
             <% prev_month = @monthly_stats[:month] - 1.month %>
             <%= link_to stamp_cards_path(year: prev_month.year, month: prev_month.month), 
                         class: "btn btn-outline-primary" do %>
@@ -72,6 +72,28 @@
                 <%= next_month.strftime("%Y年%m月") %> <i class="bi bi-chevron-right"></i>
               </span>
             <% end %>
+          </div>
+          
+          <!-- 画像生成・ダウンロードボタン -->
+          <div class="text-center">
+            <div class="btn-group" role="group">
+              <%= button_to "🖼️ カード画像を生成", 
+                            generate_image_stamp_cards_path(year: @monthly_stats[:month].year, month: @monthly_stats[:month].month),
+                            method: :post,
+                            class: "btn btn-success",
+                            id: "generate-image-btn",
+                            data: { 
+                              turbo: false,
+                              action: "click->stamp-card#generateImage"
+                            } %>
+              <%= link_to "💾 画像をダウンロード", 
+                          download_image_stamp_cards_path(year: @monthly_stats[:month].year, month: @monthly_stats[:month].month),
+                          class: "btn btn-primary",
+                          id: "download-image-btn",
+                          style: "display: none;",
+                          data: { turbo: false } %>
+            </div>
+            <div id="image-status" class="mt-2 text-muted small"></div>
           </div>
         </div>
       </div>
@@ -267,3 +289,60 @@
     }
   }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const generateBtn = document.getElementById('generate-image-btn');
+  const downloadBtn = document.getElementById('download-image-btn');
+  const statusDiv = document.getElementById('image-status');
+  
+  if (generateBtn) {
+    generateBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // ボタンを無効化
+      generateBtn.disabled = true;
+      generateBtn.innerHTML = '🔄 画像生成中...';
+      statusDiv.textContent = '画像を生成しています。しばらくお待ちください...';
+      statusDiv.className = 'mt-2 text-info small';
+      
+      // フォームデータを取得
+      const form = generateBtn.closest('form');
+      const formData = new FormData(form);
+      
+      // Ajax リクエスト
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          statusDiv.textContent = data.message;
+          statusDiv.className = 'mt-2 text-success small';
+          generateBtn.innerHTML = '✅ 生成完了';
+          downloadBtn.style.display = 'inline-block';
+          
+          // 3秒後にボタンを元に戻す
+          setTimeout(() => {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = '🖼️ カード画像を生成';
+          }, 3000);
+        } else {
+          throw new Error(data.message || '画像生成に失敗しました');
+        }
+      })
+      .catch(error => {
+        statusDiv.textContent = error.message;
+        statusDiv.className = 'mt-2 text-danger small';
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '🖼️ カード画像を生成';
+      });
+    });
+  }
+});
+</script>
