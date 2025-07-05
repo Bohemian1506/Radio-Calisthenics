@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const themeSelect = document.getElementById('theme-select');
       const formatSelect = document.getElementById('format-select');
       formData.append('theme', themeSelect.value);
-      formData.append('format', formatSelect.value);
+      formData.append('image_format', formatSelect.value); // formatではなくimage_formatを使用
       
       // Ajax リクエスト (URLに.jsonを追加)
       let jsonUrl = form.action;

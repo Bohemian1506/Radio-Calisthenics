@@ -52,22 +52,22 @@ class StampCardsController < ApplicationController
         raise StandardError, "指定された月にスタンプデータがありません"
       end
 
-      # Parse theme and format parameters
+      # Parse theme and image format parameters (use image_format to avoid conflict with request format)
       theme = params[:theme]&.to_sym || :default
-      format = params[:format]&.to_sym || :png
+      image_format = params[:image_format]&.to_sym || :png
 
       service = StampCardImageService.new(
         user: current_user,
         year: @month.year,
         month: @month.month,
         theme: theme,
-        format: format
+        format: image_format
       )
 
       image = service.generate
 
       # Generate temporary file for download with error handling
-      file_extension = format == :pdf ? ".pdf" : ".png"
+      file_extension = image_format == :pdf ? ".pdf" : ".png"
       temp_file = Tempfile.new([ "stamp_card_#{current_user.id}_#{@month.year}_#{@month.month}", file_extension ])
       service.save_to_file(temp_file.path)
 

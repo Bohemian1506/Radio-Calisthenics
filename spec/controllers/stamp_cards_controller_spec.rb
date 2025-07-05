@@ -26,7 +26,7 @@ RSpec.describe StampCardsController, type: :controller do
         end
         
         it 'returns success JSON' do
-          post :generate_image, params: { year: 2025, month: 7 }, format: :json
+          post :generate_image, params: { year: 2025, month: 7, theme: 'default', image_format: 'png' }, format: :json
           
           expect(response).to have_http_status(:ok)
           expect(response.content_type).to include('application/json')
