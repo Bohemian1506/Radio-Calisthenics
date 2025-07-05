@@ -34,17 +34,15 @@ Radio-Calisthenics（ラジオ体操）は、ラジオ体操参加者向けの�
 - **高度データ分析・活用機能** (Phase 7)
 - **ゲーミフィケーション強化** (Phase 8-10)
 
-## 📊 Phase構成
-詳細な開発状況については [`PHASE_OVERVIEW.md`](./PHASE_OVERVIEW.md) をご確認ください。
+## 📊 新Phase構成（バニラJS版）
+詳細な開発状況については [`summaries/phases/PHASE_OVERVIEW.md`](./summaries/phases/PHASE_OVERVIEW.md) をご確認ください。
 
 | Phase | 機能 | 状況 | 主要成果 |
 |-------|------|------|----------|
-| 1 | 基盤構築 | ✅ 完了 | 認証・Docker環境 |
-| 2 | スタンプカード基本機能 | ✅ 完了 | RESTful設計・管理機能 |
-| 3 | 統計・分析機能 | ✅ 完了 | Chart.js・PR自動生成 |
-| 4 | バッジシステム拡張 | ✅ 完了 | 6種類バッジ実装 |
-| 5 | カレンダー画像生成 | 🔄 実装中 | ImageMagick統合 |
-| 6-10 | 大規模機能拡張 | 📋 計画中 | 75個Issue再構成 |
+| 1 | 基本HTMLレイアウト | 📋 準備中 | index.html・CSS・画像配置 |
+| 2 | JavaScript動的システム | 📋 準備中 | 月・日付・名前の自動配置 |
+| 3 | スタンプ機能・データ保存 | 📋 準備中 | クリック機能・LocalStorage |
+| 4 | UI/UX最適化 | 📋 準備中 | レスポンシブ・印刷・アニメーション |
 
 ## 🏃‍♂️ 開発開始
 ### 前提条件

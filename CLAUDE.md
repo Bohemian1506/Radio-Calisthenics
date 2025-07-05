@@ -1,21 +1,19 @@
 # Radio-Calisthenics - Claude-Gemini自律連携システム
 
 ## プロジェクト概要
-Radio-Calisthenics（ラジオ体操）は、ラジオ体操参加者向けのスタンプカード管理システムです。
-一日参加するごとに参加者にスタンプを押すデジタルスタンプカード機能を提供し、
-継続的な健康習慣をサポートします。
-プログラミング学習における実践的なWebアプリケーション開発を目的として設計されており、
-Claude Code と Gemini CLI の自律連携システムによる AI ペアプログラミングの実証実験プロジェクトでもあります。
+Radio-Calisthenics（ラジオ体操）は、シンプルで使いやすいデジタルスタンプカードアプリです。
+一日参加するごとに朱印スタンプを押すことで、継続的な健康習慣をサポートします。
+初学者向けのフロントエンド学習プロジェクトとして、バニラJavaScriptの基礎から実践的な技術を学習できるよう設計されています。
+Claude Code と Gemini CLI の自律連携システムによる AI 支援フロントエンド開発の実証実験プロジェクトでもあります。
 
-## 技術スタック
-- **フレームワーク**: Ruby on Rails 8.x
-- **言語**: Ruby 3.3.0
-- **データベース**: PostgreSQL
-- **認証**: Devise
-- **UI**: Bootstrap 5.2
-- **テスト**: RSpec
-- **開発環境**: Docker
-- **AI連携**: Claude Code + Gemini CLI
+## 技術スタック（バニラJS版）
+- **フロントエンド**: HTML/CSS/バニラJavaScript
+- **データ保存**: LocalStorage（サーバー不要）
+- **画像処理**: CSS絶対位置・Canvas API
+- **スタイリング**: レスポンシブCSS
+- **ホスティング**: GitHub Pages
+- **開発環境**: ローカル開発（ブラウザ直接表示）
+- **AI連携**: Claude Code + Gemini CLI（フロントエンド特化）
 - **プロジェクト管理**: GitHub CLI + gh-dash + Issue自動化
 
 ## 【新しい役割分担】自律連携システム
@@ -24,15 +22,15 @@ Claude Code と Gemini CLI の自律連携システムによる AI ペアプロ�
 従来の「Claude実装→Gemini検証」から「Claude分析→Gemini実装→Claude検証」へ転換：
 
 - **Claude Code**: 分析・計画立案 → 検証・統合・最適化
-  - Issue分析、技術要件定義、実装計画立案
-  - Gemini実装結果の品質検証・統合・改善指摘
+  - フロントエンド要件分析、UI/UX設計、実装計画立案
+  - Gemini実装結果の品質検証・コードレビュー・改善指摘
   - プロジェクト全体のタスク管理・進捗管理
-  - Phase Issue自動作成・GitHub連携統合
+  - Phase Issue自動作成・GitHub Pagesデプロイ連携
 
-- **Gemini CLI**: 大規模実装・コード生成
-  - Claudeの詳細計画に基づく実際のコード実装
-  - ファイル作成・修正、テストコード生成
-  - エラーハンドリング・セキュリティ考慮した実装
+- **Gemini CLI**: フロントエンド実装・コード生成
+  - Claudeの詳細計画に基づくHTML/CSS/JavaScript実装
+  - DOM操作、イベント処理、LocalStorage管理コード生成
+  - ブラウザ互換性・アクセシビリティ考慮した実装
 
 - **ユーザー**: 要件定義・最終判断
   - プロジェクトの目的・要件・最終ゴールを定義
@@ -67,48 +65,52 @@ Claude Code と Gemini CLI の自律連携システムによる AI ペアプロ�
 
 ## 連携コマンド例
 
-### Claude → Gemini（実装指示）
+### Claude → Gemini（フロントエンド実装指示）
 ```bash
-gemini -p "Radio-Calisthenicsプロジェクトで以下の計画で実装してください:
+gemini -p "Radio-CalisthenicsバニラJSプロジェクトで以下の計画で実装してください:
 
-タスク: [具体的なタスク説明]
+タスク: [具体的なフロントエンドタスク説明]
 実装手順:
-1. [詳細ステップ1]
-2. [詳細ステップ2]
+1. [詳細ステップ1 - HTML/CSS/JS関連]
+2. [詳細ステップ2 - DOM操作・イベント処理]
 
 技術要件:
-- Rails 8 + PostgreSQL + Bootstrap対応
-- RSpec テスト実装必須
-- セキュリティ考慮
+- バニラJavaScript + HTML5 + CSS3対応
+- LocalStorageデータ管理必須
+- レスポンシブデザイン考慮
+- ブラウザ互換性考慮
 
-対象ファイル: [作成・修正ファイルリスト]
+対象ファイル: [作成・修正ファイルリスト - HTML/CSS/JS]
 "
 ```
 
-### Gemini → Claude（実装完了報告）
+### Gemini → Claude（フロントエンド実装完了報告）
 ```bash
 # Gemini実装後のClaude検証
-claude_code_review "実装完了。レビューお願いします:
+claude_code_review "フロントエンド実装完了。レビューお願いします:
 
 実装ファイル:
-[実装したファイルと内容の詳細]
+[実装したHTML/CSS/JSファイルと内容の詳細]
 
 修正内容:
-[具体的な修正内容]
+[具体的なDOM操作・イベント処理実装内容]
 
-テスト結果:
-[テスト実行結果]
+ブラウザテスト結果:
+[ブラウザ動作確認結果 - Chrome/Firefox/Safari等]
+
+LocalStorageテスト:
+[データ保存・復元テスト結果]
 "
 ```
 
 ### 実践ガイド
 
-#### 基本ワークフロー
-1. **Issue受信** → Claude分析・計画立案
-2. **自動Issue振り分け** → Claudeが実現したい内容を分析し、自動でGeminiに実装指示を送信
-3. **Gemini実装** → 大規模コード実装・ファイル作成・修正
-4. **品質検証** → Claudeで統合・改善指摘
-5. **改善ループ** → LGTM達成まで継続
+#### フロントエンド開発ワークフロー
+1. **UI/UX要件受信** → Claudeでフロントエンド設計・計画立案
+2. **自動実装振り分け** → HTML/CSS/JSの実装内容を分析し、Geminiに詳細指示送信
+3. **Geminiフロントエンド実装** → HTMLマークアップ・CSSスタイリング・JS機能実装
+4. **ブラウザ検証** → Claudeでクロスブラウザテスト・ユーザビリティ検証
+5. **改善ループ** → ユーザー体験最適化まで継続
 
 #### 🤖 自動Issue振り分け機能
 Claudeに実現したいことを伝えると、以下の流れで自動的にGeminiに作業が振り分けられます：
@@ -275,47 +277,56 @@ gemini -p "Railsのmass assignment対策。Strong Parametersの実装で注意�
 
 ## 開発方針
 
-### 初学者向けのシンプル設計
-- MVCパターンの基本を重視
-- 複雑な設計パターンよりも理解しやすさを優先
+### 初学者向けのシンプル設計（バニラJS版）
+- バニラJavaScriptの基本を重視（フレームワーク不使用）
+- DOM操作やイベント処理の基礎から学習
 - 段階的な機能追加により学習効果を最大化
-- 明確なコメントと分かりやすい変数名を使用
+- 明確なコメントと分かりやすい関数名を使用
+- モジュール分割で保守性を確保
 
-### セキュリティ
-- DeviseによるSecure By Default認証
-- Strong Parametersの徹底
-- CSRFトークンの適切な使用
-- SQLインジェクション対策
+### セキュリティ（バニラJS版）
+- クライアントサイドのみでサーバー不要
+- LocalStorageデータはブラウザローカルに保存
+- XSS対策：ユーザー入力の適切なエスケープ
+- Content Security Policy (CSP)の検討
 
-### テスト戦略
-- RSpecによる基本的なテストカバレッジ
-- Factory Botを使った効率的なテストデータ作成
-- 重要な機能における統合テストの実装
+### テスト戦略（バニラJS版）
+- ブラウザ開発者ツールでの手動テスト
+- LocalStorageデータの保存・取得確認
+- クロスブラウザ動作確認
+- レスポンシブデザインのモバイルテスト
 
-## ビルド・テストコマンド
+## 開発・テストコマンド（バニラJS版）
 
-### 開発環境起動
+### ローカル開発環境
 ```bash
-docker-compose up
+# ブラウザで直接表示
+open index.html
+
+# またはローカルサーバー起動（オプション）
+python -m http.server 8000
+# または
+npx serve .
 ```
 
-### テスト実行
+### デバッグ・テスト
 ```bash
-bundle exec rspec
+# ブラウザ開発者ツール
+# F12 → Console タブでJavaScriptデバッグ
+# コンソールエラー・ログ確認
 ```
 
-### Lint・コード品質チェック
+### コード品質チェック（将来実装予定）
 ```bash
-bundle exec rubocop
+# ESLint, Prettier等の軽量ツール検討
+# 手動コードレビュー中心
 ```
 
-### データベース操作
+### GitHub Pagesデプロイ
 ```bash
-# マイグレーション実行
-rails db:migrate
-
-# シードデータ投入
-rails db:seed
+# GitHubリポジトリのSettings → Pagesで設定
+# mainブランチのルートから自動デプロイ
+git push origin main
 ```
 
 ## PR・コミット標準化設定
