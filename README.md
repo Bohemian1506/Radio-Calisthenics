@@ -118,14 +118,23 @@ Radio-Calisthenics/
 
 ## 📚 ドキュメント
 
+### メインドキュメント
+- **[CLAUDE.md](./CLAUDE.md)** - プロジェクト詳細・AI連携システム
+- **[docs/](./docs/)** - 専門ドキュメント集（分野別詳細情報）
+
+### AI連携・自動化システム
+- **[AI統合システム](docs/AI_INTEGRATION.md)** - Claude & Gemini自律連携
+- **[GitHub統合](docs/GITHUB_INTEGRATION.md)** - Issue自動化・ダッシュボード
+- **[PR自動化](docs/PR_AUTOMATION.md)** - プルリクエスト自動生成
+- **[Gemini CLI活用](docs/GEMINI_CLI.md)** - 効果的な質問・活用方法
+
+### 開発・プロジェクト管理
+- **[開発ワークフロー](docs/DEVELOPMENT_WORKFLOW.md)** - 段階別開発手順
+- **[Phase管理](docs/PHASE_MANAGEMENT.md)** - プロジェクト構成・成長記録
+- **[サマリーシステム](docs/SUMMARIES_SYSTEM.md)** - 学習記録・知識ベース
+
 ### プロジェクト管理文書
 - [summaries/phases/PHASE_OVERVIEW.md](./summaries/phases/PHASE_OVERVIEW.md) - Phase全体構成・実装状況
-- [summaries/phases/PHASE5_CALENDAR_IMAGE.md](./summaries/phases/PHASE5_CALENDAR_IMAGE.md) - カレンダー画像生成機能詳細
-- [summaries/phases/PHASE_HISTORY.md](./summaries/phases/PHASE_HISTORY.md) - Phase変更履歴・教訓
-- [CLAUDE.md](./CLAUDE.md) - AI連携システム詳細ガイド・Phase管理ルール
-
-### 技術文書
-- [docs/](./docs/) - 技術ドキュメント集
 - [summaries/phases/](./summaries/phases/) - Phase別実装記録（**必読：Phase管理文書**）
 - [ai_workspace/](./ai_workspace/) - AI連携作業領域
 
