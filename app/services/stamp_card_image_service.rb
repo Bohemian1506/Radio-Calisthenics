@@ -53,6 +53,17 @@ class StampCardImageService
       date_color: "#7c3aed",
       date_inactive_color: "#94a3b8",
       stamp_color: "#dc2626"
+    },
+    template: {
+      template_image: "cards/stamp_card.png",
+      text_color: "#000000",
+      month_x: 92,
+      month_y: 117,
+      name_x: 456,
+      name_y: 117,
+      calendar_start_x: 50,
+      calendar_start_y: 170,
+      stamp_color: "#ffffff"
     }
   }.freeze
 
@@ -71,11 +82,21 @@ class StampCardImageService
 
   def generate
     create_base_image
-    draw_header
-    draw_calendar_grid
-    draw_dates
-    draw_stamps
-    draw_user_info
+
+    if @theme[:template_image]
+      # Template-based generation with overlays
+      draw_month_overlay
+      draw_name_overlay
+      draw_calendar_dates_overlay
+      draw_stamps_overlay
+    else
+      # Traditional generation for existing themes
+      draw_header
+      draw_calendar_grid
+      draw_dates
+      draw_stamps
+      draw_user_info
+    end
 
     @image
   rescue StandardError => e
@@ -152,6 +173,32 @@ class StampCardImageService
   end
 
   def create_base_image
+    if @theme[:template_image]
+      # Template-based image creation
+      template_path = Rails.root.join("app", "assets", "images", @theme[:template_image])
+
+      unless File.exist?(template_path)
+        Rails.logger.warn "Template image not found: #{template_path}, falling back to default theme"
+        @theme = THEMES[:default]
+        create_default_canvas
+        return
+      end
+
+      @image = MiniMagick::Image.open(template_path)
+
+      # Always resize to ensure correct dimensions
+      @image.resize "#{CALENDAR_WIDTH}x#{CALENDAR_HEIGHT}!"
+
+      Rails.logger.info "Template image loaded: #{template_path} (#{@image.width}x#{@image.height})"
+    else
+      # Traditional canvas creation for existing themes
+      create_default_canvas
+    end
+  end
+
+  private
+
+  def create_default_canvas
     # Create a temporary file with themed background canvas
     temp_file = Tempfile.new([ "calendar", ".png" ])
     temp_file.close
@@ -167,6 +214,149 @@ class StampCardImageService
     @image = MiniMagick::Image.open(temp_file.path)
 
     Rails.logger.info "Base image created: #{CALENDAR_WIDTH}x#{CALENDAR_HEIGHT} pixels with #{@theme[:background_color]} background"
+  end
+
+  # Template-based overlay methods
+  def draw_month_overlay
+    return unless @theme[:month_x] && @theme[:month_y]
+
+    month_text = "#{@month}"
+
+    @image = @image.combine_options do |c|
+      c.font select_font
+      c.pointsize 24
+      c.fill @theme[:text_color]
+      c.gravity "northwest"
+      c.annotate "+#{@theme[:month_x]},#{@theme[:month_y]}", month_text
+    end
+
+    Rails.logger.info "Month overlay added: #{month_text} at (#{@theme[:month_x]}, #{@theme[:month_y]})"
+  end
+
+  def draw_name_overlay
+    return unless @theme[:name_x] && @theme[:name_y]
+    return unless @user&.email
+
+    # Display name logic: use name if available, otherwise email without domain
+    display_name = if @user.respond_to?(:name) && @user.name.present?
+                     @user.name
+    else
+                     @user.email.split("@").first
+    end
+
+    # Truncate if too long for template
+    display_name = display_name.truncate(10, omission: "...")
+
+    @image = @image.combine_options do |c|
+      c.font select_font
+      c.pointsize 20
+      c.fill @theme[:text_color]
+      c.gravity "northwest"
+      c.annotate "+#{@theme[:name_x]},#{@theme[:name_y]}", display_name
+    end
+
+    Rails.logger.info "Name overlay added: #{display_name} at (#{@theme[:name_x]}, #{@theme[:name_y]})"
+  end
+
+  def draw_calendar_dates_overlay
+    return unless @theme[:calendar_start_x] && @theme[:calendar_start_y]
+
+    month_start = Date.new(@year, @month, 1)
+    calendar_start = month_start.beginning_of_week(:sunday)
+
+    6.times do |week|
+      7.times do |day|
+        date = calendar_start + (week * 7) + day
+        row = week
+        col = day
+
+        x = @theme[:calendar_start_x] + (col * CELL_WIDTH) + 30
+        y = @theme[:calendar_start_y] + (row * CELL_HEIGHT) + 20
+
+        # Date text color based on month
+        color = if date.month != @month
+                  "#cccccc"  # Light gray for other months
+        elsif date > Date.current
+                  "#aaaaaa"  # Gray for future dates
+        else
+                  @theme[:text_color]  # White for current month
+        end
+
+        @image = @image.combine_options do |c|
+          c.font select_font
+          c.pointsize 14
+          c.fill color
+          c.gravity "northwest"
+          c.annotate "+#{x},#{y}", date.day.to_s
+        end
+      end
+    end
+
+    Rails.logger.info "Calendar dates overlay completed"
+  end
+
+  def draw_stamps_overlay
+    return unless @theme[:calendar_start_x] && @theme[:calendar_start_y]
+
+    stamp_image_path = Rails.root.join("app", "assets", "images", "stamps", "finish_stamp.png")
+
+    unless File.exist?(stamp_image_path)
+      Rails.logger.warn "Stamp image not found: #{stamp_image_path}, using text stamps"
+      draw_text_stamps_overlay
+      return
+    end
+
+    month_start = Date.new(@year, @month, 1)
+    calendar_start = month_start.beginning_of_week(:sunday)
+
+    @stamps_data.each do |date, stamped_at|
+      # Calculate grid position
+      days_from_start = (date - calendar_start).to_i
+      week = days_from_start / 7
+      day = days_from_start % 7
+
+      next if week >= 6  # Skip if beyond calendar grid
+
+      x = @theme[:calendar_start_x] + (day * CELL_WIDTH) + (CELL_WIDTH / 2) - (STAMP_SIZE / 2)
+      y = @theme[:calendar_start_y] + (week * CELL_HEIGHT) + (CELL_HEIGHT / 2) - (STAMP_SIZE / 2) + 30
+
+      # Composite stamp image
+      stamp = MiniMagick::Image.open(stamp_image_path)
+      stamp.resize "#{STAMP_SIZE}x#{STAMP_SIZE}"
+
+      @image = @image.composite(stamp) do |c|
+        c.geometry "+#{x}+#{y}"
+      end
+    end
+
+    Rails.logger.info "#{@stamps_data.count} stamp overlays placed"
+  end
+
+  def draw_text_stamps_overlay
+    month_start = Date.new(@year, @month, 1)
+    calendar_start = month_start.beginning_of_week(:sunday)
+
+    @stamps_data.each do |date, stamped_at|
+      # Calculate grid position
+      days_from_start = (date - calendar_start).to_i
+      week = days_from_start / 7
+      day = days_from_start % 7
+
+      next if week >= 6  # Skip if beyond calendar grid
+
+      x = @theme[:calendar_start_x] + (day * CELL_WIDTH) + (CELL_WIDTH / 2) - 10
+      y = @theme[:calendar_start_y] + (week * CELL_HEIGHT) + (CELL_HEIGHT / 2) + 30
+
+      @image = @image.combine_options do |c|
+        c.font select_font
+        c.pointsize 20
+        c.fill @theme[:stamp_color]
+        c.gravity "northwest"
+        c.annotate "+#{x},#{y}", "★"
+      end
+    end
+
+    Rails.logger.info "#{@stamps_data.count} text stamp overlays placed"
   end
 
   def draw_header

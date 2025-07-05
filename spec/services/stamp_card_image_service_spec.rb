@@ -143,6 +143,43 @@ RSpec.describe StampCardImageService, type: :service do
         end
       end
     end
+
+    context 'with template theme' do
+      let(:theme) { :template }
+
+      it 'generates image with template theme when template exists' do
+        # Mock template file existence
+        allow(File).to receive(:exist?).and_call_original
+        allow(File).to receive(:exist?)
+          .with(Rails.root.join("app", "assets", "images", "cards", "stamp_card.png"))
+          .and_return(true)
+
+        service = described_class.new(user: user, year: year, month: month, theme: theme)
+        image = service.generate
+
+        expect(image).to be_a(MiniMagick::Image)
+        expect(image.width).to eq(800)
+        expect(image.height).to eq(600)
+      end
+
+      it 'falls back to default theme when template is missing' do
+        # Mock template file absence
+        allow(File).to receive(:exist?).and_call_original
+        allow(File).to receive(:exist?)
+          .with(Rails.root.join("app", "assets", "images", "cards", "stamp_card.png"))
+          .and_return(false)
+
+        service = described_class.new(user: user, year: year, month: month, theme: theme)
+
+        expect(Rails.logger).to receive(:warn).with(/Template image not found/)
+
+        image = service.generate
+
+        expect(image).to be_a(MiniMagick::Image)
+        expect(image.width).to eq(800)
+        expect(image.height).to eq(600)
+      end
+    end
   end
 
   describe 'format support' do
