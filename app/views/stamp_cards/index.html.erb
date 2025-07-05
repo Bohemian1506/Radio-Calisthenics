@@ -392,13 +392,15 @@ document.addEventListener('DOMContentLoaded', function() {
       formData.append('theme', themeSelect.value);
       formData.append('format', formatSelect.value);
       
-      // Ajax リクエスト
-      fetch(form.action, {
+      // Ajax リクエスト (URLに.jsonを追加)
+      const jsonUrl = form.action.replace(/\/?$/, '.json');
+      fetch(jsonUrl, {
         method: 'POST',
         body: formData,
         headers: {
           'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
         }
       })
       .then(response => {

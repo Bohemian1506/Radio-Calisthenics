@@ -79,12 +79,23 @@ class StampCardsController < ApplicationController
         format.json { render json: { status: "success", message: "画像を生成しました" } }
         format.html { redirect_to stamp_cards_path(year: @month.year, month: @month.month), notice: "スタンプカード画像を生成しました" }
       end
+    rescue ActionController::UnknownFormat => e
+      Rails.logger.error "Format error in image generation: #{e.message}"
+      error_message = "リクエスト形式が不正です。"
+      
+      if request.xhr?
+        render json: { status: "error", message: error_message }, status: :not_acceptable
+      else
+        redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message
+      end
     rescue ArgumentError => e
       Rails.logger.error "Image generation parameter error: #{e.message}"
       error_message = "パラメータエラー: #{e.message}"
-      respond_to do |format|
-        format.json { render json: { status: "error", message: error_message }, status: :bad_request }
-        format.html { redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message }
+      
+      if request.format.json? || request.xhr?
+        render json: { status: "error", message: error_message }, status: :bad_request
+      else
+        redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message
       end
     rescue StandardError => e
       Rails.logger.error "Image generation failed: #{e.message}"
@@ -102,9 +113,11 @@ class StampCardsController < ApplicationController
                        "画像生成に失敗しました。しばらく時間をおいて再度お試しください。"
       end
 
-      respond_to do |format|
-        format.json { render json: { status: "error", message: error_message }, status: :unprocessable_entity }
-        format.html { redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message }
+      # Check if request expects JSON response
+      if request.format.json? || request.xhr?
+        render json: { status: "error", message: error_message }, status: :unprocessable_entity
+      else
+        redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message
       end
     end
   end

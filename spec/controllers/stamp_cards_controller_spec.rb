@@ -75,6 +75,19 @@ RSpec.describe StampCardsController, type: :controller do
           expect(response.content_type).to include('application/json')
         end
       end
+      
+      context 'when ActionController::UnknownFormat occurs' do
+        it 'handles format errors gracefully' do
+          create(:stamp_card, user: user, date: Date.new(2025, 7, 1))
+          
+          # Simulate a request without proper format
+          request.headers['Accept'] = '*/*'
+          post :generate_image, params: { year: 2025, month: 7 }
+          
+          # Should render JSON for XHR requests
+          expect(response).to have_http_status(:not_acceptable)
+        end
+      end
     end
   end
   
