@@ -4,7 +4,9 @@ RSpec.describe StampCardImageService, type: :service do
   let(:user) { create(:user, email: 'test_user@example.com') }
   let(:year) { 2025 }
   let(:month) { 7 }
-  let(:service) { described_class.new(user: user, year: year, month: month) }
+  let(:theme) { :default }
+  let(:format) { :png }
+  let(:service) { described_class.new(user: user, year: year, month: month, theme: theme, format: format) }
 
   describe '#initialize' do
     it 'initializes with valid parameters' do
@@ -124,6 +126,50 @@ RSpec.describe StampCardImageService, type: :service do
             service.send(:draw_user_info)
           }.not_to raise_error
         end
+      end
+    end
+  end
+
+  describe 'theme support' do
+    context 'with different themes' do
+      [ :default, :blue, :green, :purple ].each do |theme_name|
+        it "generates image with #{theme_name} theme" do
+          service = described_class.new(user: user, year: year, month: month, theme: theme_name)
+          image = service.generate
+
+          expect(image).to be_a(MiniMagick::Image)
+          expect(image.width).to eq(800)
+          expect(image.height).to eq(600)
+        end
+      end
+    end
+  end
+
+  describe 'format support' do
+    context 'with PNG format' do
+      let(:format) { :png }
+
+      it 'generates PNG image' do
+        image = service.generate
+        expect(image.type).to eq('PNG')
+      end
+    end
+
+    context 'with PDF format' do
+      let(:format) { :pdf }
+      let(:temp_path) { Rails.root.join('tmp', 'test_calendar.pdf') }
+
+      after do
+        File.delete(temp_path) if File.exist?(temp_path)
+      end
+
+      it 'handles PDF generation gracefully' do
+        expect {
+          service.save_to_file(temp_path)
+        }.not_to raise_error
+
+        # Either PDF is created or fallback PNG
+        expect(File.exist?(temp_path) || File.exist?(temp_path.to_s.sub('.pdf', '.png'))).to be true
       end
     end
   end

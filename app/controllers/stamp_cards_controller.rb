@@ -45,16 +45,23 @@ class StampCardsController < ApplicationController
         raise StandardError, "指定された月にスタンプデータがありません"
       end
 
+      # Parse theme and format parameters
+      theme = params[:theme]&.to_sym || :default
+      format = params[:format]&.to_sym || :png
+
       service = StampCardImageService.new(
         user: current_user,
         year: @month.year,
-        month: @month.month
+        month: @month.month,
+        theme: theme,
+        format: format
       )
 
       image = service.generate
 
       # Generate temporary file for download with error handling
-      temp_file = Tempfile.new([ "stamp_card_#{current_user.id}_#{@month.year}_#{@month.month}", ".png" ])
+      file_extension = format == :pdf ? ".pdf" : ".png"
+      temp_file = Tempfile.new([ "stamp_card_#{current_user.id}_#{@month.year}_#{@month.month}", file_extension ])
       service.save_to_file(temp_file.path)
 
       # Verify file was created successfully
@@ -128,12 +135,18 @@ class StampCardsController < ApplicationController
       end
 
       month = parse_month_params
-      filename = "stamp_card_#{month.year}_#{month.month}.png"
+
+      # Determine file type and extension from file path
+      file_extension = File.extname(image_path)
+      is_pdf = file_extension.downcase == ".pdf"
+
+      filename = "stamp_card_#{month.year}_#{month.month}#{file_extension}"
+      content_type = is_pdf ? "application/pdf" : "image/png"
 
       # Send file with proper error handling
       send_file image_path,
                 filename: filename,
-                type: "image/png",
+                type: content_type,
                 disposition: "attachment"
 
       Rails.logger.info "Image download successful for user #{current_user.id}: #{filename}"
