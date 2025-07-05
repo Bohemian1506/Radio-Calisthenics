@@ -52,15 +52,13 @@ class StampCardsController < ApplicationController
         raise StandardError, "指定された月にスタンプデータがありません"
       end
 
-      # Parse theme and image format parameters (use image_format to avoid conflict with request format)
-      theme = params[:theme]&.to_sym || :default
+      # Parse image format parameter (use image_format to avoid conflict with request format)
       image_format = params[:image_format]&.to_sym || :png
 
       service = StampCardImageService.new(
         user: current_user,
         year: @month.year,
         month: @month.month,
-        theme: theme,
         format: image_format
       )
 

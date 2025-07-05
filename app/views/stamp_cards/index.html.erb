@@ -76,18 +76,8 @@
           
           <!-- 画像生成オプション -->
           <div class="text-center">
-            <!-- テーマ・形式選択 -->
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="theme-select" class="form-label small">🎨 テーマ</label>
-                <select id="theme-select" class="form-select form-select-sm">
-                  <option value="default">デフォルト</option>
-                  <option value="blue">ブルー</option>
-                  <option value="green">グリーン</option>
-                  <option value="purple">パープル</option>
-                  <option value="template">🎨 テンプレート</option>
-                </select>
-              </div>
+            <!-- 形式選択 -->
+            <div class="row mb-3 justify-content-center">
               <div class="col-md-6">
                 <label for="format-select" class="form-label small">📄 形式</label>
                 <select id="format-select" class="form-select form-select-sm">
@@ -311,37 +301,6 @@
     }
   }
 
-  /* テーマプレビュー用CSS */
-  .calendar-container.theme-default {
-    background-color: #ffffff;
-  }
-  
-  .calendar-container.theme-blue {
-    background-color: #f0f8ff;
-  }
-  
-  .calendar-container.theme-blue .card-header {
-    background-color: #1e3a8a !important;
-    color: white !important;
-  }
-  
-  .calendar-container.theme-green {
-    background-color: #f0fdf4;
-  }
-  
-  .calendar-container.theme-green .card-header {
-    background-color: #166534 !important;
-    color: white !important;
-  }
-  
-  .calendar-container.theme-purple {
-    background-color: #faf5ff;
-  }
-  
-  .calendar-container.theme-purple .card-header {
-    background-color: #7c3aed !important;
-    color: white !important;
-  }
 </style>
 
 <script>
@@ -349,27 +308,17 @@ document.addEventListener('DOMContentLoaded', function() {
   const generateBtn = document.getElementById('generate-image-btn');
   const downloadBtn = document.getElementById('download-image-btn');
   const statusDiv = document.getElementById('image-status');
-  const themeSelect = document.getElementById('theme-select');
   const formatSelect = document.getElementById('format-select');
 
-  // テーマ変更時のプレビュー機能
-  function updateThemePreview() {
-    const selectedTheme = themeSelect.value;
-    const calendarContainer = document.querySelector('.calendar-container');
-    
-    // テーマクラスをリセット
-    calendarContainer.classList.remove('theme-default', 'theme-blue', 'theme-green', 'theme-purple');
-    // 新しいテーマクラスを追加
-    calendarContainer.classList.add('theme-' + selectedTheme);
-    
-    statusDiv.textContent = `テーマ: ${themeSelect.options[themeSelect.selectedIndex].text}、形式: ${formatSelect.options[formatSelect.selectedIndex].text}`;
+  // 形式変更時のプレビュー機能
+  function updateFormatPreview() {
+    statusDiv.textContent = `形式: ${formatSelect.options[formatSelect.selectedIndex].text}`;
     statusDiv.className = 'mt-2 text-primary small';
   }
 
-  if (themeSelect) {
-    themeSelect.addEventListener('change', updateThemePreview);
-    formatSelect.addEventListener('change', updateThemePreview);
-    updateThemePreview(); // 初期表示
+  if (formatSelect) {
+    formatSelect.addEventListener('change', updateFormatPreview);
+    updateFormatPreview(); // 初期表示
   }
   
   if (generateBtn) {
@@ -386,10 +335,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const form = generateBtn.closest('form');
       const formData = new FormData(form);
       
-      // テーマと形式の選択値を追加
-      const themeSelect = document.getElementById('theme-select');
+      // 形式の選択値を追加
       const formatSelect = document.getElementById('format-select');
-      formData.append('theme', themeSelect.value);
       formData.append('image_format', formatSelect.value); // formatではなくimage_formatを使用
       
       // Ajax リクエスト (URLに.jsonを追加)
