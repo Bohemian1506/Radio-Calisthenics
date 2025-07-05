@@ -40,7 +40,7 @@ class StampCardsController < ApplicationController
 
   def generate_image
     @month = parse_month_params
-    
+
     # Debug logging
     Rails.logger.info "Generate image request - Format: #{request.format}, XHR: #{request.xhr?}, Accept: #{request.headers['Accept']}"
     Rails.logger.info "Request params: #{params.inspect}"
@@ -89,9 +89,9 @@ class StampCardsController < ApplicationController
       Rails.logger.error "Format error in image generation: #{e.message}"
       Rails.logger.error "Request format: #{request.format}, XHR: #{request.xhr?}, Path: #{request.path}"
       Rails.logger.error "Headers: #{request.headers.to_h.select { |k, v| k.start_with?('HTTP_') }}"
-      
+
       error_message = "リクエスト形式が不正です。"
-      
+
       if request.xhr?
         render json: { status: "error", message: error_message }, status: :not_acceptable
       else
@@ -100,7 +100,7 @@ class StampCardsController < ApplicationController
     rescue ArgumentError => e
       Rails.logger.error "Image generation parameter error: #{e.message}"
       error_message = "パラメータエラー: #{e.message}"
-      
+
       if request.format.json? || request.xhr?
         render json: { status: "error", message: error_message }, status: :bad_request
       else
