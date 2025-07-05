@@ -40,6 +40,10 @@ class StampCardsController < ApplicationController
 
   def generate_image
     @month = parse_month_params
+    
+    # Debug logging
+    Rails.logger.info "Generate image request - Format: #{request.format}, XHR: #{request.xhr?}, Accept: #{request.headers['Accept']}"
+    Rails.logger.info "Request params: #{params.inspect}"
 
     begin
       # Validate that user has stamps for the requested month
@@ -75,12 +79,17 @@ class StampCardsController < ApplicationController
       # Store temp file path in session for download action
       session[:stamp_card_image_path] = temp_file.path
 
-      respond_to do |format|
-        format.json { render json: { status: "success", message: "画像を生成しました" } }
-        format.html { redirect_to stamp_cards_path(year: @month.year, month: @month.month), notice: "スタンプカード画像を生成しました" }
+      # Success response
+      if request.format.json? || request.xhr?
+        render json: { status: "success", message: "画像を生成しました" }
+      else
+        redirect_to stamp_cards_path(year: @month.year, month: @month.month), notice: "スタンプカード画像を生成しました"
       end
     rescue ActionController::UnknownFormat => e
       Rails.logger.error "Format error in image generation: #{e.message}"
+      Rails.logger.error "Request format: #{request.format}, XHR: #{request.xhr?}, Path: #{request.path}"
+      Rails.logger.error "Headers: #{request.headers.to_h.select { |k, v| k.start_with?('HTTP_') }}"
+      
       error_message = "リクエスト形式が不正です。"
       
       if request.xhr?

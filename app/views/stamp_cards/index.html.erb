@@ -393,7 +393,14 @@ document.addEventListener('DOMContentLoaded', function() {
       formData.append('format', formatSelect.value);
       
       // Ajax リクエスト (URLに.jsonを追加)
-      const jsonUrl = form.action.replace(/\/?$/, '.json');
+      let jsonUrl = form.action;
+      if (!jsonUrl.endsWith('.json')) {
+        // Remove any trailing slash first
+        jsonUrl = jsonUrl.replace(/\/$/, '');
+        // Add .json extension
+        jsonUrl += '.json';
+      }
+      console.log('Requesting URL:', jsonUrl); // デバッグ用
       fetch(jsonUrl, {
         method: 'POST',
         body: formData,

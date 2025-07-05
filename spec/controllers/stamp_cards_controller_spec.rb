@@ -80,12 +80,12 @@ RSpec.describe StampCardsController, type: :controller do
         it 'handles format errors gracefully' do
           create(:stamp_card, user: user, date: Date.new(2025, 7, 1))
           
-          # Simulate a request without proper format
-          request.headers['Accept'] = '*/*'
+          # Simulate a request without proper format (not XHR, not JSON)
+          request.headers['Accept'] = 'text/plain'
           post :generate_image, params: { year: 2025, month: 7 }
           
-          # Should render JSON for XHR requests
-          expect(response).to have_http_status(:not_acceptable)
+          # Should redirect for non-XHR, non-JSON requests
+          expect(response).to redirect_to(stamp_cards_path(year: 2025, month: 7))
         end
       end
     end
