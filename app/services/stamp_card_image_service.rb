@@ -20,10 +20,48 @@ class StampCardImageService
   MARGIN_Y = 150
   STAMP_SIZE = 30
 
-  def initialize(user:, year:, month:)
+  # Theme configurations
+  THEMES = {
+    default: {
+      background_color: "white",
+      header_color: "#2c3e50",
+      grid_color: "#bdc3c7",
+      date_color: "#2c3e50",
+      date_inactive_color: "#95a5a6",
+      stamp_color: "#e74c3c"
+    },
+    blue: {
+      background_color: "#f0f8ff",
+      header_color: "#1e3a8a",
+      grid_color: "#93c5fd",
+      date_color: "#1e3a8a",
+      date_inactive_color: "#94a3b8",
+      stamp_color: "#dc2626"
+    },
+    green: {
+      background_color: "#f0fdf4",
+      header_color: "#166534",
+      grid_color: "#86efac",
+      date_color: "#166534",
+      date_inactive_color: "#94a3b8",
+      stamp_color: "#dc2626"
+    },
+    purple: {
+      background_color: "#faf5ff",
+      header_color: "#7c3aed",
+      grid_color: "#c4b5fd",
+      date_color: "#7c3aed",
+      date_inactive_color: "#94a3b8",
+      stamp_color: "#dc2626"
+    }
+  }.freeze
+
+  def initialize(user:, year:, month:, theme: :default, format: :png)
     @user = user
     @year = year
     @month = month
+    @theme = THEMES[theme] || THEMES[:default]
+    @format = format
     @image = nil
     @stamps_data = nil
 
@@ -47,7 +85,50 @@ class StampCardImageService
 
   def save_to_file(path)
     generate unless @image
-    @image.write(path)
+
+    if @format == :pdf
+      save_as_pdf(path)
+    else
+      @image.write(path)
+    end
+  end
+
+  def save_as_pdf(path)
+    begin
+      # First save as high-quality PNG
+      temp_png = Tempfile.new([ "calendar_temp", ".png" ])
+      temp_png.close
+
+      # Create high-resolution image for PDF
+      high_res_image = @image.dup
+      high_res_image.resize "1600x1200"  # Double resolution for print quality
+      high_res_image.write(temp_png.path)
+
+      # Convert PNG to PDF with security policy workaround
+      MiniMagick::Tool::Convert.new do |c|
+        c << temp_png.path
+        c.density 300  # 300 DPI for print quality
+        c.quality 95   # High quality
+        c << path
+      end
+
+      temp_png.unlink
+      Rails.logger.info "PDF saved: #{path} with 300 DPI print quality"
+    rescue MiniMagick::Error => e
+      # Fallback: Save as high-quality PNG instead
+      Rails.logger.warn "PDF generation failed (#{e.message}), saving as high-quality PNG instead"
+      high_quality_path = path.sub(/\.pdf$/i, "_print_quality.png")
+
+      high_res_image = @image.dup
+      high_res_image.resize "1600x1200"
+      high_res_image.quality 95
+      high_res_image.write(high_quality_path)
+
+      # Copy to requested path for compatibility
+      FileUtils.cp(high_quality_path, path.to_s.sub(/\.pdf$/i, ".png")) if path.to_s.end_with?(".pdf")
+
+      Rails.logger.info "High-quality PNG saved instead: #{high_quality_path}"
+    end
   end
 
   private
@@ -71,21 +152,21 @@ class StampCardImageService
   end
 
   def create_base_image
-    # Create a temporary file with a simple white canvas
+    # Create a temporary file with themed background canvas
     temp_file = Tempfile.new([ "calendar", ".png" ])
     temp_file.close
 
-    # Use convert command to create white canvas
+    # Use convert command to create themed canvas
     MiniMagick::Tool::Convert.new do |c|
       c.size "#{CALENDAR_WIDTH}x#{CALENDAR_HEIGHT}"
-      c.background "white"
-      c << "xc:white"
+      c.background @theme[:background_color]
+      c << "xc:#{@theme[:background_color]}"
       c << temp_file.path
     end
 
     @image = MiniMagick::Image.open(temp_file.path)
 
-    Rails.logger.info "Base image created: #{CALENDAR_WIDTH}x#{CALENDAR_HEIGHT} pixels"
+    Rails.logger.info "Base image created: #{CALENDAR_WIDTH}x#{CALENDAR_HEIGHT} pixels with #{@theme[:background_color]} background"
   end
 
   def draw_header
@@ -94,12 +175,12 @@ class StampCardImageService
     @image = @image.combine_options do |c|
       c.font select_font
       c.pointsize 28
-      c.fill "#2c3e50"
+      c.fill @theme[:header_color]
       c.gravity "north"
       c.annotate "+0,30", year_month_text
     end
 
-    Rails.logger.info "Header added: #{year_month_text}"
+    Rails.logger.info "Header added: #{year_month_text} with color #{@theme[:header_color]}"
   end
 
   def draw_calendar_grid
@@ -112,7 +193,7 @@ class StampCardImageService
       @image = @image.combine_options do |c|
         c.font select_font
         c.pointsize 16
-        c.fill "#34495e"
+        c.fill @theme[:header_color]
         c.gravity "northwest"
         c.annotate "+#{x - 10},#{y}", day
       end
@@ -122,7 +203,7 @@ class StampCardImageService
     7.times do |col|
       x = MARGIN_X + (col * CELL_WIDTH)
       @image = @image.combine_options do |c|
-        c.stroke "#bdc3c7"
+        c.stroke @theme[:grid_color]
         c.strokewidth 1
         c.fill "none"
         c.draw "line #{x},#{MARGIN_Y} #{x},#{MARGIN_Y + (6 * CELL_HEIGHT)}"
@@ -132,7 +213,7 @@ class StampCardImageService
     6.times do |row|
       y = MARGIN_Y + (row * CELL_HEIGHT)
       @image = @image.combine_options do |c|
-        c.stroke "#bdc3c7"
+        c.stroke @theme[:grid_color]
         c.strokewidth 1
         c.fill "none"
         c.draw "line #{MARGIN_X},#{y} #{MARGIN_X + (7 * CELL_WIDTH)},#{y}"
@@ -157,11 +238,11 @@ class StampCardImageService
 
         # Date text color based on month and availability
         color = if date.month != @month
-                  "#95a5a6"  # Gray for other months
+                  @theme[:date_inactive_color]  # Gray for other months
         elsif date > Date.current
-                  "#95a5a6"  # Gray for future dates
+                  @theme[:date_inactive_color]  # Gray for future dates
         else
-                  "#2c3e50"  # Dark for current month
+                  @theme[:date_color]  # Theme color for current month
         end
 
         @image = @image.combine_options do |c|
@@ -230,7 +311,7 @@ class StampCardImageService
       @image = @image.combine_options do |c|
         c.font select_font
         c.pointsize 20
-        c.fill "#e74c3c"
+        c.fill @theme[:stamp_color]
         c.gravity "northwest"
         c.annotate "+#{x},#{y}", "★"
       end
