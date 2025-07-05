@@ -132,11 +132,11 @@ RSpec.describe StampCardImageService, type: :service do
 
   describe 'theme support' do
     context 'with different themes' do
-      [:default, :blue, :green, :purple].each do |theme_name|
+      [ :default, :blue, :green, :purple ].each do |theme_name|
         it "generates image with #{theme_name} theme" do
           service = described_class.new(user: user, year: year, month: month, theme: theme_name)
           image = service.generate
-          
+
           expect(image).to be_a(MiniMagick::Image)
           expect(image.width).to eq(800)
           expect(image.height).to eq(600)
@@ -148,7 +148,7 @@ RSpec.describe StampCardImageService, type: :service do
   describe 'format support' do
     context 'with PNG format' do
       let(:format) { :png }
-      
+
       it 'generates PNG image' do
         image = service.generate
         expect(image.type).to eq('PNG')
@@ -167,7 +167,7 @@ RSpec.describe StampCardImageService, type: :service do
         expect {
           service.save_to_file(temp_path)
         }.not_to raise_error
-        
+
         # Either PDF is created or fallback PNG
         expect(File.exist?(temp_path) || File.exist?(temp_path.to_s.sub('.pdf', '.png'))).to be true
       end

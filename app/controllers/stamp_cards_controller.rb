@@ -48,7 +48,7 @@ class StampCardsController < ApplicationController
       # Parse theme and format parameters
       theme = params[:theme]&.to_sym || :default
       format = params[:format]&.to_sym || :png
-      
+
       service = StampCardImageService.new(
         user: current_user,
         year: @month.year,
@@ -135,11 +135,11 @@ class StampCardsController < ApplicationController
       end
 
       month = parse_month_params
-      
+
       # Determine file type and extension from file path
       file_extension = File.extname(image_path)
       is_pdf = file_extension.downcase == ".pdf"
-      
+
       filename = "stamp_card_#{month.year}_#{month.month}#{file_extension}"
       content_type = is_pdf ? "application/pdf" : "image/png"
 
