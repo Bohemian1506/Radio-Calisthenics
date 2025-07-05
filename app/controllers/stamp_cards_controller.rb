@@ -1,5 +1,8 @@
 class StampCardsController < ApplicationController
-  before_action :authenticate_user!
+  include JsonAuthentication
+
+  before_action :authenticate_user!, unless: -> { request.format.json? }
+  before_action :ensure_json_format, only: [ :generate_image ], if: -> { request.format.json? }
 
   def index
     @month = parse_month_params
@@ -38,6 +41,10 @@ class StampCardsController < ApplicationController
   def generate_image
     @month = parse_month_params
 
+    # Debug logging
+    Rails.logger.info "Generate image request - Format: #{request.format}, XHR: #{request.xhr?}, Accept: #{request.headers['Accept']}"
+    Rails.logger.info "Request params: #{params.inspect}"
+
     begin
       # Validate that user has stamps for the requested month
       stamps_count = current_user.stamp_cards.where(date: @month.beginning_of_month..@month.end_of_month).count
@@ -45,22 +52,22 @@ class StampCardsController < ApplicationController
         raise StandardError, "指定された月にスタンプデータがありません"
       end
 
-      # Parse theme and format parameters
+      # Parse theme and image format parameters (use image_format to avoid conflict with request format)
       theme = params[:theme]&.to_sym || :default
-      format = params[:format]&.to_sym || :png
+      image_format = params[:image_format]&.to_sym || :png
 
       service = StampCardImageService.new(
         user: current_user,
         year: @month.year,
         month: @month.month,
         theme: theme,
-        format: format
+        format: image_format
       )
 
       image = service.generate
 
       # Generate temporary file for download with error handling
-      file_extension = format == :pdf ? ".pdf" : ".png"
+      file_extension = image_format == :pdf ? ".pdf" : ".png"
       temp_file = Tempfile.new([ "stamp_card_#{current_user.id}_#{@month.year}_#{@month.month}", file_extension ])
       service.save_to_file(temp_file.path)
 
@@ -72,16 +79,32 @@ class StampCardsController < ApplicationController
       # Store temp file path in session for download action
       session[:stamp_card_image_path] = temp_file.path
 
-      respond_to do |format|
-        format.json { render json: { status: "success", message: "画像を生成しました" } }
-        format.html { redirect_to stamp_cards_path(year: @month.year, month: @month.month), notice: "スタンプカード画像を生成しました" }
+      # Success response
+      if request.format.json? || request.xhr?
+        render json: { status: "success", message: "画像を生成しました" }
+      else
+        redirect_to stamp_cards_path(year: @month.year, month: @month.month), notice: "スタンプカード画像を生成しました"
+      end
+    rescue ActionController::UnknownFormat => e
+      Rails.logger.error "Format error in image generation: #{e.message}"
+      Rails.logger.error "Request format: #{request.format}, XHR: #{request.xhr?}, Path: #{request.path}"
+      Rails.logger.error "Headers: #{request.headers.to_h.select { |k, v| k.start_with?('HTTP_') }}"
+
+      error_message = "リクエスト形式が不正です。"
+
+      if request.xhr?
+        render json: { status: "error", message: error_message }, status: :not_acceptable
+      else
+        redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message
       end
     rescue ArgumentError => e
       Rails.logger.error "Image generation parameter error: #{e.message}"
       error_message = "パラメータエラー: #{e.message}"
-      respond_to do |format|
-        format.json { render json: { status: "error", message: error_message }, status: :bad_request }
-        format.html { redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message }
+
+      if request.format.json? || request.xhr?
+        render json: { status: "error", message: error_message }, status: :bad_request
+      else
+        redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message
       end
     rescue StandardError => e
       Rails.logger.error "Image generation failed: #{e.message}"
@@ -99,9 +122,11 @@ class StampCardsController < ApplicationController
                        "画像生成に失敗しました。しばらく時間をおいて再度お試しください。"
       end
 
-      respond_to do |format|
-        format.json { render json: { status: "error", message: error_message }, status: :unprocessable_entity }
-        format.html { redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message }
+      # Check if request expects JSON response
+      if request.format.json? || request.xhr?
+        render json: { status: "error", message: error_message }, status: :unprocessable_entity
+      else
+        redirect_to stamp_cards_path(year: @month.year, month: @month.month), alert: error_message
       end
     end
   end
@@ -169,6 +194,11 @@ class StampCardsController < ApplicationController
   end
 
   private
+
+  def ensure_json_format
+    # This is called only for JSON format requests
+    # We can add additional checks here if needed
+  end
 
   def stamp_card_params
     params.require(:stamp_card).permit(:date, :stamped_at)
