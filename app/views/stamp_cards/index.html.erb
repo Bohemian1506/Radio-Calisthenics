@@ -401,7 +401,31 @@ document.addEventListener('DOMContentLoaded', function() {
           'Accept': 'application/json'
         }
       })
-      .then(response => response.json())
+      .then(response => {
+        // Content-Typeをチェック
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          // JSONではない場合のエラーハンドリング
+          if (response.status === 401) {
+            throw new Error('認証が必要です。ログインし直してください。');
+          } else if (response.status === 404) {
+            throw new Error('リクエスト先が見つかりません。');
+          } else if (response.status >= 500) {
+            throw new Error('サーバーエラーが発生しました。しばらく時間をおいて再度お試しください。');
+          } else {
+            throw new Error('予期しないエラーが発生しました。');
+          }
+        }
+        
+        // レスポンスのステータスコードもチェック
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || '画像生成に失敗しました');
+          });
+        }
+        
+        return response.json();
+      })
       .then(data => {
         if (data.status === 'success') {
           statusDiv.textContent = data.message;
@@ -419,6 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       })
       .catch(error => {
+        console.error('画像生成エラー:', error);
         statusDiv.textContent = error.message;
         statusDiv.className = 'mt-2 text-danger small';
         generateBtn.disabled = false;

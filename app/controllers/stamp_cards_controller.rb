@@ -1,5 +1,8 @@
 class StampCardsController < ApplicationController
-  before_action :authenticate_user!
+  include JsonAuthentication
+
+  before_action :authenticate_user!, unless: -> { request.format.json? }
+  before_action :ensure_json_format, only: [ :generate_image ], if: -> { request.format.json? }
 
   def index
     @month = parse_month_params
@@ -169,6 +172,11 @@ class StampCardsController < ApplicationController
   end
 
   private
+
+  def ensure_json_format
+    # This is called only for JSON format requests
+    # We can add additional checks here if needed
+  end
 
   def stamp_card_params
     params.require(:stamp_card).permit(:date, :stamped_at)
