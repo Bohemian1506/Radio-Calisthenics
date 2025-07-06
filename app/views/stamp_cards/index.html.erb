@@ -40,7 +40,7 @@
           </div>
         </div>
         <div class="card-body text-center d-flex flex-column justify-content-center">
-          <div class="stamp-card-container">
+          <div class="stamp-card-container position-relative">
             <% 
               # app/assets/images を優先してPNG形式を使用
               image_file = ["radio_calisthenics_card.png", "radio_calisthenics_card.jpg"].find do |file|
@@ -53,6 +53,120 @@
                           alt: "ラジオ体操カード", 
                           class: "img-fluid border rounded",
                           style: "max-width: 100%; width: 100%; height: auto;" %>
+            
+            <!-- SVGオーバーレイ -->
+            <svg class="position-absolute top-0 start-0 w-100 h-100" 
+                 viewBox="0 0 800 600" 
+                 preserveAspectRatio="xMidYMid meet"
+                 style="pointer-events: none;">
+              <!-- ユーザー名表示 -->
+              <text x="460" y="-13" 
+                    text-anchor="start" 
+                    font-family="Arial, sans-serif" 
+                    font-size="24" 
+                    font-weight="bold" 
+                    fill="#2c3e50">
+                <%= current_user.email.split('@').first %>
+              </text>
+              
+              <!-- 月の数字 -->
+              <text x="100" y="0" 
+                    text-anchor="middle" 
+                    font-family="Arial, sans-serif" 
+                    font-size="72" 
+                    font-weight="bold" 
+                    fill="#2c3e50">
+                <%= @monthly_stats[:month].strftime("%-m") %>
+              </text>
+              
+              <!-- カレンダーグリッドのスタンプ表示 -->
+              <% 
+                # カレンダーの開始位置とグリッドサイズ
+                grid_start_x = 45
+                grid_start_y = 180
+                cell_width = 101
+                cell_height = 100
+              %>
+              
+              <!-- カレンダー日付とスタンプ -->
+              <% @calendar_data.each_with_index do |week, week_index| %>
+                <% week.each_with_index do |day_data, day_index| %>
+                  <% 
+                    # 6週目の同月日付は表示をスキップ
+                    next if week_index == 5 && day_data[:current_month]
+                  %>
+                  <% if day_data[:current_month] %>
+                    <% 
+                      x_pos = grid_start_x + day_index * cell_width + cell_width / 2
+                      y_pos = grid_start_y + week_index * cell_height + cell_height / 2
+                      
+                      # 6週目の日付を検出して前週の同じ曜日に表示するロジック
+                      current_date = day_data[:date]
+                      is_combined_cell = false
+                      combined_dates = []
+                      
+                      # 5週目で、6週目に同じ曜日の同月日付がある場合
+                      if week_index == 4 && day_data[:current_month]
+                        # 6週目の同じ曜日（day_index）に同月の日付があるかチェック
+                        sixth_week = @calendar_data[5] if @calendar_data.length > 5
+                        if sixth_week && sixth_week[day_index] && sixth_week[day_index][:current_month]
+                          sixth_week_date = sixth_week[day_index][:date]
+                          is_combined_cell = true
+                          combined_dates = [current_date.day, sixth_week_date.day]
+                        end
+                      end
+                    %>
+                    
+                    <!-- 日付表示 -->
+                    <% if is_combined_cell && combined_dates.any? %>
+                      <!-- 複数日付の場合（斜めに配置） -->
+                      <!-- 1つ目の日付（左上） -->
+                      <text x="<%= x_pos - 25 %>" 
+                            y="<%= y_pos - 18 %>" 
+                            text-anchor="middle" 
+                            font-family="Arial, sans-serif" 
+                            font-size="28" 
+                            font-weight="bold" 
+                            fill="white">
+                        <%= combined_dates[0] %>
+                      </text>
+                      <!-- スラッシュ（中央） -->
+                      <text x="<%= x_pos %>" 
+                            y="<%= y_pos %>" 
+                            text-anchor="middle" 
+                            font-family="Arial, sans-serif" 
+                            font-size="24" 
+                            font-weight="bold" 
+                            fill="white" 
+                            opacity="0.8">
+                        /
+                      </text>
+                      <!-- 2つ目の日付（右下） -->
+                      <text x="<%= x_pos + 25 %>" 
+                            y="<%= y_pos + 18 %>" 
+                            text-anchor="middle" 
+                            font-family="Arial, sans-serif" 
+                            font-size="28" 
+                            font-weight="bold" 
+                            fill="white">
+                        <%= combined_dates[1] %>
+                      </text>
+                    <% else %>
+                      <!-- 単一日付の場合 -->
+                      <text x="<%= x_pos %>" 
+                            y="<%= y_pos %>" 
+                            text-anchor="middle" 
+                            font-family="Arial, sans-serif" 
+                            font-size="48" 
+                            font-weight="bold" 
+                            fill="white">
+                        <%= day_data[:date].day %>
+                      </text>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </svg>
           </div>
         </div>
       </div>
