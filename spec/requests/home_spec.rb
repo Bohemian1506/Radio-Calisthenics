@@ -12,7 +12,7 @@ RSpec.describe "Homes", type: :request do
 
     context "when user is signed in" do
       let(:user) { create(:user) }
-      
+
       before do
         sign_in user
       end
