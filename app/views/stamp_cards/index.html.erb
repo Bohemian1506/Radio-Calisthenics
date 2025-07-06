@@ -23,12 +23,13 @@
     </div>
   <% end %>
 
-  <!-- 月間ナビゲーション -->
+  <!-- メインコンテンツ：2カラムレイアウト -->
   <div class="row mb-4">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-body">
-          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3 gap-2">
+    <!-- ラジオ体操カード表示（左側） -->
+    <div class="col-lg-7 mb-4">
+      <div class="card" style="height: 1000px;">
+        <div class="card-header">
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
             <% prev_month = @monthly_stats[:month] - 1.month %>
             <%= link_to stamp_cards_path(year: prev_month.year, month: prev_month.month), 
                         class: "btn btn-outline-primary btn-sm order-1 order-md-0",
@@ -38,9 +39,7 @@
               <span class="d-sm-none">前月</span>
             <% end %>
             
-            <h4 class="mb-0 order-0 order-md-1 text-center">
-              <%= @monthly_stats[:month].strftime("%Y年%m月") %>のスタンプカード
-            </h4>
+            <h5 class="mb-0 order-0 order-md-1 text-center">📅 ラジオ体操カード</h5>
             
             <% next_month = @monthly_stats[:month] + 1.month %>
             <% if next_month <= Date.current.beginning_of_month %>
@@ -61,18 +60,6 @@
             <% end %>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- メインコンテンツ：2カラムレイアウト -->
-  <div class="row mb-4">
-    <!-- ラジオ体操カード表示（左側） -->
-    <div class="col-lg-7 mb-4">
-      <div class="card" style="height: 1000px;">
-        <div class="card-header">
-          <h5 class="mb-0">📅 ラジオ体操カード</h5>
-        </div>
         <div class="card-body text-center d-flex flex-column justify-content-center">
           <div class="stamp-card-container">
             <% 
@@ -87,11 +74,6 @@
                           alt: "ラジオ体操カード", 
                           class: "img-fluid border rounded",
                           style: "max-width: 100%; width: 100%; height: auto;" %>
-          </div>
-          <div class="mt-3">
-            <small class="text-muted">
-              ラジオ体操参加カードテンプレート - 継続は力なり！
-            </small>
           </div>
         </div>
       </div>
