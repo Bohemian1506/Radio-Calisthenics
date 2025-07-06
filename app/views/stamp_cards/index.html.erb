@@ -117,7 +117,54 @@
                       end
                     %>
                     
-                    <!-- スタンプ表示 -->
+                    <!-- 日付表示 -->
+                    <% if is_combined_cell && combined_dates.any? %>
+                      <!-- 複数日付の場合（斜めに配置） -->
+                      <!-- 1つ目の日付（左上） -->
+                      <text x="<%= x_pos - 25 %>" 
+                            y="<%= y_pos - 18 %>" 
+                            text-anchor="middle" 
+                            font-family="Arial, sans-serif" 
+                            font-size="28" 
+                            font-weight="bold" 
+                            fill="white">
+                        <%= combined_dates[0] %>
+                      </text>
+                      <!-- スラッシュ（中央） -->
+                      <text x="<%= x_pos %>" 
+                            y="<%= y_pos %>" 
+                            text-anchor="middle" 
+                            font-family="Arial, sans-serif" 
+                            font-size="24" 
+                            font-weight="bold" 
+                            fill="white" 
+                            opacity="0.8">
+                        /
+                      </text>
+                      <!-- 2つ目の日付（右下） -->
+                      <text x="<%= x_pos + 25 %>" 
+                            y="<%= y_pos + 18 %>" 
+                            text-anchor="middle" 
+                            font-family="Arial, sans-serif" 
+                            font-size="28" 
+                            font-weight="bold" 
+                            fill="white">
+                        <%= combined_dates[1] %>
+                      </text>
+                    <% else %>
+                      <!-- 単一日付の場合 -->
+                      <text x="<%= x_pos %>" 
+                            y="<%= y_pos %>" 
+                            text-anchor="middle" 
+                            font-family="Arial, sans-serif" 
+                            font-size="48" 
+                            font-weight="bold" 
+                            fill="white">
+                        <%= day_data[:date].day %>
+                      </text>
+                    <% end %>
+                    
+                    <!-- スタンプ表示（日付の上に重ねる） -->
                     <% if is_combined_cell && combined_dates.any? %>
                       <!-- 複数日付のスタンプ処理 -->
                       <% 
@@ -179,53 +226,6 @@
                           <title><%= day_data[:date].strftime("%m月%d日") %>: スタンプ可能</title>
                         </circle>
                       <% end %>
-                    <% end %>
-                    
-                    <!-- 日付表示 -->
-                    <% if is_combined_cell && combined_dates.any? %>
-                      <!-- 複数日付の場合（斜めに配置） -->
-                      <!-- 1つ目の日付（左上） -->
-                      <text x="<%= x_pos - 25 %>" 
-                            y="<%= y_pos - 18 %>" 
-                            text-anchor="middle" 
-                            font-family="Arial, sans-serif" 
-                            font-size="28" 
-                            font-weight="bold" 
-                            fill="white">
-                        <%= combined_dates[0] %>
-                      </text>
-                      <!-- スラッシュ（中央） -->
-                      <text x="<%= x_pos %>" 
-                            y="<%= y_pos %>" 
-                            text-anchor="middle" 
-                            font-family="Arial, sans-serif" 
-                            font-size="24" 
-                            font-weight="bold" 
-                            fill="white" 
-                            opacity="0.8">
-                        /
-                      </text>
-                      <!-- 2つ目の日付（右下） -->
-                      <text x="<%= x_pos + 25 %>" 
-                            y="<%= y_pos + 18 %>" 
-                            text-anchor="middle" 
-                            font-family="Arial, sans-serif" 
-                            font-size="28" 
-                            font-weight="bold" 
-                            fill="white">
-                        <%= combined_dates[1] %>
-                      </text>
-                    <% else %>
-                      <!-- 単一日付の場合 -->
-                      <text x="<%= x_pos %>" 
-                            y="<%= y_pos %>" 
-                            text-anchor="middle" 
-                            font-family="Arial, sans-serif" 
-                            font-size="48" 
-                            font-weight="bold" 
-                            fill="white">
-                        <%= day_data[:date].day %>
-                      </text>
                     <% end %>
                   <% end %>
                 <% end %>
