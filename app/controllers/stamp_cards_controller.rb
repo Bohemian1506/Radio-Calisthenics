@@ -36,6 +36,7 @@ class StampCardsController < ApplicationController
   end
 
 
+
   private
 
 
