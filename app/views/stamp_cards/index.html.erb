@@ -6,9 +6,9 @@
   <div class="row mb-4">
     <!-- ラジオ体操カード表示（左側） -->
     <div class="col-lg-7 mb-4">
-      <div class="card" style="height: 700px;">
-        <div class="card-header">
-          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+      <div class="card" style="height: 1000px;">
+        <div class="card-header" style="min-height: 4rem;">
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 h-100">
             <% prev_month = @monthly_stats[:month] - 1.month %>
             <%= link_to stamp_cards_path(year: prev_month.year, month: prev_month.month), 
                         class: "btn btn-outline-primary btn-sm order-1 order-md-0",
@@ -60,8 +60,8 @@
 
     <!-- 月間統計サマリー（右側） -->
     <div class="col-lg-5">
-      <div class="card" style="height: 700px;">
-        <div class="card-header">
+      <div class="card" style="height: 1000px;">
+        <div class="card-header d-flex align-items-center" style="min-height: 4rem;">
           <h5 class="mb-0">📊 今日のスタンプ・記録</h5>
         </div>
         <div class="card-body d-flex flex-column" style="overflow-y: auto; padding-top: 2.5rem;">
