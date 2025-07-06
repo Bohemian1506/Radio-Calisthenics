@@ -73,165 +73,29 @@
               </span>
             <% end %>
           </div>
-          
-          <!-- 画像生成オプション -->
-          <div class="text-center">
-            <!-- テーマ・形式選択 -->
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="theme-select" class="form-label small">🎨 テーマ</label>
-                <select id="theme-select" class="form-select form-select-sm">
-                  <option value="default">デフォルト</option>
-                  <option value="blue">ブルー</option>
-                  <option value="green">グリーン</option>
-                  <option value="purple">パープル</option>
-                  <option value="template">🎨 テンプレート</option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label for="format-select" class="form-label small">📄 形式</label>
-                <select id="format-select" class="form-select form-select-sm">
-                  <option value="png">PNG (Web用)</option>
-                  <option value="pdf">PDF (印刷用)</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- 画像生成・ダウンロードボタン -->
-            <div class="btn-group" role="group">
-              <%= button_to "🖼️ カード画像を生成", 
-                            generate_image_stamp_cards_path(year: @monthly_stats[:month].year, month: @monthly_stats[:month].month),
-                            method: :post,
-                            class: "btn btn-success",
-                            id: "generate-image-btn",
-                            data: { 
-                              turbo: false,
-                              action: "click->stamp-card#generateImage"
-                            } %>
-              <%= link_to "💾 画像をダウンロード", 
-                          download_image_stamp_cards_path(year: @monthly_stats[:month].year, month: @monthly_stats[:month].month),
-                          class: "btn btn-primary",
-                          id: "download-image-btn",
-                          style: "display: none;",
-                          data: { turbo: false } %>
-            </div>
-            <div id="image-status" class="mt-2 text-muted small"></div>
-          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- カレンダー表示 -->
+  <!-- ラジオ体操カード表示 -->
   <div class="row mb-4">
     <div class="col-12">
       <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">📅 カレンダー</h5>
-          <div class="btn-group btn-group-sm" role="group">
-            <input type="radio" class="btn-check" name="calendar-mode" id="html-mode" autocomplete="off" checked>
-            <label class="btn btn-outline-primary" for="html-mode">HTML版</label>
-            
-            <input type="radio" class="btn-check" name="calendar-mode" id="canvas-mode" autocomplete="off">
-            <label class="btn btn-outline-primary" for="canvas-mode">Canvas版</label>
-          </div>
+        <div class="card-header">
+          <h5 class="mb-0">📅 ラジオ体操カード</h5>
         </div>
-        <div class="card-body">
-          <!-- HTML版カレンダー -->
-          <div id="html-calendar" class="calendar-container">
-            <!-- 曜日ヘッダー -->
-            <div class="row mb-2">
-              <% %w[日 月 火 水 木 金 土].each_with_index do |day, index| %>
-                <div class="col text-center">
-                  <strong class="<%= 'text-danger' if index == 0 %><%= 'text-primary' if index == 6 %>">
-                    <%= day %>
-                  </strong>
-                </div>
-              <% end %>
-            </div>
-
-            <!-- カレンダー本体 -->
-            <% @calendar_data.each do |week| %>
-              <div class="row mb-1">
-                <% week.each do |day_data| %>
-                  <div class="col calendar-day p-1">
-                    <div class="calendar-cell border rounded p-2 position-relative h-100 
-                                <%= 'bg-light text-muted' unless day_data[:current_month] %>
-                                <%= 'border-primary bg-primary bg-opacity-10' if day_data[:today] %>
-                                <%= 'bg-success bg-opacity-20 border-success' if day_data[:stamped] %>">
-                      
-                      <!-- 日付 -->
-                      <div class="d-flex justify-content-between align-items-start">
-                        <small class="<%= 'text-danger' if day_data[:date].sunday? && day_data[:current_month] %>
-                                     <%= 'text-primary' if day_data[:date].saturday? && day_data[:current_month] %>">
-                          <%= day_data[:date].day %>
-                        </small>
-                        
-                        <!-- 今日マーク -->
-                        <% if day_data[:today] %>
-                          <span class="badge bg-primary rounded-pill">今日</span>
-                        <% end %>
-                      </div>
-
-                      <!-- スタンプ表示 -->
-                      <div class="text-center mt-1">
-                        <% if day_data[:stamped] %>
-                          <div class="stamp-mark">
-                            <span class="text-success fs-4">✓</span>
-                            <% if day_data[:stamped_time] %>
-                              <small class="d-block text-muted"><%= day_data[:stamped_time] %></small>
-                            <% end %>
-                          </div>
-                        <% elsif day_data[:can_stamp] %>
-                          <%= form_with model: StampCard.new, url: stamp_cards_path, class: "stamp-form" do |form| %>
-                            <%= form.hidden_field :date, value: day_data[:date] %>
-                            <%= form.submit "スタンプ", class: "btn btn-sm btn-outline-primary" %>
-                          <% end %>
-                        <% end %>
-                      </div>
-                    </div>
-                  </div>
-                <% end %>
-              </div>
-            <% end %>
+        <div class="card-body text-center">
+          <div class="stamp-card-container">
+            <%= image_tag "radio_calisthenics_card.jpg", 
+                          alt: "ラジオ体操カード", 
+                          class: "img-fluid border rounded",
+                          style: "max-width: 800px; width: 100%; height: auto;" %>
           </div>
-
-          <!-- Canvas版カレンダー -->
-          <div id="canvas-calendar" 
-               style="display: none;"
-               data-controller="stamp-card-canvas"
-               data-stamp-card-canvas-calendar-data-value="<%= @calendar_data.to_json %>"
-               data-stamp-card-canvas-current-month-value="<%= @monthly_stats[:month].strftime('%Y-%m') %>"
-               data-stamp-card-canvas-current-year-value="<%= @monthly_stats[:month].year %>"
-               data-stamp-card-canvas-theme-value="default">
-            
-            <!-- Canvas容器 -->
-            <div data-stamp-card-canvas-target="container" class="canvas-container text-center">
-              <!-- 曜日ヘッダー（Canvas版用） -->
-              <div class="row mb-2">
-                <% %w[日 月 火 水 木 金 土].each_with_index do |day, index| %>
-                  <div class="col text-center">
-                    <strong class="<%= 'text-danger' if index == 0 %><%= 'text-primary' if index == 6 %>">
-                      <%= day %>
-                    </strong>
-                  </div>
-                <% end %>
-              </div>
-              
-              <!-- Canvas要素 -->
-              <canvas data-stamp-card-canvas-target="canvas" 
-                      class="border rounded"
-                      style="max-width: 100%; height: auto; cursor: pointer;">
-                お使いのブラウザはCanvasをサポートしていません。
-              </canvas>
-              
-              <!-- Canvas情報表示 -->
-              <div class="mt-2">
-                <small class="text-muted">
-                  Canvas版: 高精度なレスポンシブ対応、スムーズなアニメーション
-                </small>
-              </div>
-            </div>
+          <div class="mt-3">
+            <small class="text-muted">
+              ラジオ体操参加カードテンプレート - 継続は力なり！
+            </small>
           </div>
         </div>
       </div>
@@ -326,256 +190,19 @@
 </div>
 
 <style>
-  .calendar-day {
-    min-height: 100px;
+  .stamp-card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
   }
   
-  .calendar-cell {
-    min-height: 90px;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .calendar-cell:hover {
-    transform: translateY(-2px);
+  .stamp-card-container img {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease-in-out;
   }
   
-  .stamp-form {
-    margin: 0;
-  }
-  
-  .stamp-mark {
-    animation: stamp-bounce 0.6s ease-in-out;
-  }
-  
-  @keyframes stamp-bounce {
-    0%, 20%, 60%, 100% {
-      transform: translateY(0);
-    }
-    40% {
-      transform: translateY(-10px);
-    }
-    80% {
-      transform: translateY(-5px);
-    }
-  }
-
-  /* テーマプレビュー用CSS */
-  .calendar-container.theme-default {
-    background-color: #ffffff;
-  }
-  
-  .calendar-container.theme-blue {
-    background-color: #f0f8ff;
-  }
-  
-  .calendar-container.theme-blue .card-header {
-    background-color: #1e3a8a !important;
-    color: white !important;
-  }
-  
-  .calendar-container.theme-green {
-    background-color: #f0fdf4;
-  }
-  
-  .calendar-container.theme-green .card-header {
-    background-color: #166534 !important;
-    color: white !important;
-  }
-  
-  .calendar-container.theme-purple {
-    background-color: #faf5ff;
-  }
-  
-  .calendar-container.theme-purple .card-header {
-    background-color: #7c3aed !important;
-    color: white !important;
-  }
-
-  /* Canvas版カレンダーのスタイル */
-  .canvas-container {
-    position: relative;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .canvas-container canvas {
-    display: block;
-    margin: 0 auto;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.2s ease-in-out;
-  }
-
-  .canvas-container canvas:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-
-  /* Canvas版の曜日ヘッダー調整 */
-  #canvas-calendar .row {
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  #canvas-calendar .col {
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-  }
-
-  /* カレンダー切り替えボタンのスタイル調整 */
-  .btn-check:checked + .btn-outline-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-    color: #fff;
+  .stamp-card-container img:hover {
+    transform: scale(1.02);
   }
 </style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const generateBtn = document.getElementById('generate-image-btn');
-  const downloadBtn = document.getElementById('download-image-btn');
-  const statusDiv = document.getElementById('image-status');
-  const themeSelect = document.getElementById('theme-select');
-  const formatSelect = document.getElementById('format-select');
-
-  // HTML/Canvas切り替え機能
-  const htmlModeRadio = document.getElementById('html-mode');
-  const canvasModeRadio = document.getElementById('canvas-mode');
-  const htmlCalendar = document.getElementById('html-calendar');
-  const canvasCalendar = document.getElementById('canvas-calendar');
-
-  function switchCalendarMode() {
-    if (htmlModeRadio.checked) {
-      htmlCalendar.style.display = 'block';
-      canvasCalendar.style.display = 'none';
-      console.log('Switched to HTML calendar mode');
-    } else if (canvasModeRadio.checked) {
-      htmlCalendar.style.display = 'none';
-      canvasCalendar.style.display = 'block';
-      console.log('Switched to Canvas calendar mode');
-      
-      // Canvas版表示後、少し遅延してリサイズイベントを発火
-      setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-      }, 100);
-    }
-  }
-
-  if (htmlModeRadio && canvasModeRadio) {
-    htmlModeRadio.addEventListener('change', switchCalendarMode);
-    canvasModeRadio.addEventListener('change', switchCalendarMode);
-    
-    // 初期状態の設定
-    switchCalendarMode();
-  }
-
-  // テーマ変更時のプレビュー機能
-  function updateThemePreview() {
-    const selectedTheme = themeSelect.value;
-    const calendarContainer = document.querySelector('.calendar-container');
-    
-    // テーマクラスをリセット
-    calendarContainer.classList.remove('theme-default', 'theme-blue', 'theme-green', 'theme-purple');
-    // 新しいテーマクラスを追加
-    calendarContainer.classList.add('theme-' + selectedTheme);
-    
-    statusDiv.textContent = `テーマ: ${themeSelect.options[themeSelect.selectedIndex].text}、形式: ${formatSelect.options[formatSelect.selectedIndex].text}`;
-    statusDiv.className = 'mt-2 text-primary small';
-  }
-
-  if (themeSelect) {
-    themeSelect.addEventListener('change', updateThemePreview);
-    formatSelect.addEventListener('change', updateThemePreview);
-    updateThemePreview(); // 初期表示
-  }
-  
-  if (generateBtn) {
-    generateBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      
-      // ボタンを無効化
-      generateBtn.disabled = true;
-      generateBtn.innerHTML = '🔄 画像生成中...';
-      statusDiv.textContent = '画像を生成しています。しばらくお待ちください...';
-      statusDiv.className = 'mt-2 text-info small';
-      
-      // フォームデータを取得
-      const form = generateBtn.closest('form');
-      const formData = new FormData(form);
-      
-      // テーマと形式の選択値を追加
-      const themeSelect = document.getElementById('theme-select');
-      const formatSelect = document.getElementById('format-select');
-      formData.append('theme', themeSelect.value);
-      formData.append('image_format', formatSelect.value); // formatではなくimage_formatを使用
-      
-      // Ajax リクエスト (URLに.jsonを追加)
-      let jsonUrl = form.action;
-      if (!jsonUrl.endsWith('.json')) {
-        // Remove any trailing slash first
-        jsonUrl = jsonUrl.replace(/\/$/, '');
-        // Add .json extension
-        jsonUrl += '.json';
-      }
-      console.log('Requesting URL:', jsonUrl); // デバッグ用
-      fetch(jsonUrl, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      })
-      .then(response => {
-        // Content-Typeをチェック
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          // JSONではない場合のエラーハンドリング
-          if (response.status === 401) {
-            throw new Error('認証が必要です。ログインし直してください。');
-          } else if (response.status === 404) {
-            throw new Error('リクエスト先が見つかりません。');
-          } else if (response.status >= 500) {
-            throw new Error('サーバーエラーが発生しました。しばらく時間をおいて再度お試しください。');
-          } else {
-            throw new Error('予期しないエラーが発生しました。');
-          }
-        }
-        
-        // レスポンスのステータスコードもチェック
-        if (!response.ok) {
-          return response.json().then(data => {
-            throw new Error(data.message || '画像生成に失敗しました');
-          });
-        }
-        
-        return response.json();
-      })
-      .then(data => {
-        if (data.status === 'success') {
-          statusDiv.textContent = data.message;
-          statusDiv.className = 'mt-2 text-success small';
-          generateBtn.innerHTML = '✅ 生成完了';
-          downloadBtn.style.display = 'inline-block';
-          
-          // 3秒後にボタンを元に戻す
-          setTimeout(() => {
-            generateBtn.disabled = false;
-            generateBtn.innerHTML = '🖼️ カード画像を生成';
-          }, 3000);
-        } else {
-          throw new Error(data.message || '画像生成に失敗しました');
-        }
-      })
-      .catch(error => {
-        console.error('画像生成エラー:', error);
-        statusDiv.textContent = error.message;
-        statusDiv.className = 'mt-2 text-danger small';
-        generateBtn.disabled = false;
-        generateBtn.innerHTML = '🖼️ カード画像を生成';
-      });
-    });
-  }
-});
-</script>
