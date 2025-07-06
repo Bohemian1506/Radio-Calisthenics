@@ -40,7 +40,7 @@
           </div>
         </div>
         <div class="card-body text-center d-flex flex-column justify-content-center">
-          <div class="stamp-card-container">
+          <div class="stamp-card-container position-relative">
             <% 
               # app/assets/images を優先してPNG形式を使用
               image_file = ["radio_calisthenics_card.png", "radio_calisthenics_card.jpg"].find do |file|
@@ -53,6 +53,61 @@
                           alt: "ラジオ体操カード", 
                           class: "img-fluid border rounded",
                           style: "max-width: 100%; width: 100%; height: auto;" %>
+            
+            <!-- SVGオーバーレイ -->
+            <svg class="position-absolute top-0 start-0 w-100 h-100" 
+                 viewBox="0 0 800 600" 
+                 preserveAspectRatio="xMidYMid meet"
+                 style="pointer-events: none;">
+              <!-- ユーザー名表示 -->
+              <text x="400" y="80" 
+                    text-anchor="middle" 
+                    font-family="Arial, sans-serif" 
+                    font-size="24" 
+                    font-weight="bold" 
+                    fill="#2c3e50">
+                <%= current_user.email.split('@').first %>
+              </text>
+              
+              <!-- 現在日付表示 -->
+              <text x="400" y="120" 
+                    text-anchor="middle" 
+                    font-family="Arial, sans-serif" 
+                    font-size="18" 
+                    fill="#34495e">
+                <%= Date.current.strftime("%Y年%m月%d日") %>
+              </text>
+              
+              <!-- 今月の参加日数 -->
+              <text x="150" y="180" 
+                    text-anchor="middle" 
+                    font-family="Arial, sans-serif" 
+                    font-size="16" 
+                    font-weight="bold" 
+                    fill="#e74c3c">
+                今月: <%= @monthly_stats[:total_stamps] %>日
+              </text>
+              
+              <!-- 連続参加日数 -->
+              <text x="650" y="180" 
+                    text-anchor="middle" 
+                    font-family="Arial, sans-serif" 
+                    font-size="16" 
+                    font-weight="bold" 
+                    fill="#f39c12">
+                連続: <%= @user_stats[:consecutive_days] %>日
+              </text>
+              
+              <!-- 総参加日数 -->
+              <text x="400" y="520" 
+                    text-anchor="middle" 
+                    font-family="Arial, sans-serif" 
+                    font-size="20" 
+                    font-weight="bold" 
+                    fill="#27ae60">
+                総参加: <%= @user_stats[:total_stamps] %>日
+              </text>
+            </svg>
           </div>
         </div>
       </div>
