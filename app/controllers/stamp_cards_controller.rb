@@ -250,6 +250,7 @@ class StampCardsController < ApplicationController
       week_data = week.map do |date|
         {
           date: date,
+          date_day: date.day,  # Canvas用に日付の日のみ追加
           current_month: date.month == month.month,
           stamped: stamps.key?(date),
           stamped_time: stamps[date]&.strftime("%H:%M"),

@@ -126,8 +126,19 @@
   <div class="row mb-4">
     <div class="col-12">
       <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">📅 カレンダー</h5>
+          <div class="btn-group btn-group-sm" role="group">
+            <input type="radio" class="btn-check" name="calendar-mode" id="html-mode" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="html-mode">HTML版</label>
+            
+            <input type="radio" class="btn-check" name="calendar-mode" id="canvas-mode" autocomplete="off">
+            <label class="btn btn-outline-primary" for="canvas-mode">Canvas版</label>
+          </div>
+        </div>
         <div class="card-body">
-          <div class="calendar-container">
+          <!-- HTML版カレンダー -->
+          <div id="html-calendar" class="calendar-container">
             <!-- 曜日ヘッダー -->
             <div class="row mb-2">
               <% %w[日 月 火 水 木 金 土].each_with_index do |day, index| %>
@@ -183,6 +194,44 @@
                 <% end %>
               </div>
             <% end %>
+          </div>
+
+          <!-- Canvas版カレンダー -->
+          <div id="canvas-calendar" 
+               style="display: none;"
+               data-controller="stamp-card-canvas"
+               data-stamp-card-canvas-calendar-data-value="<%= @calendar_data.to_json %>"
+               data-stamp-card-canvas-current-month-value="<%= @monthly_stats[:month].strftime('%Y-%m') %>"
+               data-stamp-card-canvas-current-year-value="<%= @monthly_stats[:month].year %>"
+               data-stamp-card-canvas-theme-value="default">
+            
+            <!-- Canvas容器 -->
+            <div data-stamp-card-canvas-target="container" class="canvas-container text-center">
+              <!-- 曜日ヘッダー（Canvas版用） -->
+              <div class="row mb-2">
+                <% %w[日 月 火 水 木 金 土].each_with_index do |day, index| %>
+                  <div class="col text-center">
+                    <strong class="<%= 'text-danger' if index == 0 %><%= 'text-primary' if index == 6 %>">
+                      <%= day %>
+                    </strong>
+                  </div>
+                <% end %>
+              </div>
+              
+              <!-- Canvas要素 -->
+              <canvas data-stamp-card-canvas-target="canvas" 
+                      class="border rounded"
+                      style="max-width: 100%; height: auto; cursor: pointer;">
+                お使いのブラウザはCanvasをサポートしていません。
+              </canvas>
+              
+              <!-- Canvas情報表示 -->
+              <div class="mt-2">
+                <small class="text-muted">
+                  Canvas版: 高精度なレスポンシブ対応、スムーズなアニメーション
+                </small>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -342,6 +391,43 @@
     background-color: #7c3aed !important;
     color: white !important;
   }
+
+  /* Canvas版カレンダーのスタイル */
+  .canvas-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .canvas-container canvas {
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease-in-out;
+  }
+
+  .canvas-container canvas:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Canvas版の曜日ヘッダー調整 */
+  #canvas-calendar .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #canvas-calendar .col {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  /* カレンダー切り替えボタンのスタイル調整 */
+  .btn-check:checked + .btn-outline-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+  }
 </style>
 
 <script>
@@ -351,6 +437,37 @@ document.addEventListener('DOMContentLoaded', function() {
   const statusDiv = document.getElementById('image-status');
   const themeSelect = document.getElementById('theme-select');
   const formatSelect = document.getElementById('format-select');
+
+  // HTML/Canvas切り替え機能
+  const htmlModeRadio = document.getElementById('html-mode');
+  const canvasModeRadio = document.getElementById('canvas-mode');
+  const htmlCalendar = document.getElementById('html-calendar');
+  const canvasCalendar = document.getElementById('canvas-calendar');
+
+  function switchCalendarMode() {
+    if (htmlModeRadio.checked) {
+      htmlCalendar.style.display = 'block';
+      canvasCalendar.style.display = 'none';
+      console.log('Switched to HTML calendar mode');
+    } else if (canvasModeRadio.checked) {
+      htmlCalendar.style.display = 'none';
+      canvasCalendar.style.display = 'block';
+      console.log('Switched to Canvas calendar mode');
+      
+      // Canvas版表示後、少し遅延してリサイズイベントを発火
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
+    }
+  }
+
+  if (htmlModeRadio && canvasModeRadio) {
+    htmlModeRadio.addEventListener('change', switchCalendarMode);
+    canvasModeRadio.addEventListener('change', switchCalendarMode);
+    
+    // 初期状態の設定
+    switchCalendarMode();
+  }
 
   // テーマ変更時のプレビュー機能
   function updateThemePreview() {
