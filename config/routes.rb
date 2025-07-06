@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users
-  root "home#index"
+  root "stamp_cards#index"
 
   # スタンプカード機能
   resources :stamp_cards, except: [ :show, :edit, :update ] do
