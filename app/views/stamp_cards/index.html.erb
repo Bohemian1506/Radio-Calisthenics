@@ -1,55 +1,6 @@
 <% content_for :title, "スタンプカード" %>
 
 <div class="container mt-4">
-  <div class="row">
-    <div class="col-12">
-      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mb-4 gap-3">
-        <h1 class="h2 mb-0">📅 スタンプカード</h1>
-        <div class="d-flex flex-wrap gap-2" role="navigation" aria-label="メインナビゲーション">
-          <%= link_to "📊 統計", statistics_path, 
-                      class: "btn btn-outline-primary btn-sm",
-                      "aria-label": "統計情報ページを表示" %>
-          <%= link_to "🏆 バッジ", badges_path, 
-                      class: "btn btn-outline-info btn-sm",
-                      "aria-label": "獲得バッジページを表示" %>
-          <% if current_user.admin? %>
-            <%= link_to "🎯 管理", admin_root_path, 
-                        class: "btn btn-outline-secondary btn-sm",
-                        "aria-label": "管理画面を表示" %>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 月間統計サマリー -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-body">
-          <div class="row text-center">
-            <div class="col-6 col-md-3 mb-3">
-              <h6 class="text-primary mb-1">📅 今月の参加</h6>
-              <h4><%= @monthly_stats[:total_stamps] %>/<%= @monthly_stats[:days_passed] %>日</h4>
-              <small class="text-muted">参加率: <%= @monthly_stats[:participation_rate] %>%</small>
-            </div>
-            <div class="col-6 col-md-3 mb-3">
-              <h6 class="text-success mb-1">⭐ 総参加日数</h6>
-              <h4><%= @user_stats[:total_stamps] %>日</h4>
-            </div>
-            <div class="col-6 col-md-3 mb-3">
-              <h6 class="text-warning mb-1">🔥 連続日数</h6>
-              <h4><%= @user_stats[:consecutive_days] %>日</h4>
-            </div>
-            <div class="col-6 col-md-3 mb-3">
-              <h6 class="text-info mb-1">🏆 最長記録</h6>
-              <h4><%= @user_stats[:longest_streak] %>日</h4>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- 月間ナビゲーション -->
   <div class="row mb-4">
@@ -93,14 +44,15 @@
     </div>
   </div>
 
-  <!-- ラジオ体操カード表示 -->
+  <!-- メインコンテンツ：2カラムレイアウト -->
   <div class="row mb-4">
-    <div class="col-lg-8 col-xl-6 mx-auto">
-      <div class="card">
+    <!-- ラジオ体操カード表示（左側） -->
+    <div class="col-lg-7 mb-4">
+      <div class="card h-100">
         <div class="card-header">
           <h5 class="mb-0">📅 ラジオ体操カード</h5>
         </div>
-        <div class="card-body text-center">
+        <div class="card-body text-center d-flex flex-column justify-content-center">
           <div class="stamp-card-container">
             <% 
               # app/assets/images を優先してPNG形式を使用
@@ -113,12 +65,89 @@
             <%= image_tag image_file, 
                           alt: "ラジオ体操カード", 
                           class: "img-fluid border rounded",
-                          style: "max-width: 600px; width: 100%; height: auto;" %>
+                          style: "max-width: 100%; width: 100%; height: auto;" %>
           </div>
           <div class="mt-3">
             <small class="text-muted">
               ラジオ体操参加カードテンプレート - 継続は力なり！
             </small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 月間統計サマリー（右側） -->
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="mb-0">📊 あなたの記録</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex flex-column gap-2">
+            <!-- 基本統計 -->
+            <div class="text-center p-3 border rounded bg-light">
+              <h6 class="text-primary mb-2">📅 今月の参加</h6>
+              <h3 class="mb-1"><%= @monthly_stats[:total_stamps] %>/<%= @monthly_stats[:days_passed] %>日</h3>
+              <div class="text-muted">参加率: <%= @monthly_stats[:participation_rate] %>%</div>
+            </div>
+            
+            <div class="text-center p-3 border rounded bg-light">
+              <h6 class="text-success mb-2">⭐ 総参加日数</h6>
+              <h3 class="mb-0"><%= @user_stats[:total_stamps] %>日</h3>
+            </div>
+            
+            <div class="text-center p-3 border rounded bg-light">
+              <h6 class="text-warning mb-2">🔥 連続日数</h6>
+              <h3 class="mb-0"><%= @user_stats[:consecutive_days] %>日</h3>
+            </div>
+            
+            <div class="text-center p-3 border rounded bg-light">
+              <h6 class="text-info mb-2">🏆 最長記録</h6>
+              <h3 class="mb-0"><%= @user_stats[:longest_streak] %>日</h3>
+            </div>
+            
+            <!-- 詳細統計 -->
+            <div class="border rounded p-3 bg-light">
+              <h6 class="text-secondary mb-3">📈 詳細データ</h6>
+              <div class="row g-2 text-center">
+                <div class="col-6">
+                  <small class="text-muted d-block mb-1">今年の参加</small>
+                  <h5 class="mb-0"><%= @user_stats[:stamps_this_year] %>日</h5>
+                </div>
+                <% if @user_stats[:average_time] %>
+                <div class="col-6">
+                  <small class="text-muted d-block mb-1">平均時刻</small>
+                  <h5 class="mb-0"><%= @user_stats[:average_time] %></h5>
+                </div>
+                <% end %>
+              </div>
+            </div>
+            
+            <!-- 応援メッセージ -->
+            <div class="border rounded p-3 bg-gradient" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+              <h6 class="text-secondary mb-2">💪 応援メッセージ</h6>
+              <% if @user_stats[:consecutive_days] >= 30 %>
+                <p class="text-success mb-0">
+                  <strong>素晴らしい！</strong><br>
+                  <small><%= @user_stats[:consecutive_days] %>日連続参加は本当に立派です！</small>
+                </p>
+              <% elsif @user_stats[:consecutive_days] >= 7 %>
+                <p class="text-primary mb-0">
+                  <strong>お疲れ様！</strong><br>
+                  <small><%= @user_stats[:consecutive_days] %>日連続参加中です。この調子で！</small>
+                </p>
+              <% elsif @user_stats[:consecutive_days] > 0 %>
+                <p class="text-info mb-0">
+                  <strong>いいペースです！</strong><br>
+                  <small><%= @user_stats[:consecutive_days] %>日連続参加中。習慣化まであと少し！</small>
+                </p>
+              <% else %>
+                <p class="text-muted mb-0">
+                  <strong>今日から始めましょう！</strong><br>
+                  <small>ラジオ体操で健康的な毎日をスタート！</small>
+                </p>
+              <% end %>
+            </div>
           </div>
         </div>
       </div>
@@ -146,122 +175,5 @@
     </div>
   <% end %>
 
-  <!-- ユーザー統計 -->
-  <div class="row">
-    <div class="col-md-6 mb-4">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">🏆 あなたの記録</h5>
-        </div>
-        <div class="card-body">
-          <ul class="list-unstyled mb-0">
-            <li class="mb-2">
-              <strong>総参加日数:</strong> <%= @user_stats[:total_stamps] %>日
-            </li>
-            <li class="mb-2">
-              <strong>現在の連続日数:</strong> <%= @user_stats[:consecutive_days] %>日
-            </li>
-            <li class="mb-2">
-              <strong>最長連続記録:</strong> <%= @user_stats[:longest_streak] %>日
-            </li>
-            <li class="mb-2">
-              <strong>今月の参加:</strong> <%= @user_stats[:stamps_this_month] %>日
-            </li>
-            <li class="mb-2">
-              <strong>今年の参加:</strong> <%= @user_stats[:stamps_this_year] %>日
-            </li>
-            <% if @user_stats[:average_time] %>
-              <li>
-                <strong>平均参加時刻:</strong> <%= @user_stats[:average_time] %>
-              </li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6 mb-4">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">💪 応援メッセージ</h5>
-        </div>
-        <div class="card-body">
-          <% if @user_stats[:consecutive_days] >= 30 %>
-            <p class="text-success mb-0">
-              <strong>素晴らしい！</strong><br>
-              <%= @user_stats[:consecutive_days] %>日連続参加は本当に立派です！継続は力なりですね。
-            </p>
-          <% elsif @user_stats[:consecutive_days] >= 7 %>
-            <p class="text-primary mb-0">
-              <strong>お疲れ様！</strong><br>
-              <%= @user_stats[:consecutive_days] %>日連続参加中です。この調子で続けていきましょう！
-            </p>
-          <% elsif @user_stats[:consecutive_days] > 0 %>
-            <p class="text-info mb-0">
-              <strong>いいペースです！</strong><br>
-              <%= @user_stats[:consecutive_days] %>日連続参加中。習慣化まであと少しです。
-            </p>
-          <% else %>
-            <p class="text-muted mb-0">
-              <strong>今日から始めましょう！</strong><br>
-              ラジオ体操で健康的な毎日をスタートしませんか？
-            </p>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
-<style>
-  /* スタンプカード表示最適化 */
-  .stamp-card-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1.25rem;
-  }
-  
-  .stamp-card-container img {
-    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
-    transition: transform 0.2s ease-in-out;
-    will-change: transform;
-  }
-  
-  .stamp-card-container img:hover {
-    transform: scale(1.02);
-  }
-  
-  /* モバイル最適化 */
-  @media (max-width: 576px) {
-    .stamp-card-container {
-      padding: 1rem;
-    }
-    
-    .container {
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
-    }
-  }
-  
-  /* プリント最適化 */
-  @media print {
-    .btn, nav, .d-print-none {
-      display: none !important;
-    }
-    
-    .stamp-card-container img {
-      box-shadow: none;
-      max-width: 100% !important;
-    }
-  }
-  
-  /* パフォーマンス最適化 */
-  .card {
-    will-change: auto;
-  }
-  
-  .btn {
-    will-change: auto;
-  }
-</style>
