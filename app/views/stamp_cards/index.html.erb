@@ -215,15 +215,20 @@
                         </image>
                       <% elsif day_data[:can_stamp] %>
                         <!-- 押せる日のヒント -->
+                        <% 
+                          # 今日かどうかで透明度を変える
+                          hint_opacity = day_data[:today] ? "0.5" : "0.2"
+                          hint_title = day_data[:today] ? "今日のスタンプを押せます" : "スタンプ未実施"
+                        %>
                         <circle cx="<%= x_pos %>" cy="<%= y_pos %>" 
                                 r="40" 
                                 fill="none" 
                                 stroke="#dc3545"
                                 stroke-width="2"
                                 stroke-dasharray="5,5"
-                                opacity="0.3"
+                                opacity="<%= hint_opacity %>"
                                 class="stamp-hint">
-                          <title><%= day_data[:date].strftime("%m月%d日") %>: スタンプ可能</title>
+                          <title><%= day_data[:date].strftime("%m月%d日") %>: <%= hint_title %></title>
                         </circle>
                       <% end %>
                     <% end %>
