@@ -88,11 +88,10 @@
         <div class="card-body text-center">
           <div class="stamp-card-container">
             <% 
-              # PNG形式を優先して、存在する画像ファイルを表示
+              # app/assets/images を優先してPNG形式を使用
               image_file = ["radio_calisthenics_card.png", "radio_calisthenics_card.jpg"].find do |file|
                 Rails.application.assets&.find_asset(file) || 
-                File.exist?(Rails.root.join("app", "assets", "images", file)) ||
-                File.exist?(Rails.root.join("public", "images", file))
+                File.exist?(Rails.root.join("app", "assets", "images", file))
               end
               image_file ||= "radio_calisthenics_card.png" # デフォルトはPNG
             %>
