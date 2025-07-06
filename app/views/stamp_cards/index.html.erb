@@ -2,27 +2,6 @@
 
 <div class="container mt-4">
 
-  <!-- 今日のスタンプ -->
-  <% if @monthly_stats[:can_stamp_today] %>
-    <div class="row mb-4">
-      <div class="col-12">
-        <div class="card border-primary">
-          <div class="card-body text-center">
-            <h5 class="card-title text-primary">今日のラジオ体操はいかがでしたか？</h5>
-            <p class="card-text">今日のスタンプを押して記録を残しましょう！</p>
-            <%= form_with model: StampCard.new, url: stamp_cards_path, class: "d-inline" do |form| %>
-              <%= form.hidden_field :date, value: Date.current %>
-              <%= form.submit "📅 今日のスタンプを押す", 
-                              class: "btn btn-primary btn-lg",
-                              "aria-label": "今日の日付（#{Date.current.strftime('%Y年%m月%d日')}）にスタンプを記録",
-                              data: { confirm: "今日のスタンプを押しますか？" } %>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
-  <% end %>
-
   <!-- メインコンテンツ：2カラムレイアウト -->
   <div class="row mb-4">
     <!-- ラジオ体操カード表示（左側） -->
@@ -83,10 +62,25 @@
     <div class="col-lg-5">
       <div class="card" style="height: 1000px;">
         <div class="card-header">
-          <h5 class="mb-0">📊 あなたの記録</h5>
+          <h5 class="mb-0">📊 今日のスタンプ・記録</h5>
         </div>
         <div class="card-body" style="overflow-y: auto;">
           <div class="d-flex flex-column gap-2">
+            <!-- 今日のスタンプ -->
+            <% if @monthly_stats[:can_stamp_today] %>
+              <div class="text-center p-3 border rounded border-primary bg-primary bg-opacity-10">
+                <h6 class="card-title text-primary mb-2">今日のラジオ体操はいかがでしたか？</h6>
+                <p class="card-text mb-3">今日のスタンプを押して記録を残しましょう！</p>
+                <%= form_with model: StampCard.new, url: stamp_cards_path, class: "d-inline" do |form| %>
+                  <%= form.hidden_field :date, value: Date.current %>
+                  <%= form.submit "📅 今日のスタンプを押す", 
+                                  class: "btn btn-primary",
+                                  "aria-label": "今日の日付（#{Date.current.strftime('%Y年%m月%d日')}）にスタンプを記録",
+                                  data: { confirm: "今日のスタンプを押しますか？" } %>
+                <% end %>
+              </div>
+            <% end %>
+            
             <!-- 基本統計 -->
             <div class="text-center p-3 border rounded bg-light">
               <h6 class="text-primary mb-2">📅 今月の参加</h6>
