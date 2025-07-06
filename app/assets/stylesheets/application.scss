@@ -247,3 +247,54 @@
     }
   }
 }
+
+// スタンプカード表示最適化（index.html.erbから移動）
+.stamp-card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.25rem;
+  
+  img {
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+    transition: transform 0.2s ease-in-out;
+    will-change: transform;
+    
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}
+
+// モバイル最適化（統合）
+@media (max-width: 576px) {
+  .stamp-card-container {
+    padding: 1rem;
+  }
+  
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+// プリント最適化
+@media print {
+  .btn, nav, .d-print-none {
+    display: none !important;
+  }
+  
+  .stamp-card-container img {
+    box-shadow: none;
+    max-width: 100% !important;
+  }
+}
+
+// パフォーマンス最適化
+.card {
+  will-change: auto;
+}
+
+.btn {
+  will-change: auto;
+}
