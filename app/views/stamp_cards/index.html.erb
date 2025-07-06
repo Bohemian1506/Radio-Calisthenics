@@ -69,44 +69,77 @@
                 <%= current_user.email.split('@').first %>
               </text>
               
-              <!-- 現在日付表示 -->
-              <text x="400" y="120" 
+              <!-- 月の数字 -->
+              <text x="100" y="0" 
                     text-anchor="middle" 
                     font-family="Arial, sans-serif" 
-                    font-size="18" 
-                    fill="#34495e">
-                <%= Date.current.strftime("%Y年%m月%d日") %>
+                    font-size="72" 
+                    font-weight="bold" 
+                    fill="#2c3e50">
+                <%= @monthly_stats[:month].strftime("%-m") %>
               </text>
               
-              <!-- 今月の参加日数 -->
-              <text x="150" y="180" 
-                    text-anchor="middle" 
-                    font-family="Arial, sans-serif" 
-                    font-size="16" 
-                    font-weight="bold" 
-                    fill="#e74c3c">
-                今月: <%= @monthly_stats[:total_stamps] %>日
-              </text>
+              <!-- カレンダーグリッドのスタンプ表示 -->
+              <% 
+                # カレンダーの開始位置とグリッドサイズ
+                grid_start_x = 100
+                grid_start_y = 150
+                cell_width = 85
+                cell_height = 70
+                
+                # 曜日ヘッダー
+                days_of_week = %w[日 月 火 水 木 金 土]
+                days_of_week.each_with_index do |day, i| %>
+                  <text x="<%= grid_start_x + i * cell_width + cell_width / 2 %>" 
+                        y="<%= grid_start_y - 10 %>" 
+                        text-anchor="middle" 
+                        font-family="Arial, sans-serif" 
+                        font-size="16" 
+                        font-weight="bold" 
+                        fill="#34495e">
+                    <%= day %>
+                  </text>
+              <% end %>
               
-              <!-- 連続参加日数 -->
-              <text x="650" y="180" 
-                    text-anchor="middle" 
-                    font-family="Arial, sans-serif" 
-                    font-size="16" 
-                    font-weight="bold" 
-                    fill="#f39c12">
-                連続: <%= @user_stats[:consecutive_days] %>日
-              </text>
-              
-              <!-- 総参加日数 -->
-              <text x="400" y="520" 
-                    text-anchor="middle" 
-                    font-family="Arial, sans-serif" 
-                    font-size="20" 
-                    font-weight="bold" 
-                    fill="#27ae60">
-                総参加: <%= @user_stats[:total_stamps] %>日
-              </text>
+              <!-- カレンダー日付とスタンプ -->
+              <% @calendar_data.each_with_index do |week, week_index| %>
+                <% week.each_with_index do |day_data, day_index| %>
+                  <% if day_data[:current_month] %>
+                    <% 
+                      x_pos = grid_start_x + day_index * cell_width + cell_width / 2
+                      y_pos = grid_start_y + week_index * cell_height + cell_height / 2
+                    %>
+                    
+                    <!-- 日付表示 -->
+                    <text x="<%= x_pos %>" 
+                          y="<%= y_pos - 15 %>" 
+                          text-anchor="middle" 
+                          font-family="Arial, sans-serif" 
+                          font-size="14" 
+                          fill="<%= day_data[:today] ? '#e74c3c' : '#7f8c8d' %>">
+                      <%= day_data[:date].day %>
+                    </text>
+                    
+                    <!-- スタンプ表示 -->
+                    <% if day_data[:stamped] %>
+                      <circle cx="<%= x_pos %>" 
+                              cy="<%= y_pos + 10 %>" 
+                              r="20" 
+                              fill="#e74c3c" 
+                              opacity="0.8"/>
+                      <text x="<%= x_pos %>" 
+                            y="<%= y_pos + 15 %>" 
+                            text-anchor="middle" 
+                            font-family="Arial, sans-serif" 
+                            font-size="16" 
+                            font-weight="bold" 
+                            fill="white">
+                        ✓
+                      </text>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              <% end %>
             </svg>
           </div>
         </div>
