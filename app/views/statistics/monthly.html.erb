@@ -157,7 +157,7 @@
                       <% if day[:current_month] %>
                         <div class="day-number" style="font-weight: bold; font-size: 1.5rem; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);"><%= day[:date].day %></div>
                         <% if day[:stamped] %>
-                          <%= image_tag "stamps/heart_stamp.svg", class: "stamp-image", alt: "参加済み", style: "width: 25px; height: 25px; margin-top: -5px; opacity: 0.9;" %>
+                          <%= image_tag "heart_stamp.svg", class: "stamp-image", alt: "参加済み", style: "width: 25px; height: 25px; margin-top: -5px; opacity: 0.9;" %>
                           <div class="stamp-time" style="position: absolute; bottom: 2px; font-size: 0.6rem; color: white; opacity: 0.8;">
                             <%= day[:stamped_time] %>
                           </div>
@@ -180,7 +180,7 @@
               <div class="d-flex justify-content-center gap-4 small">
                 <div>
                   <span class="badge bg-success">
-                    <%= image_tag "stamps/heart_stamp.svg", style: "width: 16px; height: 16px;", alt: "参加済み" %>
+                    <%= image_tag "heart_stamp.svg", style: "width: 16px; height: 16px;", alt: "参加済み" %>
                   </span> 
                   参加済み
                 </div>
