@@ -176,8 +176,8 @@
                       <!-- 1つ目の日付のスタンプ -->
                       <% if date1_stamped %>
                         <image href="<%= asset_path('stamp_completed.png') %>" 
-                               x="<%= x_pos - 50 %>" 
-                               y="<%= y_pos - 63 %>" 
+                               x="<%= x_pos - 33 %>" 
+                               y="<%= y_pos - 90 %>" 
                                width="50" 
                                height="50"
                                opacity="0.8"
@@ -190,8 +190,8 @@
                       <!-- 2つ目の日付のスタンプ -->
                       <% if date2_stamped %>
                         <image href="<%= asset_path('stamp_completed.png') %>" 
-                               x="<%= x_pos %>" 
-                               y="<%= y_pos - 27 %>" 
+                               x="<%= x_pos + 17 %>" 
+                               y="<%= y_pos - 90 %>" 
                                width="50" 
                                height="50"
                                opacity="0.8"
@@ -204,8 +204,8 @@
                       <!-- 単一日付のスタンプ -->
                       <% if day_data[:stamped] %>
                         <image href="<%= asset_path('stamp_completed.png') %>" 
-                               x="<%= x_pos - 40 %>" 
-                               y="<%= y_pos - 60 %>" 
+                               x="<%= x_pos - 18 %>" 
+                               y="<%= y_pos - 90 %>" 
                                width="80" 
                                height="80"
                                opacity="0.8"
