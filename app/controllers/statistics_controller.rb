@@ -168,13 +168,25 @@ class StatisticsController < ApplicationController
 
     stamps_in_month = user.stamp_cards.where(date: month_start..month_end)
 
+    # 平均時間の計算を安全に行う
+    average_time_minutes = stamps_in_month.average("EXTRACT(HOUR FROM stamped_at) * 60 + EXTRACT(MINUTE FROM stamped_at)")
+    safe_average_time = if average_time_minutes.present?
+      # 小数点を含む場合も考慮して整数分に変換
+      total_minutes = average_time_minutes.to_f.round
+      # 有効な時間範囲内（0-1439分）であることを確認
+      total_minutes = [ [ total_minutes, 0 ].max, 1439 ].min
+      total_minutes
+    else
+      nil
+    end
+
     {
       month: month,
       total_stamps: stamps_in_month.count,
       days_in_month: month_end.day,
       participation_rate: calculate_monthly_participation_rate(user, month),
       stamps_by_week: calculate_weekly_breakdown(stamps_in_month, month),
-      average_time: stamps_in_month.average("EXTRACT(HOUR FROM stamped_at) * 60 + EXTRACT(MINUTE FROM stamped_at)"),
+      average_time: safe_average_time,
       earliest_time: stamps_in_month.minimum(:stamped_at)&.strftime("%H:%M"),
       latest_time: stamps_in_month.maximum(:stamped_at)&.strftime("%H:%M")
     }

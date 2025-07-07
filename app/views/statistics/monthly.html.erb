@@ -87,8 +87,18 @@
           </div>
           <h5 class="card-title">平均参加時刻</h5>
           <h2 class="text-info mb-0">
-            <% if @monthly_stats[:average_time] %>
-              <%= Time.new(2000, 1, 1, 0, @monthly_stats[:average_time].to_i).strftime("%H:%M") %>
+            <% if @monthly_stats[:average_time].present? && @monthly_stats[:average_time].is_a?(Numeric) %>
+              <% 
+                total_minutes = @monthly_stats[:average_time].to_i
+                hours = total_minutes / 60
+                minutes = total_minutes % 60
+                # 有効な時間範囲内であることを確認
+                if hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59
+              %>
+                <%= sprintf("%02d:%02d", hours, minutes) %>
+              <% else %>
+                ---
+              <% end %>
             <% else %>
               ---
             <% end %>
