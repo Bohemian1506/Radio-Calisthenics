@@ -215,13 +215,13 @@
   }
 }
 
-// 統計カードのアニメーション
+// 統計カードのアニメーション（アニメーション削除：ページロード時の自動実行を防ぐ）
 .statistics-sidebar .card {
-  animation: fadeInUp 0.6s ease-out;
+  // animation: fadeInUp 0.6s ease-out;
   
-  &:nth-child(1) { animation-delay: 0.1s; }
-  &:nth-child(2) { animation-delay: 0.2s; }
-  &:nth-child(3) { animation-delay: 0.3s; }
+  // &:nth-child(1) { animation-delay: 0.1s; }
+  // &:nth-child(2) { animation-delay: 0.2s; }
+  // &:nth-child(3) { animation-delay: 0.3s; }
 }
 
 // レスポンシブ対応の強化
@@ -293,15 +293,20 @@
   will-change: auto;
 }
 
-// スタンプ画像のアニメーション
+// スタンプ画像のアニメーション（自動実行を削除、JavaScriptから手動でトリガー）
 .stamp-image {
-  animation: stampDrop 0.5s ease-out;
+  // animation: stampDrop 0.5s ease-out;
   filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.3));
   transition: all 0.3s ease;
   
   &:hover {
     opacity: 1 !important;
     filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.4));
+  }
+  
+  // 新しく追加されたスタンプのみアニメーション
+  &.new-stamp {
+    animation: stampDrop 0.5s ease-out;
   }
 }
 
