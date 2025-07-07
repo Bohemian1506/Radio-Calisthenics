@@ -91,146 +91,52 @@
               <!-- カレンダー日付とスタンプ -->
               <% @calendar_data.each_with_index do |week, week_index| %>
                 <% week.each_with_index do |day_data, day_index| %>
-                  <% 
-                    # 6週目の同月日付は表示をスキップ
-                    next if week_index == 5 && day_data[:current_month]
-                  %>
                   <% if day_data[:current_month] %>
                     <% 
                       x_pos = grid_start_x + day_index * cell_width + cell_width / 2
                       y_pos = grid_start_y + week_index * cell_height + cell_height / 2
-                      
-                      # 6週目の日付を検出して前週の同じ曜日に表示するロジック
-                      current_date = day_data[:date]
-                      is_combined_cell = false
-                      combined_dates = []
-                      
-                      # 5週目で、6週目に同じ曜日の同月日付がある場合
-                      if week_index == 4 && day_data[:current_month]
-                        # 6週目の同じ曜日（day_index）に同月の日付があるかチェック
-                        sixth_week = @calendar_data[5] if @calendar_data.length > 5
-                        if sixth_week && sixth_week[day_index] && sixth_week[day_index][:current_month]
-                          sixth_week_date = sixth_week[day_index][:date]
-                          is_combined_cell = true
-                          combined_dates = [current_date.day, sixth_week_date.day]
-                        end
-                      end
                     %>
                     
                     <!-- 日付表示 -->
-                    <% if is_combined_cell && combined_dates.any? %>
-                      <!-- 複数日付の場合（斜めに配置） -->
-                      <!-- 1つ目の日付（左上） -->
-                      <text x="<%= x_pos - 25 %>" 
-                            y="<%= y_pos - 18 %>" 
-                            text-anchor="middle" 
-                            font-family="Arial, sans-serif" 
-                            font-size="28" 
-                            font-weight="bold" 
-                            fill="white">
-                        <%= combined_dates[0] %>
-                      </text>
-                      <!-- スラッシュ（中央） -->
-                      <text x="<%= x_pos %>" 
-                            y="<%= y_pos %>" 
-                            text-anchor="middle" 
-                            font-family="Arial, sans-serif" 
-                            font-size="24" 
-                            font-weight="bold" 
-                            fill="white" 
-                            opacity="0.8">
-                        /
-                      </text>
-                      <!-- 2つ目の日付（右下） -->
-                      <text x="<%= x_pos + 25 %>" 
-                            y="<%= y_pos + 18 %>" 
-                            text-anchor="middle" 
-                            font-family="Arial, sans-serif" 
-                            font-size="28" 
-                            font-weight="bold" 
-                            fill="white">
-                        <%= combined_dates[1] %>
-                      </text>
-                    <% else %>
-                      <!-- 単一日付の場合 -->
-                      <text x="<%= x_pos %>" 
-                            y="<%= y_pos %>" 
-                            text-anchor="middle" 
-                            font-family="Arial, sans-serif" 
-                            font-size="48" 
-                            font-weight="bold" 
-                            fill="white">
-                        <%= day_data[:date].day %>
-                      </text>
-                    <% end %>
+                    <text x="<%= x_pos %>" 
+                          y="<%= y_pos %>" 
+                          text-anchor="middle" 
+                          font-family="Arial, sans-serif" 
+                          font-size="48" 
+                          font-weight="bold" 
+                          fill="white">
+                      <%= day_data[:date].day %>
+                    </text>
                     
-                    <!-- スタンプ表示（日付の上に重ねる） -->
-                    <% if is_combined_cell && combined_dates.any? %>
-                      <!-- 複数日付のスタンプ処理 -->
+                    <!-- スタンプ表示 -->
+                    <% if day_data[:stamped] %>
+                      <image href="<%= asset_path('stamp_completed.png') %>" 
+                             x="<%= x_pos - 40 %>" 
+                             y="<%= y_pos - 60 %>" 
+                             width="80" 
+                             height="80"
+                             opacity="0.8"
+                             transform="rotate(-5 <%= x_pos %> <%= y_pos - 20 %>)"
+                             class="stamp-image">
+                        <title><%= day_data[:date].strftime("%m月%d日") %>: スタンプ済み（<%= day_data[:stamped_time] %>）</title>
+                      </image>
+                    <% elsif day_data[:can_stamp] %>
+                      <!-- 押せる日のヒント -->
                       <% 
-                        # 6週目の日付のスタンプ状態を取得
-                        date1_stamped = day_data[:stamped]
-                        date2_stamped = sixth_week && sixth_week[day_index] ? sixth_week[day_index][:stamped] : false
+                        # 今日かどうかで透明度を変える
+                        hint_opacity = day_data[:today] ? "0.5" : "0.2"
+                        hint_title = day_data[:today] ? "今日のスタンプを押せます" : "スタンプ未実施"
                       %>
-                      
-                      <!-- 1つ目の日付のスタンプ -->
-                      <% if date1_stamped %>
-                        <image href="<%= asset_path('stamp_completed.png') %>" 
-                               x="<%= x_pos - 33 %>" 
-                               y="<%= y_pos - 90 %>" 
-                               width="50" 
-                               height="50"
-                               opacity="0.8"
-                               transform="rotate(-5 <%= x_pos - 25 %> <%= y_pos - 18 %>)"
-                               class="stamp-image">
-                          <title><%= current_date.strftime("%m月%d日") %>: スタンプ済み</title>
-                        </image>
-                      <% end %>
-                      
-                      <!-- 2つ目の日付のスタンプ -->
-                      <% if date2_stamped %>
-                        <image href="<%= asset_path('stamp_completed.png') %>" 
-                               x="<%= x_pos + 17 %>" 
-                               y="<%= y_pos - 90 %>" 
-                               width="50" 
-                               height="50"
-                               opacity="0.8"
-                               transform="rotate(-5 <%= x_pos + 25 %> <%= y_pos + 18 %>)"
-                               class="stamp-image">
-                          <title><%= sixth_week[day_index][:date].strftime("%m月%d日") %>: スタンプ済み</title>
-                        </image>
-                      <% end %>
-                    <% else %>
-                      <!-- 単一日付のスタンプ -->
-                      <% if day_data[:stamped] %>
-                        <image href="<%= asset_path('stamp_completed.png') %>" 
-                               x="<%= x_pos - 18 %>" 
-                               y="<%= y_pos - 90 %>" 
-                               width="80" 
-                               height="80"
-                               opacity="0.8"
-                               transform="rotate(-5 <%= x_pos %> <%= y_pos %>)"
-                               class="stamp-image">
-                          <title><%= day_data[:date].strftime("%m月%d日") %>: スタンプ済み（<%= day_data[:stamped_time] %>）</title>
-                        </image>
-                      <% elsif day_data[:can_stamp] %>
-                        <!-- 押せる日のヒント -->
-                        <% 
-                          # 今日かどうかで透明度を変える
-                          hint_opacity = day_data[:today] ? "0.5" : "0.2"
-                          hint_title = day_data[:today] ? "今日のスタンプを押せます" : "スタンプ未実施"
-                        %>
-                        <circle cx="<%= x_pos %>" cy="<%= y_pos - 20 %>" 
-                                r="40" 
-                                fill="none" 
-                                stroke="#dc3545"
-                                stroke-width="2"
-                                stroke-dasharray="5,5"
-                                opacity="<%= hint_opacity %>"
-                                class="stamp-hint">
-                          <title><%= day_data[:date].strftime("%m月%d日") %>: <%= hint_title %></title>
-                        </circle>
-                      <% end %>
+                      <circle cx="<%= x_pos %>" cy="<%= y_pos - 20 %>" 
+                              r="40" 
+                              fill="none" 
+                              stroke="#dc3545"
+                              stroke-width="2"
+                              stroke-dasharray="5,5"
+                              opacity="<%= hint_opacity %>"
+                              class="stamp-hint">
+                        <title><%= day_data[:date].strftime("%m月%d日") %>: <%= hint_title %></title>
+                      </circle>
                     <% end %>
                   <% end %>
                 <% end %>
