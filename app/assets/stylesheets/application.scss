@@ -296,7 +296,7 @@
 // スタンプ画像のアニメーション
 .stamp-image {
   animation: stampDrop 0.5s ease-out;
-  transform-origin: 37.5% 112.5%;
+  transform-origin: 50% 50%;
   filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.3));
   transition: all 0.3s ease;
   
