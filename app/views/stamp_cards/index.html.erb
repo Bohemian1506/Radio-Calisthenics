@@ -170,7 +170,7 @@
                       <% 
                         # 6週目の日付のスタンプ状態を取得
                         date1_stamped = day_data[:stamped]
-                        date2_stamped = sixth_week_data[:stamped] if sixth_week_data
+                        date2_stamped = sixth_week && sixth_week[day_index] ? sixth_week[day_index][:stamped] : false
                       %>
                       
                       <!-- 1つ目の日付のスタンプ -->
@@ -197,7 +197,7 @@
                                opacity="0.8"
                                transform="rotate(-5 <%= x_pos + 25 %> <%= y_pos + 18 %>)"
                                class="stamp-image">
-                          <title><%= sixth_week_data[:date].strftime("%m月%d日") %>: スタンプ済み</title>
+                          <title><%= sixth_week[day_index][:date].strftime("%m月%d日") %>: スタンプ済み</title>
                         </image>
                       <% end %>
                     <% else %>
