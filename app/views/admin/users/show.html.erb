@@ -39,11 +39,7 @@
             
             <dt class="col-sm-5">最終ログイン:</dt>
             <dd class="col-sm-7">
-              <% if @user.current_sign_in_at %>
-                <%= @user.current_sign_in_at.strftime("%Y年%m月%d日 %H:%M") %>
-              <% else %>
-                <span class="text-muted">ログイン記録なし</span>
-              <% end %>
+              <span class="text-muted">ログイン追跡機能は無効です</span>
             </dd>
           </dl>
         </div>

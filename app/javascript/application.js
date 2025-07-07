@@ -1,7 +1,7 @@
 // Configure your import map in config/importmap.rb
 import "@hotwired/turbo-rails"
 import "controllers"
-import "bootstrap"
+import * as bootstrap from "bootstrap"
 
 // Initialize Bootstrap when DOM content is loaded
 document.addEventListener("DOMContentLoaded", function() {
@@ -16,6 +16,12 @@ document.addEventListener("DOMContentLoaded", function() {
   var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl)
   })
+
+  // Bootstrap dropdowns initialization
+  var dropdownTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="dropdown"]'))
+  var dropdownList = dropdownTriggerList.map(function (dropdownTriggerEl) {
+    return new bootstrap.Dropdown(dropdownTriggerEl)
+  })
 })
 
 // Turbo compatibility for Bootstrap
@@ -29,5 +35,10 @@ document.addEventListener("turbo:load", function() {
   var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
   var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl)
+  })
+
+  var dropdownTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="dropdown"]'))
+  var dropdownList = dropdownTriggerList.map(function (dropdownTriggerEl) {
+    return new bootstrap.Dropdown(dropdownTriggerEl)
   })
 })
