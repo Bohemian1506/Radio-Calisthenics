@@ -111,12 +111,12 @@
                     <!-- スタンプ表示 -->
                     <% if day_data[:stamped] %>
                       <image href="<%= asset_path('stamp_completed.png') %>" 
-                             x="<%= x_pos + 5 %>" 
+                             x="<%= x_pos - 15 %>" 
                              y="<%= y_pos - 90 %>" 
                              width="80" 
                              height="80"
                              opacity="0.8"
-                             transform="rotate(-5 <%= x_pos + 45 %> <%= y_pos - 50 %>)"
+                             transform="rotate(-5 <%= x_pos + 25 %> <%= y_pos - 50 %>)"
                              class="stamp-image">
                         <title><%= day_data[:date].strftime("%m月%d日") %>: スタンプ済み（<%= day_data[:stamped_time] %>）</title>
                       </image>
