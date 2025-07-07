@@ -347,9 +347,14 @@ const weeklyChart = new Chart(weeklyCtx, {
     100% { border-color: #ffc107; }
 }
 
-/* スタンプのアニメーション */
+/* スタンプのアニメーション（自動実行を削除、JavaScriptから手動でトリガー） */
 .stamp-image {
-    animation: stamp-appear 0.3s ease-out;
+    // animation: stamp-appear 0.3s ease-out;
+    
+    // 新しく追加されたスタンプのみアニメーション
+    &.new-stamp {
+        animation: stamp-appear 0.3s ease-out;
+    }
 }
 
 @keyframes stamp-appear {
