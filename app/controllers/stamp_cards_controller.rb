@@ -94,7 +94,7 @@ class StampCardsController < ApplicationController
           stamped: stamps.key?(date),
           stamped_time: stamps[date]&.strftime("%H:%M"),
           today: date == Date.current,
-          can_stamp: date <= Date.current && !stamps.key?(date) && date.month == month.month
+          can_stamp: !stamps.key?(date) && date.month == month.month
         }
       end
       calendar_data << week_data

@@ -163,6 +163,75 @@
                         <%= day_data[:date].day %>
                       </text>
                     <% end %>
+                    
+                    <!-- スタンプ表示（日付の上に重ねる） -->
+                    <% if is_combined_cell && combined_dates.any? %>
+                      <!-- 複数日付のスタンプ処理 -->
+                      <% 
+                        # 6週目の日付のスタンプ状態を取得
+                        date1_stamped = day_data[:stamped]
+                        date2_stamped = sixth_week && sixth_week[day_index] ? sixth_week[day_index][:stamped] : false
+                      %>
+                      
+                      <!-- 1つ目の日付のスタンプ -->
+                      <% if date1_stamped %>
+                        <image href="<%= asset_path('stamp_completed.png') %>" 
+                               x="<%= x_pos - 50 %>" 
+                               y="<%= y_pos - 63 %>" 
+                               width="50" 
+                               height="50"
+                               opacity="0.8"
+                               transform="rotate(-5 <%= x_pos - 25 %> <%= y_pos - 18 %>)"
+                               class="stamp-image">
+                          <title><%= current_date.strftime("%m月%d日") %>: スタンプ済み</title>
+                        </image>
+                      <% end %>
+                      
+                      <!-- 2つ目の日付のスタンプ -->
+                      <% if date2_stamped %>
+                        <image href="<%= asset_path('stamp_completed.png') %>" 
+                               x="<%= x_pos %>" 
+                               y="<%= y_pos - 27 %>" 
+                               width="50" 
+                               height="50"
+                               opacity="0.8"
+                               transform="rotate(-5 <%= x_pos + 25 %> <%= y_pos + 18 %>)"
+                               class="stamp-image">
+                          <title><%= sixth_week[day_index][:date].strftime("%m月%d日") %>: スタンプ済み</title>
+                        </image>
+                      <% end %>
+                    <% else %>
+                      <!-- 単一日付のスタンプ -->
+                      <% if day_data[:stamped] %>
+                        <image href="<%= asset_path('stamp_completed.png') %>" 
+                               x="<%= x_pos - 40 %>" 
+                               y="<%= y_pos - 60 %>" 
+                               width="80" 
+                               height="80"
+                               opacity="0.8"
+                               transform="rotate(-5 <%= x_pos %> <%= y_pos %>)"
+                               class="stamp-image">
+                          <title><%= day_data[:date].strftime("%m月%d日") %>: スタンプ済み（<%= day_data[:stamped_time] %>）</title>
+                        </image>
+                      <% elsif day_data[:can_stamp] %>
+                        <!-- 押せる日のヒント -->
+                        <% 
+                          # 今日かどうかで透明度を変える
+                          hint_opacity = day_data[:today] ? "0.5" : "0.2"
+                          hint_title = day_data[:today] ? "今日のスタンプを押せます" : "スタンプ未実施"
+                        %>
+                        <circle cx="<%= x_pos %>" cy="<%= y_pos - 20 %>" 
+                                r="40" 
+                                fill="none" 
+                                stroke="#dc3545"
+                                stroke-width="2"
+                                stroke-dasharray="5,5"
+                                opacity="<%= hint_opacity %>"
+                                class="stamp-hint">
+                          <title><%= day_data[:date].strftime("%m月%d日") %>: <%= hint_title %></title>
+                        </circle>
+                      <% end %>
+                    <% end %>
                   <% end %>
                 <% end %>
               <% end %>
