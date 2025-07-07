@@ -60,17 +60,17 @@
                  preserveAspectRatio="xMidYMid meet"
                  style="pointer-events: none;">
               <!-- ユーザー名表示 -->
-              <text x="460" y="-13" 
+              <text x="400" y="-45" 
                     text-anchor="start" 
                     font-family="Arial, sans-serif" 
-                    font-size="24" 
+                    font-size="42" 
                     font-weight="bold" 
                     fill="#2c3e50">
                 <%= current_user.email.split('@').first %>
               </text>
               
               <!-- 月の数字 -->
-              <text x="100" y="0" 
+              <text x="120" y="110" 
                     text-anchor="middle" 
                     font-family="Arial, sans-serif" 
                     font-size="72" 
@@ -82,10 +82,10 @@
               <!-- カレンダーグリッドのスタンプ表示 -->
               <% 
                 # カレンダーの開始位置とグリッドサイズ
-                grid_start_x = 45
-                grid_start_y = 180
-                cell_width = 101
-                cell_height = 100
+                grid_start_x = 70
+                grid_start_y = 200
+                cell_width = 95
+                cell_height = 95
               %>
               
               <!-- カレンダー日付とスタンプ -->
