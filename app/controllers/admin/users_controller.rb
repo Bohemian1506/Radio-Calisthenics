@@ -2,7 +2,6 @@ class Admin::UsersController < Admin::BaseController
   def index
     @users = User.includes(:stamp_cards)
                  .order(:created_at)
-                 .page(params[:page])
 
     @users_with_stats = @users.map do |user|
       {
@@ -28,7 +27,7 @@ class Admin::UsersController < Admin::BaseController
       {
         month: month,
         count: user.stamp_cards.where(
-          date: month.beginning_of_month..month.end_of_month
+          date: month..month.end_of_month
         ).count
       }
     end.reverse
