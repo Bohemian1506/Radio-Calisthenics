@@ -1,15 +1,15 @@
-<% content_for :title, "管理者ダッシュボード" %>
+<% content_for :title, t('admin.dashboard.title') %>
 
 <div class="container mt-4">
   <div class="row">
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2">🎯 管理者ダッシュボード</h1>
+        <h1 class="h2"><%= t('admin.dashboard.header') %></h1>
         <div>
-          <%= link_to "設定", admin_settings_path, class: "btn btn-outline-primary me-2" %>
-          <%= link_to "ユーザー一覧", admin_users_path, class: "btn btn-outline-info me-2" %>
-          <%= link_to "スタンプカードに戻る", stamp_cards_path, class: "btn btn-secondary" %>
-          <%= link_to "統計情報に戻る", statistics_path, class: "btn btn-secondary" %>
+          <%= link_to t('admin.dashboard.settings_button'), admin_settings_path, class: "btn btn-outline-primary me-2" %>
+          <%= link_to t('admin.dashboard.users_button'), admin_users_path, class: "btn btn-outline-info me-2" %>
+          <%= link_to t('admin.dashboard.back_to_stamps'), stamp_cards_path, class: "btn btn-secondary" %>
+          <%= link_to t('admin.dashboard.back_to_stats'), statistics_path, class: "btn btn-secondary" %>
         </div>
       </div>
     </div>
@@ -20,7 +20,7 @@
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card text-center">
         <div class="card-body">
-          <h5 class="card-title">👥 総ユーザー数</h5>
+          <h5 class="card-title"><%= t('admin.dashboard.total_users') %></h5>
           <h2 class="text-primary"><%= @total_users %></h2>
         </div>
       </div>
@@ -28,7 +28,7 @@
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card text-center">
         <div class="card-body">
-          <h5 class="card-title">⭐ 総スタンプ数</h5>
+          <h5 class="card-title"><%= t('admin.dashboard.total_stamps') %></h5>
           <h2 class="text-success"><%= @total_stamps %></h2>
         </div>
       </div>
@@ -36,7 +36,7 @@
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card text-center">
         <div class="card-body">
-          <h5 class="card-title">📅 今日のスタンプ</h5>
+          <h5 class="card-title"><%= t('admin.dashboard.today_stamps') %></h5>
           <h2 class="text-warning"><%= @today_stamps %></h2>
         </div>
       </div>
@@ -44,9 +44,9 @@
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card text-center">
         <div class="card-body">
-          <h5 class="card-title">🔥 アクティブユーザー</h5>
+          <h5 class="card-title"><%= t('admin.dashboard.active_users') %></h5>
           <h2 class="text-info"><%= @active_users %></h2>
-          <small class="text-muted">過去1週間</small>
+          <small class="text-muted"><%= t('admin.dashboard.past_week') %></small>
         </div>
       </div>
     </div>
@@ -57,7 +57,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h5 class="mb-0">📊 過去7日間のスタンプ数</h5>
+          <h5 class="mb-0"><%= t('admin.dashboard.stamp_chart') %></h5>
         </div>
         <div class="card-body">
           <div class="table-responsive">
@@ -68,7 +68,7 @@
                     <th class="text-center">
                       <%= stat[:date].strftime("%m/%d") %><br>
                       <small class="text-muted">
-                        <%= %w[日 月 火 水 木 金 土][stat[:date].wday] %>
+                        <%= t('admin.dashboard.weekdays').split(' ')[stat[:date].wday] %>
                       </small>
                     </th>
                   <% end %>
@@ -102,7 +102,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h5 class="mb-0">📋 最近のスタンプ記録</h5>
+          <h5 class="mb-0"><%= t('admin.dashboard.recent_stamps') %></h5>
         </div>
         <div class="card-body">
           <% if @recent_stamps.any? %>
@@ -110,10 +110,10 @@
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>ユーザー</th>
-                    <th>日付</th>
-                    <th>スタンプ時刻</th>
-                    <th>記録時刻</th>
+                    <th><%= t('admin.dashboard.user') %></th>
+                    <th><%= t('admin.dashboard.date') %></th>
+                    <th><%= t('admin.dashboard.stamp_time') %></th>
+                    <th><%= t('admin.dashboard.record_time') %></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -128,7 +128,7 @@
                       <td><%= stamp.stamped_at.strftime("%H:%M") %></td>
                       <td>
                         <small class="text-muted">
-                          <%= time_ago_in_words(stamp.created_at) %>前
+                          <%= time_ago_in_words(stamp.created_at) %><%= t('admin.dashboard.ago') %>
                         </small>
                       </td>
                     </tr>
@@ -137,7 +137,7 @@
               </table>
             </div>
           <% else %>
-            <p class="text-muted text-center">まだスタンプ記録がありません。</p>
+            <p class="text-muted text-center"><%= t('admin.dashboard.no_stamps') %></p>
           <% end %>
         </div>
       </div>

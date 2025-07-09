@@ -1,4 +1,4 @@
-<% content_for :title, "スタンプカード" %>
+<% content_for :title, t('stamp_cards.index.title') %>
 
 <div class="container mt-4">
 
@@ -15,10 +15,10 @@
                         "aria-label": "前月（#{prev_month.strftime('%Y年%m月')}）を表示" do %>
               <i class="bi bi-chevron-left" aria-hidden="true"></i> 
               <span class="d-none d-sm-inline"><%= prev_month.strftime("%Y年%m月") %></span>
-              <span class="d-sm-none">前月</span>
+              <span class="d-sm-none"><%= t('stamp_cards.index.prev_month') %></span>
             <% end %>
             
-            <h5 class="mb-0 order-0 order-md-1 text-center">📅 ラジオ体操カード</h5>
+            <h5 class="mb-0 order-0 order-md-1 text-center"><%= t('stamp_cards.index.monthly_card') %></h5>
             
             <% next_month = @monthly_stats[:month] + 1.month %>
             <% if next_month <= Date.current.beginning_of_month %>
@@ -26,14 +26,14 @@
                           class: "btn btn-outline-primary btn-sm order-2",
                           "aria-label": "次月（#{next_month.strftime('%Y年%m月')}）を表示" do %>
                 <span class="d-none d-sm-inline"><%= next_month.strftime("%Y年%m月") %></span>
-                <span class="d-sm-none">次月</span>
+                <span class="d-sm-none"><%= t('stamp_cards.index.next_month') %></span>
                 <i class="bi bi-chevron-right" aria-hidden="true"></i>
               <% end %>
             <% else %>
               <span class="btn btn-outline-secondary disabled btn-sm order-2"
                     aria-label="次月（#{next_month.strftime('%Y年%m月')}）は利用できません">
                 <span class="d-none d-sm-inline"><%= next_month.strftime("%Y年%m月") %></span>
-                <span class="d-sm-none">次月</span>
+                <span class="d-sm-none"><%= t('stamp_cards.index.next_month') %></span>
                 <i class="bi bi-chevron-right" aria-hidden="true"></i>
               </span>
             <% end %>
@@ -151,58 +151,58 @@
     <div class="col-lg-5">
       <div class="card" style="height: 1000px !important;">
         <div class="card-header d-flex align-items-center" style="min-height: 4rem;">
-          <h5 class="mb-0">📊 今日のスタンプ・記録</h5>
+          <h5 class="mb-0"><%= t('stamp_cards.index.today_stamp') %></h5>
         </div>
         <div class="card-body d-flex flex-column" style="overflow-y: auto; padding-top: 1.5rem;">
           <div class="d-flex flex-column gap-2">
             <!-- 今日のスタンプ -->
             <% if @monthly_stats[:can_stamp_today] %>
               <div class="text-center p-3 border rounded border-primary bg-primary bg-opacity-10">
-                <h6 class="card-title text-primary mb-2">今日のラジオ体操はいかがでしたか？</h6>
-                <p class="card-text mb-3">今日のスタンプを押して記録を残しましょう！</p>
+                <h6 class="card-title text-primary mb-2"><%= t('stamp_cards.index.today_question') %></h6>
+                <p class="card-text mb-3"><%= t('stamp_cards.index.stamp_reminder') %></p>
                 <%= form_with model: StampCard.new, url: stamp_cards_path, class: "d-inline" do |form| %>
                   <%= form.hidden_field :date, value: Date.current %>
-                  <%= form.submit "📅 今日のスタンプを押す", 
+                  <%= form.submit t('stamp_cards.index.stamp_button'), 
                                   class: "btn btn-primary",
                                   "aria-label": "今日の日付（#{Date.current.strftime('%Y年%m月%d日')}）にスタンプを記録",
-                                  data: { confirm: "今日のスタンプを押しますか？" } %>
+                                  data: { confirm: t('stamp_cards.index.confirm_stamp') } %>
                 <% end %>
               </div>
             <% end %>
             
             <!-- 基本統計 -->
             <div class="text-center p-3 border rounded bg-light">
-              <h6 class="text-primary mb-2">📅 今月の参加</h6>
-              <h3 class="mb-1"><%= @monthly_stats[:total_stamps] %>/<%= @monthly_stats[:days_passed] %>日</h3>
-              <div class="text-muted">参加率: <%= @monthly_stats[:participation_rate] %>%</div>
+              <h6 class="text-primary mb-2"><%= t('stamp_cards.index.monthly_participation') %></h6>
+              <h3 class="mb-1"><%= @monthly_stats[:total_stamps] %>/<%= @monthly_stats[:days_passed] %><%= t('stamp_cards.index.days') %></h3>
+              <div class="text-muted"><%= t('stamp_cards.index.participation_rate') %>: <%= @monthly_stats[:participation_rate] %>%</div>
             </div>
             
             <div class="text-center p-3 border rounded bg-light">
-              <h6 class="text-success mb-2">⭐ 総参加日数</h6>
-              <h3 class="mb-0"><%= @user_stats[:total_stamps] %>日</h3>
+              <h6 class="text-success mb-2"><%= t('stamp_cards.index.total_days') %></h6>
+              <h3 class="mb-0"><%= @user_stats[:total_stamps] %><%= t('stamp_cards.index.days') %></h3>
             </div>
             
             <div class="text-center p-3 border rounded bg-light">
-              <h6 class="text-warning mb-2">🔥 連続日数</h6>
-              <h3 class="mb-0"><%= @user_stats[:consecutive_days] %>日</h3>
+              <h6 class="text-warning mb-2"><%= t('stamp_cards.index.consecutive_days') %></h6>
+              <h3 class="mb-0"><%= @user_stats[:consecutive_days] %><%= t('stamp_cards.index.days') %></h3>
             </div>
             
             <div class="text-center p-3 border rounded bg-light">
-              <h6 class="text-info mb-2">🏆 最長記録</h6>
-              <h3 class="mb-0"><%= @user_stats[:longest_streak] %>日</h3>
+              <h6 class="text-info mb-2"><%= t('stamp_cards.index.longest_streak') %></h6>
+              <h3 class="mb-0"><%= @user_stats[:longest_streak] %><%= t('stamp_cards.index.days') %></h3>
             </div>
             
             <!-- 詳細統計 -->
             <div class="border rounded p-3 bg-light">
-              <h6 class="text-secondary mb-3">📈 詳細データ</h6>
+              <h6 class="text-secondary mb-3"><%= t('stamp_cards.index.detailed_stats') %></h6>
               <div class="row g-2 text-center">
                 <div class="col-6">
-                  <small class="text-muted d-block mb-1">今年の参加</small>
-                  <h5 class="mb-0"><%= @user_stats[:stamps_this_year] %>日</h5>
+                  <small class="text-muted d-block mb-1"><%= t('stamp_cards.index.yearly_participation') %></small>
+                  <h5 class="mb-0"><%= @user_stats[:stamps_this_year] %><%= t('stamp_cards.index.days') %></h5>
                 </div>
                 <% if @user_stats[:average_time] %>
                 <div class="col-6">
-                  <small class="text-muted d-block mb-1">平均時刻</small>
+                  <small class="text-muted d-block mb-1"><%= t('stamp_cards.index.average_time') %></small>
                   <h5 class="mb-0"><%= @user_stats[:average_time] %></h5>
                 </div>
                 <% end %>
@@ -211,26 +211,26 @@
             
             <!-- 応援メッセージ -->
             <div class="border rounded p-3 bg-gradient" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
-              <h6 class="text-secondary mb-2">💪 応援メッセージ</h6>
+              <h6 class="text-secondary mb-2"><%= t('stamp_cards.index.encouragement') %></h6>
               <% if @user_stats[:consecutive_days] >= 30 %>
                 <p class="text-success mb-0">
-                  <strong>素晴らしい！</strong><br>
-                  <small><%= @user_stats[:consecutive_days] %>日連続参加は本当に立派です！</small>
+                  <strong><%= t('stamp_cards.index.encouragement_messages.excellent_prefix') %></strong><br>
+                  <small><%= @user_stats[:consecutive_days] %><%= t('stamp_cards.index.encouragement_messages.excellent_suffix') %></small>
                 </p>
               <% elsif @user_stats[:consecutive_days] >= 7 %>
                 <p class="text-primary mb-0">
-                  <strong>お疲れ様！</strong><br>
-                  <small><%= @user_stats[:consecutive_days] %>日連続参加中です。この調子で！</small>
+                  <strong><%= t('stamp_cards.index.encouragement_messages.good_prefix') %></strong><br>
+                  <small><%= @user_stats[:consecutive_days] %><%= t('stamp_cards.index.encouragement_messages.good_suffix') %></small>
                 </p>
               <% elsif @user_stats[:consecutive_days] > 0 %>
                 <p class="text-info mb-0">
-                  <strong>いいペースです！</strong><br>
-                  <small><%= @user_stats[:consecutive_days] %>日連続参加中。習慣化まであと少し！</small>
+                  <strong><%= t('stamp_cards.index.encouragement_messages.nice_prefix') %></strong><br>
+                  <small><%= @user_stats[:consecutive_days] %><%= t('stamp_cards.index.encouragement_messages.nice_suffix') %></small>
                 </p>
               <% else %>
                 <p class="text-muted mb-0">
-                  <strong>今日から始めましょう！</strong><br>
-                  <small>ラジオ体操で健康的な毎日をスタート！</small>
+                  <strong><%= t('stamp_cards.index.encouragement_messages.start_prefix') %></strong><br>
+                  <small><%= t('stamp_cards.index.encouragement_messages.start_suffix') %></small>
                 </p>
               <% end %>
             </div>

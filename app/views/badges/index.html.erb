@@ -1,11 +1,11 @@
-<% content_for :title, "バッジコレクション" %>
+<% content_for :title, t('badges.index.title') %>
 
 <div class="container mt-4">
   <div class="row">
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-5">🏆 バッジコレクション</h1>
-        <%= link_to "統計に戻る", statistics_path, class: "btn btn-outline-primary" %>
+        <h1 class="display-5"><%= t('badges.index.header') %></h1>
+        <%= link_to t('badges.index.back_button'), statistics_path, class: "btn btn-outline-primary" %>
       </div>
 
       <!-- バッジ獲得統計 -->
@@ -13,9 +13,9 @@
         <div class="col-md-3 col-sm-6 mb-3">
           <div class="card bg-primary text-white">
             <div class="card-body">
-              <h5 class="card-title">🎯 獲得数</h5>
+              <h5 class="card-title"><%= t('badges.index.earned_count') %></h5>
               <h2 class="mb-0"><%= @badge_stats[:total_earned] %> / <%= @badge_stats[:total_available] %></h2>
-              <small>コンプリート率: <%= @badge_stats[:completion_rate] %>%</small>
+              <small><%= t('badges.index.completion_rate') %>: <%= @badge_stats[:completion_rate] %>%</small>
             </div>
           </div>
         </div>
@@ -23,14 +23,14 @@
         <div class="col-md-3 col-sm-6 mb-3">
           <div class="card bg-success text-white">
             <div class="card-body">
-              <h5 class="card-title">⭐ 最新バッジ</h5>
+              <h5 class="card-title"><%= t('badges.index.latest_badge') %></h5>
               <% if @badge_stats[:latest_badge] %>
                 <p class="mb-0">
                   <%= @badge_stats[:latest_badge].icon %> 
                   <%= @badge_stats[:latest_badge].name %>
                 </p>
               <% else %>
-                <p class="mb-0">まだ獲得していません</p>
+                <p class="mb-0"><%= t('badges.index.not_earned_yet') %></p>
               <% end %>
             </div>
           </div>
@@ -39,7 +39,7 @@
         <div class="col-md-6">
           <div class="card">
             <div class="card-header">
-              <h6 class="mb-0">📊 カテゴリ別獲得状況</h6>
+              <h6 class="mb-0"><%= t('badges.index.category_progress') %></h6>
             </div>
             <div class="card-body">
               <% @badge_stats[:by_type].each do |type_stat| %>
@@ -93,19 +93,19 @@
                       <% if is_earned %>
                         <% earned_at = current_user.earned_badge_at(badge) %>
                         <div class="badge bg-success">
-                          <%= earned_at.strftime("%Y/%m/%d") %> 獲得
+                          <%= earned_at.strftime("%Y/%m/%d") %> <%= t('badges.index.status.earned') %>
                         </div>
                       <% else %>
                         <% if badge.can_be_earned_by?(current_user) %>
-                          <div class="badge bg-warning text-dark">もうすぐ獲得！</div>
+                          <div class="badge bg-warning text-dark"><%= t('badges.index.status.almost') %></div>
                         <% else %>
-                          <div class="badge bg-secondary">未獲得</div>
+                          <div class="badge bg-secondary"><%= t('badges.index.status.not_earned') %></div>
                         <% end %>
                       <% end %>
                     </div>
                     
                     <div class="card-footer bg-transparent">
-                      <%= link_to "詳細", badge_path(badge), class: "btn btn-sm btn-outline-primary w-100" %>
+                      <%= link_to t('badges.index.details'), badge_path(badge), class: "btn btn-sm btn-outline-primary w-100" %>
                     </div>
                   </div>
                 </div>
