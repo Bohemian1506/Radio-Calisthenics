@@ -17,31 +17,31 @@ RSpec.describe Badge, type: :model do
     it 'validates presence of name' do
       badge = Badge.new
       badge.valid?
-      expect(badge.errors[:name]).to include("can't be blank")
+      expect(badge.errors[:name]).to include("を入力してください")
     end
 
     it 'validates presence of description' do
       badge = Badge.new
       badge.valid?
-      expect(badge.errors[:description]).to include("can't be blank")
+      expect(badge.errors[:description]).to include("を入力してください")
     end
 
     it 'validates presence of icon' do
       badge = Badge.new
       badge.valid?
-      expect(badge.errors[:icon]).to include("can't be blank")
+      expect(badge.errors[:icon]).to include("を入力してください")
     end
 
     it 'validates presence of badge_type' do
       badge = Badge.new
       badge.valid?
-      expect(badge.errors[:badge_type]).to include("can't be blank")
+      expect(badge.errors[:badge_type]).to include("を入力してください")
     end
 
     it 'validates presence of conditions' do
       badge = Badge.new
       badge.valid?
-      expect(badge.errors[:conditions]).to include("can't be blank")
+      expect(badge.errors[:conditions]).to include("を入力してください")
     end
   end
 
