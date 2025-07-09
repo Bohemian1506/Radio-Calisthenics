@@ -38,6 +38,8 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           timeout_minutes: "60"
+          use_bedrock: false
+          use_vertex: false
 
   # This workflow provides additional CI support for Claude-generated code
   test-claude-changes:
