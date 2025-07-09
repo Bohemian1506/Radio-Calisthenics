@@ -69,46 +69,56 @@ jobs:
         run: |
           bundle exec brakeman --no-pager
 
-      - name: Comment on PR
+      - name: Comment on PR (failure)
         if: failure()
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { owner, repo } = context.repo;
-            const { number } = context.issue;
+            const { number } = context.payload.pull_request.number;
             
-            await github.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number: number,
-              body: `❌ **CI検証失敗**
-              
-              @claude PRの変更でCI検証が失敗しました。以下の項目を確認してください：
-              - テスト実行結果
-              - RuboCopの静的解析結果  
-              - Brakemanのセキュリティチェック結果
-              
-              修正が必要な場合は、適切なコード修正を提案してください。`
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: number,
+                body: `❌ **CI検証失敗**
+                
+                PRの変更でCI検証が失敗しました。以下の項目を確認してください：
+                - テスト実行結果
+                - RuboCopの静的解析結果  
+                - Brakemanのセキュリティチェック結果
+                
+                @claude 修正が必要な場合は、適切なコード修正を提案してください。`
+              });
+            } catch (error) {
+              console.log('コメント作成に失敗しました:', error.message);
+            }
 
-      - name: Comment on success
+      - name: Comment on success  
         if: success()
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { owner, repo } = context.repo;
-            const { number } = context.issue;
+            const { number } = context.payload.pull_request.number;
             
-            await github.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number: number,
-              body: `✅ **CI検証完了**
-              
-              すべてのテストと品質チェックが成功しました！
-              - ✅ RSpecテスト
-              - ✅ RuboCop静的解析
-              - ✅ Brakemanセキュリティチェック
-              
-              Claude Code による変更が正常に検証されました。`
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: number,
+                body: `✅ **CI検証完了**
+                
+                すべてのテストと品質チェックが成功しました！
+                - ✅ RSpecテスト
+                - ✅ RuboCop静的解析
+                - ✅ Brakemanセキュリティチェック
+                
+                Claude Code による変更が正常に検証されました。`
+              });
+            } catch (error) {
+              console.log('コメント作成に失敗しました:', error.message);
+            }
