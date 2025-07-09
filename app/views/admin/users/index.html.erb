@@ -1,14 +1,14 @@
-<% content_for :title, "ユーザー管理" %>
+<% content_for :title, t('admin.users.title') %>
 
 <div class="container mt-4">
   <div class="row">
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2">👥 ユーザー管理</h1>
+        <h1 class="h2"><%= t('admin.users.header') %></h1>
         <div>
-          <%= link_to "ダッシュボード", admin_root_path, class: "btn btn-outline-primary me-2" %>
-          <%= link_to "設定", admin_settings_path, class: "btn btn-outline-info me-2" %>
-          <%= link_to "スタンプカードに戻る", stamp_cards_path, class: "btn btn-secondary" %>
+          <%= link_to t('admin.users.dashboard_button'), admin_root_path, class: "btn btn-outline-primary me-2" %>
+          <%= link_to t('admin.users.settings_button'), admin_settings_path, class: "btn btn-outline-info me-2" %>
+          <%= link_to t('admin.users.back_to_stamps'), stamp_cards_path, class: "btn btn-secondary" %>
         </div>
       </div>
     </div>
@@ -19,7 +19,7 @@
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card text-center">
         <div class="card-body">
-          <h5 class="card-title">👤 総ユーザー数</h5>
+          <h5 class="card-title"><%= t('admin.users.total_users') %></h5>
           <h3 class="text-primary"><%= @users.count %></h3>
         </div>
       </div>
@@ -27,7 +27,7 @@
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card text-center">
         <div class="card-body">
-          <h5 class="card-title">🔥 アクティブユーザー</h5>
+          <h5 class="card-title"><%= t('admin.users.active_users') %></h5>
           <h3 class="text-success">
             <%= @users_with_stats.count { |u| u[:total_stamps] > 0 } %>
           </h3>
@@ -37,7 +37,7 @@
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card text-center">
         <div class="card-body">
-          <h5 class="card-title">⭐ 平均スタンプ数</h5>
+          <h5 class="card-title"><%= t('admin.users.average_stamps') %></h5>
           <h3 class="text-info">
             <% avg_stamps = @users_with_stats.sum { |u| u[:total_stamps] } / [@users.count, 1].max %>
             <%= avg_stamps.round(1) %>
@@ -48,7 +48,7 @@
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card text-center">
         <div class="card-body">
-          <h5 class="card-title">🏆 最高連続記録</h5>
+          <h5 class="card-title"><%= t('admin.users.highest_streak') %></h5>
           <h3 class="text-warning">
             <%= @users_with_stats.map { |u| u[:consecutive_days] }.max || 0 %>
           </h3>
@@ -62,7 +62,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h5 class="mb-0">📋 ユーザー一覧</h5>
+          <h5 class="mb-0"><%= t('admin.users.user_list') %></h5>
         </div>
         <div class="card-body">
           <% if @users_with_stats.any? %>
@@ -70,13 +70,13 @@
               <table class="table table-striped table-hover">
                 <thead>
                   <tr>
-                    <th>メールアドレス</th>
-                    <th class="text-center">権限</th>
-                    <th class="text-center">総スタンプ数</th>
-                    <th class="text-center">連続日数</th>
-                    <th class="text-center">最終スタンプ</th>
-                    <th class="text-center">登録日</th>
-                    <th class="text-center">アクション</th>
+                    <th><%= t('admin.users.email') %></th>
+                    <th class="text-center"><%= t('admin.users.role') %></th>
+                    <th class="text-center"><%= t('admin.users.total_stamps') %></th>
+                    <th class="text-center"><%= t('admin.users.consecutive_days') %></th>
+                    <th class="text-center"><%= t('admin.users.last_stamp') %></th>
+                    <th class="text-center"><%= t('admin.users.registration_date') %></th>
+                    <th class="text-center"><%= t('admin.users.action') %></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -90,9 +90,9 @@
                       </td>
                       <td class="text-center">
                         <% if user.admin? %>
-                          <span class="badge bg-danger">管理者</span>
+                          <span class="badge bg-danger"><%= t('admin.users.role_admin') %></span>
                         <% else %>
-                          <span class="badge bg-secondary">一般</span>
+                          <span class="badge bg-secondary"><%= t('admin.users.role_user') %></span>
                         <% end %>
                       </td>
                       <td class="text-center">
@@ -105,14 +105,14 @@
                         <% if user_stat[:last_stamp] %>
                           <small><%= user_stat[:last_stamp].strftime("%m/%d") %></small>
                         <% else %>
-                          <small class="text-muted">未参加</small>
+                          <small class="text-muted"><%= t('admin.users.not_participated') %></small>
                         <% end %>
                       </td>
                       <td class="text-center">
                         <small><%= user.created_at.strftime("%Y/%m/%d") %></small>
                       </td>
                       <td class="text-center">
-                        <%= link_to "詳細", admin_user_path(user), 
+                        <%= link_to t('admin.users.details_button'), admin_user_path(user), 
                                     class: "btn btn-sm btn-outline-info" %>
                       </td>
                     </tr>
@@ -121,7 +121,7 @@
               </table>
             </div>
           <% else %>
-            <p class="text-muted text-center">ユーザーが登録されていません。</p>
+            <p class="text-muted text-center"><%= t('admin.users.no_users') %></p>
           <% end %>
         </div>
       </div>

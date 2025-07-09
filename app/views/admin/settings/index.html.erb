@@ -1,14 +1,14 @@
-<% content_for :title, "管理者設定" %>
+<% content_for :title, t('admin.settings.title') %>
 
 <div class="container mt-4">
   <div class="row">
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2">⚙️ 管理者設定</h1>
+        <h1 class="h2"><%= t('admin.settings.header') %></h1>
         <div>
-          <%= link_to "ダッシュボード", admin_root_path, class: "btn btn-outline-primary me-2" %>
-          <%= link_to "ユーザー一覧", admin_users_path, class: "btn btn-outline-info me-2" %>
-          <%= link_to "スタンプカードに戻る", stamp_cards_path, class: "btn btn-secondary" %>
+          <%= link_to t('admin.settings.dashboard_button'), admin_root_path, class: "btn btn-outline-primary me-2" %>
+          <%= link_to t('admin.settings.users_button'), admin_users_path, class: "btn btn-outline-info me-2" %>
+          <%= link_to t('admin.settings.back_to_stamps'), stamp_cards_path, class: "btn btn-secondary" %>
         </div>
       </div>
     </div>
@@ -19,18 +19,18 @@
       <!-- 参加時間設定 -->
       <div class="card mb-4">
         <div class="card-header">
-          <h5 class="mb-0">🕐 ラジオ体操参加時間設定</h5>
+          <h5 class="mb-0"><%= t('admin.settings.time_settings') %></h5>
         </div>
         <div class="card-body">
           <p class="text-muted mb-4">
-            スタンプを押すことができる時間帯を設定します。この時間外はスタンプを押すことができません。
+            <%= t('admin.settings.time_description') %>
           </p>
           
           <div class="row">
             <div class="col-md-6 mb-3">
               <div class="card border-primary">
                 <div class="card-body">
-                  <h6 class="card-title">🌅 開始時刻</h6>
+                  <h6 class="card-title"><%= t('admin.settings.start_time') %></h6>
                   <div class="d-flex align-items-center mb-3">
                     <span class="h4 text-primary me-3"><%= @participation_start_time %></span>
                   </div>
@@ -39,7 +39,7 @@
                     <%= f.hidden_field :setting_name, value: "participation_start_time" %>
                     <%= f.time_field :setting_value, value: @participation_start_time, 
                                      class: "form-control form-control-sm", required: true %>
-                    <%= f.submit "更新", class: "btn btn-primary btn-sm" %>
+                    <%= f.submit t('admin.settings.update_button'), class: "btn btn-primary btn-sm" %>
                   <% end %>
                 </div>
               </div>
@@ -48,7 +48,7 @@
             <div class="col-md-6 mb-3">
               <div class="card border-success">
                 <div class="card-body">
-                  <h6 class="card-title">🌆 終了時刻</h6>
+                  <h6 class="card-title"><%= t('admin.settings.end_time') %></h6>
                   <div class="d-flex align-items-center mb-3">
                     <span class="h4 text-success me-3"><%= @participation_end_time %></span>
                   </div>
@@ -57,7 +57,7 @@
                     <%= f.hidden_field :setting_name, value: "participation_end_time" %>
                     <%= f.time_field :setting_value, value: @participation_end_time, 
                                      class: "form-control form-control-sm", required: true %>
-                    <%= f.submit "更新", class: "btn btn-success btn-sm" %>
+                    <%= f.submit t('admin.settings.update_button'), class: "btn btn-success btn-sm" %>
                   <% end %>
                 </div>
               </div>
@@ -65,9 +65,9 @@
           </div>
           
           <div class="alert alert-info">
-            <strong>💡 現在の設定:</strong>
-            スタンプは <strong><%= @participation_start_time %></strong> から 
-            <strong><%= @participation_end_time %></strong> まで押すことができます。
+            <strong><%= t('admin.settings.current_settings') %></strong>
+            <%= t('admin.settings.stamp_available') %><strong><%= @participation_start_time %></strong><%= t('admin.settings.from') %>
+            <strong><%= @participation_end_time %></strong><%= t('admin.settings.to') %>
           </div>
         </div>
       </div>
@@ -75,24 +75,24 @@
       <!-- システム情報 -->
       <div class="card">
         <div class="card-header">
-          <h5 class="mb-0">📊 システム情報</h5>
+          <h5 class="mb-0"><%= t('admin.settings.system_info') %></h5>
         </div>
         <div class="card-body">
           <div class="row">
             <div class="col-md-6">
               <ul class="list-unstyled">
-                <li><strong>システム名:</strong> Radio-Calisthenics</li>
-                <li><strong>バージョン:</strong> Phase2</li>
-                <li><strong>Rails:</strong> <%= Rails.version %></li>
-                <li><strong>Ruby:</strong> <%= RUBY_VERSION %></li>
+                <li><strong><%= t('admin.settings.system_name') %></strong> <%= t('admin.settings.system_name_value') %></li>
+                <li><strong><%= t('admin.settings.version') %></strong> <%= t('admin.settings.version_value') %></li>
+                <li><strong><%= t('admin.settings.rails_version') %></strong> <%= Rails.version %></li>
+                <li><strong><%= t('admin.settings.ruby_version') %></strong> <%= RUBY_VERSION %></li>
               </ul>
             </div>
             <div class="col-md-6">
               <ul class="list-unstyled">
-                <li><strong>環境:</strong> <%= Rails.env %></li>
-                <li><strong>タイムゾーン:</strong> <%= Time.zone.name %></li>
-                <li><strong>現在時刻:</strong> <%= Time.current.strftime("%Y-%m-%d %H:%M:%S") %></li>
-                <li><strong>データベース:</strong> PostgreSQL</li>
+                <li><strong><%= t('admin.settings.environment') %></strong> <%= Rails.env %></li>
+                <li><strong><%= t('admin.settings.timezone') %></strong> <%= Time.zone.name %></li>
+                <li><strong><%= t('admin.settings.current_time') %></strong> <%= Time.current.strftime("%Y-%m-%d %H:%M:%S") %></li>
+                <li><strong><%= t('admin.settings.database') %></strong> <%= t('admin.settings.database_value') %></li>
               </ul>
             </div>
           </div>

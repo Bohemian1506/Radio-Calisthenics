@@ -40,6 +40,12 @@ module RadioCalisthenics
     # in config/environments, which are processed later.
     #
     config.time_zone = "Tokyo"
+
+    # I18n設定
+    config.i18n.default_locale = :ja
+    config.i18n.available_locales = [ :ja, :en ]
+    config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.{rb,yml}")]
+
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

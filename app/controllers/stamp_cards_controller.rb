@@ -19,9 +19,9 @@ class StampCardsController < ApplicationController
     @stamp_card.stamped_at = Time.current if @stamp_card.stamped_at.blank?
 
     if @stamp_card.save
-      redirect_to stamp_cards_path, notice: "今日のスタンプを押しました！"
+      redirect_to stamp_cards_path, notice: t("controllers.stamp_cards.stamp_created")
     else
-      redirect_to stamp_cards_path, alert: "スタンプの作成に失敗しました。#{@stamp_card.errors.full_messages.join(', ')}"
+      redirect_to stamp_cards_path, alert: "#{t("controllers.stamp_cards.stamp_failed")}#{@stamp_card.errors.full_messages.join(", ")}"
     end
   end
 
@@ -29,9 +29,9 @@ class StampCardsController < ApplicationController
     @stamp_card = current_user.stamp_cards.find(params[:id])
 
     if @stamp_card.destroy
-      redirect_to stamp_cards_path, notice: "スタンプを削除しました。"
+      redirect_to stamp_cards_path, notice: t("controllers.stamp_cards.stamp_deleted")
     else
-      redirect_to stamp_cards_path, alert: "スタンプの削除に失敗しました。"
+      redirect_to stamp_cards_path, alert: t("controllers.stamp_cards.delete_failed")
     end
   end
 

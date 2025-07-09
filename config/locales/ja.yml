@@ -1,0 +1,420 @@
+ja:
+  activerecord:
+    models:
+      user: ユーザー
+      stamp_card: スタンプカード
+      badge: バッジ
+      admin_setting: 管理者設定
+    attributes:
+      user:
+        email: メールアドレス
+        password: パスワード
+        password_confirmation: パスワード（確認用）
+        created_at: 登録日
+        updated_at: 更新日
+      stamp_card:
+        user: ユーザー
+        date: 日付
+        stamped_at: スタンプ時刻
+        created_at: 作成日
+        updated_at: 更新日
+      badge:
+        name: バッジ名
+        description: 説明
+        icon: アイコン
+        badge_type: バッジタイプ
+        conditions: 獲得条件
+        created_at: 作成日
+        updated_at: 更新日
+      admin_setting:
+        key: 設定キー
+        value: 設定値
+        created_at: 作成日
+        updated_at: 更新日
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: "を入力してください"
+              invalid: "の形式が正しくありません"
+              taken: "は既に使用されています"
+            password:
+              blank: "を入力してください"
+              too_short: "は%{count}文字以上で入力してください"
+        stamp_card:
+          attributes:
+            user:
+              blank: "を選択してください"
+            date:
+              blank: "を入力してください"
+              taken: "は既に登録されています"
+            stamped_at:
+              blank: "を入力してください"
+        badge:
+          attributes:
+            name:
+              blank: "を入力してください"
+            description:
+              blank: "を入力してください"
+            icon:
+              blank: "を入力してください"
+            badge_type:
+              blank: "を入力してください"
+            conditions:
+              blank: "を入力してください"
+
+  layouts:
+    application:
+      title: "ラジオ体操スタンプカード"
+      brand: "🏃‍♀️ ラジオ体操スタンプカード"
+      nav:
+        stamp_cards: "📅 スタンプカード"
+        statistics: "📊 統計情報"
+        badges: "🏆 バッジ"
+        admin_menu: "🎯 管理者メニュー"
+        dashboard: "📊 ダッシュボード"
+        user_management: "👥 ユーザー管理"
+        settings: "⚙️ 設定"
+        logout: "ログアウト"
+        login: "ログイン"
+        signup: "新規登録"
+  
+  stamp_cards:
+    index:
+      title: "スタンプカード"
+      monthly_card: "📅 ラジオ体操カード"
+      today_stamp: "📊 今日のスタンプ・記録"
+      monthly_participation: "📅 今月の参加"
+      total_days: "⭐ 総参加日数"
+      consecutive_days: "🔥 連続日数"
+      longest_streak: "🏆 最長記録"
+      detailed_stats: "📈 詳細データ"
+      encouragement: "💪 応援メッセージ"
+      prev_month: "前月"
+      next_month: "次月"
+      today_question: "今日のラジオ体操はいかがでしたか？"
+      stamp_reminder: "今日のスタンプを押して記録を残しましょう！"
+      stamp_button: "📅 今日のスタンプを押す"
+      confirm_stamp: "今日のスタンプを押しますか？"
+      participation_rate: "参加率"
+      days: "日"
+      yearly_participation: "今年の参加"
+      average_time: "平均時刻"
+      encouragement_messages:
+        excellent_prefix: "素晴らしい！"
+        excellent_suffix: "日連続参加は本当に立派です！"
+        good_prefix: "お疲れ様！"
+        good_suffix: "日連続参加中です。この調子で！"
+        nice_prefix: "いいペースです！"
+        nice_suffix: "日連続参加中。習慣化まであと少し！"
+        start_prefix: "今日から始めましょう！"
+        start_suffix: "ラジオ体操で健康的な毎日をスタート！"
+  
+  statistics:
+    index:
+      header: "📊 あなたの統計情報"
+      subtitle: "ラジオ体操の参加状況を詳しく分析してみましょう"
+      badge_button: "🏆 バッジコレクション"
+      message_section: "💪"
+      today_message: "今日のメッセージ"
+      total_stamps: "🎯"
+      total_stamps_label: "総スタンプ数"
+      participation_count: "回参加"
+      current_streak: "🔥"
+      current_streak_label: "現在の連続記録"
+      consecutive_days: "日連続"
+      monthly_rate: "📅"
+      monthly_rate_label: "今月の参加率"
+      days: "日"
+      average_time: "⏰"
+      average_time_label: "平均参加時刻"
+      average_time_value: "平均時刻"
+      achievements: "🏆 あなたの実績"
+      no_achievements: "🌱"
+      no_achievements_message: "まだ実績がありません。"
+      achievements_hint: "継続して参加すると実績が獲得できます！"
+      detailed_stats: "📈 詳細統計"
+      yearly_count: "今年の参加数"
+      yearly_rate: "今年の参加率"
+      longest_streak: "最長連続記録"
+      start_date: "参加開始日"
+      monthly_chart: "📊 月次参加状況（過去12ヶ月）"
+      yearly_chart: "📈 年次参加状況"
+      view_details: "詳細を見る"
+      participation_count_label: "参加数"
+      participation_rate_label: "参加率 (%)"
+      monthly_trend: "月次参加状況の推移"
+      yearly_count_label: "年間参加数"
+      yearly_trend: "年次参加数の推移"
+      more_stats: "さらに詳しい統計を見る"
+      monthly_stats: "📅 月次統計"
+      yearly_stats: "📊 年次統計"
+      back_to_stamps: "🏃‍♂️ スタンプカードに戻る"
+  
+  badges:
+    index:
+      title: "バッジコレクション"
+      header: "🏆 バッジコレクション"
+      back_button: "統計に戻る"
+      earned_count: "🎯 獲得数"
+      completion_rate: "コンプリート率"
+      latest_badge: "⭐ 最新バッジ"
+      not_earned_yet: "まだ獲得していません"
+      category_progress: "📊 カテゴリ別獲得状況"
+      status:
+        earned: "獲得"
+        almost: "もうすぐ獲得！"
+        not_earned: "未獲得"
+      details: "詳細"
+  
+  admin:
+    dashboard:
+      title: "管理者ダッシュボード"
+      header: "🎯 管理者ダッシュボード"
+      settings_button: "設定"
+      users_button: "ユーザー一覧"
+      back_to_stamps: "スタンプカードに戻る"
+      back_to_stats: "統計情報に戻る"
+      total_users: "👥 総ユーザー数"
+      total_stamps: "⭐ 総スタンプ数"
+      today_stamps: "📅 今日のスタンプ"
+      active_users: "🔥 アクティブユーザー"
+      past_week: "過去1週間"
+      stamp_chart: "📊 過去7日間のスタンプ数"
+      recent_stamps: "📋 最近のスタンプ記録"
+      user: "ユーザー"
+      date: "日付"
+      stamp_time: "スタンプ時刻"
+      record_time: "記録時刻"
+      ago: "前"
+      weekdays: "日 月 火 水 木 金 土"
+      no_stamps: "まだスタンプ記録がありません。"
+    
+    users:
+      title: "ユーザー管理"
+      header: "👥 ユーザー管理"
+      dashboard_button: "ダッシュボード"
+      settings_button: "設定"
+      back_to_stamps: "スタンプカードに戻る"
+      total_users: "👤 総ユーザー数"
+      active_users: "🔥 アクティブユーザー"
+      average_stamps: "⭐ 平均スタンプ数"
+      highest_streak: "🏆 最高連続記録"
+      user_list: "📋 ユーザー一覧"
+      email: "メールアドレス"
+      role: "権限"
+      total_stamps: "総スタンプ数"
+      consecutive_days: "連続日数"
+      last_stamp: "最終スタンプ"
+      registration_date: "登録日"
+      action: "アクション"
+      role_admin: "管理者"
+      role_user: "一般"
+      not_participated: "未参加"
+      details_button: "詳細"
+      no_users: "ユーザーが登録されていません。"
+    
+    settings:
+      title: "管理者設定"
+      header: "⚙️ 管理者設定"
+      dashboard_button: "ダッシュボード"
+      users_button: "ユーザー一覧"
+      back_to_stamps: "スタンプカードに戻る"
+      time_settings: "🕐 ラジオ体操参加時間設定"
+      time_description: "スタンプを押すことができる時間帯を設定します。この時間外はスタンプを押すことができません。"
+      start_time: "🌅 開始時刻"
+      end_time: "🌆 終了時刻"
+      update_button: "更新"
+      current_settings: "💡 現在の設定:"
+      stamp_available: "スタンプは"
+      from: "から"
+      to: "まで押すことができます。"
+      system_info: "📊 システム情報"
+      system_name: "システム名:"
+      version: "バージョン:"
+      rails_version: "Rails:"
+      ruby_version: "Ruby:"
+      environment: "環境:"
+      timezone: "タイムゾーン:"
+      current_time: "現在時刻:"
+      database: "データベース:"
+      system_name_value: "Radio-Calisthenics"
+      version_value: "Phase2"
+      database_value: "PostgreSQL"
+  
+  controllers:
+    stamp_cards:
+      stamp_created: "今日のスタンプを押しました！"
+      stamp_failed: "スタンプの作成に失敗しました。"
+      stamp_deleted: "スタンプを削除しました。"
+      delete_failed: "スタンプの削除に失敗しました。"
+    
+    admin:
+      settings:
+        updated: "設定を更新しました。"
+        invalid: "無効な設定値です。"
+  
+  errors:
+    format: "%{attribute}%{message}"
+    messages:
+      blank: "を入力してください"
+      required: "を入力してください"
+      invalid: "は不正な値です"
+      confirmation: "と%{attribute}の入力が一致しません"
+      accepted: "を受諾してください"
+      empty: "を入力してください"
+      equal_to: "は%{count}にしてください"
+      even: "は偶数にしてください"
+      exclusion: "は予約されています"
+      greater_than: "は%{count}より大きい値にしてください"
+      greater_than_or_equal_to: "は%{count}以上の値にしてください"
+      inclusion: "は一覧にありません"
+      invalid: "は不正な値です"
+      less_than: "は%{count}より小さい値にしてください"
+      less_than_or_equal_to: "は%{count}以下の値にしてください"
+      model_invalid: "バリデーションに失敗しました: %{errors}"
+      not_a_number: "は数値で入力してください"
+      not_an_integer: "は整数で入力してください"
+      odd: "は奇数にしてください"
+      other_than: "は%{count}以外の値にしてください"
+      present: "は入力しないでください"
+      taken: "はすでに存在します"
+      too_long: "は%{count}文字以内で入力してください"
+      too_short: "は%{count}文字以上で入力してください"
+      wrong_length: "は%{count}文字で入力してください"
+  
+  date:
+    formats:
+      default: "%Y/%m/%d"
+      short: "%m/%d"
+      long: "%Y年%m月%d日(%a)"
+    day_names:
+      - 日曜日
+      - 月曜日
+      - 火曜日
+      - 水曜日
+      - 木曜日
+      - 金曜日
+      - 土曜日
+    abbr_day_names:
+      - 日
+      - 月
+      - 火
+      - 水
+      - 木
+      - 金
+      - 土
+    month_names:
+      - ~
+      - 1月
+      - 2月
+      - 3月
+      - 4月
+      - 5月
+      - 6月
+      - 7月
+      - 8月
+      - 9月
+      - 10月
+      - 11月
+      - 12月
+    abbr_month_names:
+      - ~
+      - 1月
+      - 2月
+      - 3月
+      - 4月
+      - 5月
+      - 6月
+      - 7月
+      - 8月
+      - 9月
+      - 10月
+      - 11月
+      - 12月
+    order:
+      - :year
+      - :month
+      - :day
+
+  time:
+    formats:
+      default: "%Y年%m月%d日(%a) %H時%M分%S秒 %z"
+      short: "%m/%d %H:%M"
+      long: "%Y年%m月%d日(%a) %H時%M分%S秒 %Z"
+    am: "午前"
+    pm: "午後"
+  
+  number:
+    format:
+      separator: "."
+      delimiter: ","
+      precision: 3
+      significant: false
+      strip_insignificant_zeros: false
+    currency:
+      format:
+        format: "%n%u"
+        unit: "円"
+        separator: "."
+        delimiter: ","
+        precision: 0
+        significant: false
+        strip_insignificant_zeros: false
+    percentage:
+      format:
+        delimiter: ","
+        format: "%n%"
+    precision:
+      format:
+        delimiter: ","
+    human:
+      format:
+        delimiter: ","
+        precision: 3
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: "%n %u"
+        units:
+          byte: "バイト"
+          kb: "KB"
+          mb: "MB"
+          gb: "GB"
+          tb: "TB"
+          pb: "PB"
+          eb: "EB"
+      decimal_units:
+        format: "%n %u"
+        units:
+          unit: ""
+          thousand: "千"
+          million: "百万"
+          billion: "十億"
+          trillion: "兆"
+          quadrillion: "千兆"
+  
+  support:
+    array:
+      words_connector: "、"
+      two_words_connector: "、"
+      last_word_connector: "、"
+    select:
+      prompt: "選択してください"
+  
+  helpers:
+    select:
+      prompt: "選択してください"
+    submit:
+      create: "作成する"
+      update: "更新する"
+      submit: "保存する"
+    label:
+      user:
+        email: "メールアドレス"
+        password: "パスワード"
+        password_confirmation: "パスワード（確認用）"
+      stamp_card:
+        date: "日付"
+        stamped_at: "スタンプ時刻"
