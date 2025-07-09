@@ -10,9 +10,9 @@ class Admin::SettingsController < Admin::BaseController
 
     if valid_setting?(setting_name, setting_value)
       AdminSetting.set_value(setting_name, setting_value)
-      redirect_to admin_settings_path, notice: t('controllers.admin.settings.updated')
+      redirect_to admin_settings_path, notice: t("controllers.admin.settings.updated")
     else
-      redirect_to admin_settings_path, alert: t('controllers.admin.settings.invalid')
+      redirect_to admin_settings_path, alert: t("controllers.admin.settings.invalid")
     end
   end
 
