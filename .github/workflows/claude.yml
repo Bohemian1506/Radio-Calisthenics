@@ -1,0 +1,101 @@
+name: Claude Code Integration
+
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created, edited]
+  pull_request:
+    types: [opened, edited, synchronize]
+  pull_request_review_comment:
+    types: [created, edited]
+
+jobs:
+  claude-integration:
+    runs-on: ubuntu-latest
+    if: contains(github.event.comment.body, '@claude') || contains(github.event.issue.body, '@claude') || contains(github.event.pull_request.body, '@claude')
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.0
+          bundler-cache: true
+
+      - name: Install Claude Code
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude --version
+
+      - name: Run Claude Code
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Set up Claude Code configuration
+          cat > .claude.json << 'EOF'
+          {
+            "model": "claude-3-5-sonnet-20241022",
+            "max_tokens": 8192,
+            "temperature": 0.1,
+            "timeout": 300,
+            "project_context": {
+              "name": "Radio-Calisthenics",
+              "description": "ラジオ体操スタンプカード管理システム - Ruby on Rails 8.x",
+              "tech_stack": ["Ruby on Rails", "PostgreSQL", "Bootstrap", "Docker"],
+              "coding_style": "日本語コメント、初学者向けシンプル設計",
+              "test_framework": "RSpec"
+            }
+          }
+          EOF
+
+          # Handle different event types
+          if [[ "${{ github.event_name }}" == "issues" ]]; then
+            echo "Processing issue event..."
+            claude --github-issue "${{ github.event.issue.number }}" \
+              --repo "${{ github.repository }}" \
+              --prompt "この issue を分析し、必要に応じて実装計画を提案してください。初学者向けのRails開発を心がけ、日本語でコメントを記載してください。"
+          elif [[ "${{ github.event_name }}" == "issue_comment" ]]; then
+            echo "Processing issue comment event..."
+            claude --github-issue "${{ github.event.issue.number }}" \
+              --repo "${{ github.repository }}" \
+              --prompt "このコメントに対して適切な実装提案やアドバイスを提供してください。"
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "Processing pull request event..."
+            claude --github-pr "${{ github.event.pull_request.number }}" \
+              --repo "${{ github.repository }}" \
+              --prompt "このPull Requestをレビューし、コード品質改善の提案を行ってください。"
+          elif [[ "${{ github.event_name }}" == "pull_request_review_comment" ]]; then
+            echo "Processing PR review comment event..."
+            claude --github-pr "${{ github.event.pull_request.number }}" \
+              --repo "${{ github.repository }}" \
+              --prompt "このレビューコメントに対して適切な修正提案を行ってください。"
+          fi
+
+      - name: Run project tests
+        if: github.event_name == 'pull_request'
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/radio_calisthenics_test
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          sudo service postgresql start
+          sudo -u postgres createdb radio_calisthenics_test
+          bundle exec rails db:test:prepare
+          bundle exec rspec
+
+      - name: Run RuboCop
+        if: github.event_name == 'pull_request'
+        run: |
+          bundle exec rubocop --format github
+
+      - name: Security scan
+        if: github.event_name == 'pull_request'
+        run: |
+          bundle exec brakeman --no-pager

@@ -274,7 +274,8 @@ Phase開始検出 → Issue自動作成
 **前提条件**
 ✅ GitHub Secretsに `ANTHROPIC_API_KEY` が設定済み  
 ✅ `.github/workflows/claude.yml` が配置済み  
-✅ リポジトリにClaude設定ファイルが存在
+✅ Claude GitHub App がリポジトリにインストール済み  
+✅ MAXプランでのAPI利用権限
 
 #### 基本的な使用方法
 

@@ -16,5 +16,5 @@ labels: 'claude-feature'
 
 ---
 
-@claude EventPay Managerプロジェクトで上記機能を実装してください。
+@claude Radio-Calisthenicsプロジェクトで上記機能を実装してください。
 初学者向けのシンプルな実装でお願いします。
