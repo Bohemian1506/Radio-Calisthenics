@@ -56,5 +56,8 @@ claude_review*.json
 # Summary directory - not tracked
 summaries/
 
+# Documentation directory - not tracked for Claude Code outputs
+docs/
+
 # Temporary screenshots directory
 tmp/screenshots/
