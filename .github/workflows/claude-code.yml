@@ -1,0 +1,106 @@
+name: Claude Code
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to process'
+        required: true
+        type: number
+
+jobs:
+  claude-code:
+    if: github.event.label.name == 'claude-code' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.CLAUDE_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+      
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+      
+      - name: Get issue details
+        id: issue
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            ISSUE_NUMBER="${{ github.event.inputs.issue_number }}"
+          else
+            ISSUE_NUMBER="${{ github.event.issue.number }}"
+          fi
+          
+          ISSUE_DATA=$(gh api repos/${{ github.repository }}/issues/${ISSUE_NUMBER})
+          ISSUE_TITLE=$(echo "$ISSUE_DATA" | jq -r '.title')
+          ISSUE_BODY=$(echo "$ISSUE_DATA" | jq -r '.body')
+          
+          echo "number=${ISSUE_NUMBER}" >> $GITHUB_OUTPUT
+          echo "title=${ISSUE_TITLE}" >> $GITHUB_OUTPUT
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "${ISSUE_BODY}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      
+      - name: Create feature branch
+        run: |
+          git config user.name "claude-code[bot]"
+          git config user.email "claude-code[bot]@users.noreply.github.com"
+          
+          BRANCH_NAME="claude-code/issue-${{ steps.issue.outputs.number }}"
+          git checkout -b $BRANCH_NAME
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
+      
+      - name: Execute Claude Code
+        run: |
+          # ここにClaude Code実行ロジックを実装
+          # 例: claude-code --issue "${{ steps.issue.outputs.number }}" --implement
+          echo "Claude Code実行をシミュレート中..."
+          echo "Issue #${{ steps.issue.outputs.number }}: ${{ steps.issue.outputs.title }}"
+      
+      - name: Commit changes
+        run: |
+          if [[ -n $(git status -s) ]]; then
+            git add .
+            git commit -m "feat: Issue #${{ steps.issue.outputs.number }} の実装
+
+            ${{ steps.issue.outputs.title }}
+            
+            Co-authored-by: Claude <claude-code[bot]@users.noreply.github.com>"
+            git push origin ${{ env.branch_name }}
+          else
+            echo "変更なし"
+          fi
+      
+      - name: Create pull request
+        if: success()
+        run: |
+          PR_BODY="## 概要
+          Issue #${{ steps.issue.outputs.number }} の自動実装
+          
+          ### 実装内容
+          ${{ steps.issue.outputs.title }}
+          
+          ### 関連Issue
+          Closes #${{ steps.issue.outputs.number }}
+          
+          ### テスト
+          - [ ] 単体テスト実行
+          - [ ] 統合テスト実行
+          - [ ] 手動テスト完了"
+          
+          gh pr create \
+            --title "feat: Issue #${{ steps.issue.outputs.number }} - ${{ steps.issue.outputs.title }}" \
+            --body "$PR_BODY" \
+            --base main \
+            --head ${{ env.branch_name }} \
+            --assignee ${{ github.actor }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
