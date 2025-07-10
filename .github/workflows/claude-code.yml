@@ -133,11 +133,38 @@ jobs:
           - [ ] 統合テスト実行
           - [ ] 手動テスト完了"
           
-          gh pr create \
+          PR_URL=$(gh pr create \
             --title "feat: Issue #${{ steps.issue.outputs.number }} - ${{ steps.issue.outputs.title }}" \
             --body "$PR_BODY" \
             --base main \
             --head ${{ env.branch_name }} \
-            --assignee ${{ github.actor }}
+            --assignee ${{ github.actor }})
+          
+          echo "pr_url=$PR_URL" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      
+      - name: Post comment response
+        if: success() && github.event_name == 'issue_comment'
+        run: |
+          COMMENT_BODY="👋 @${{ github.actor }} さん、Claude Code が対応いたします！
+
+          ## 🚀 実行結果
+          - ✅ ブランチ作成: \`${{ env.branch_name }}\`
+          - ✅ 実装完了: Issue #${{ steps.issue.outputs.number }} の内容を実装しました
+          - ✅ PR作成: ${{ env.pr_url }}
+
+          ## 📝 次のステップ
+          1. 作成されたPRをレビューしてください
+          2. 必要に応じて修正を行ってください  
+          3. 問題なければマージしてください
+
+          ## 🤖 Claude Code について
+          Claude Code は @claude メンションで自動実行されます。
+          
+          ---
+          *🤖 この返信は Claude Code GitHub Action により自動生成されました*"
+
+          gh issue comment ${{ steps.issue.outputs.number }} --body "$COMMENT_BODY"
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
