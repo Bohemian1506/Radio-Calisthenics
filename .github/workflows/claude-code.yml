@@ -77,7 +77,15 @@ jobs:
     
       - name: Commit changes
         run: |
+          echo "=== Git Status ==="
+          git status
+          echo "=== Git Diff ==="
+          git diff --name-only
+          echo "=== Untracked Files ==="
+          git ls-files --others --exclude-standard
+          
           if [[ -n $(git status -s) ]]; then
+            echo "変更を検出しました。コミットを作成します..."
             git add .
             git commit -m "feat: Issue #${{ steps.issue.outputs.number }} の実装
 
@@ -85,8 +93,20 @@ jobs:
             
             Co-authored-by: Claude <claude-code[bot]@users.noreply.github.com>"
             git push origin ${{ env.branch_name }}
+            echo "コミットとプッシュが完了しました。"
           else
-            echo "変更なし"
+            echo "⚠️ 変更が検出されませんでした。"
+            echo "強制的にダミーファイルを作成してコミットします。"
+            echo "# Claude Code Test - Issue #${{ steps.issue.outputs.number }}" > claude-code-test.md
+            echo "Created at: $(date)" >> claude-code-test.md
+            git add claude-code-test.md
+            git commit -m "feat: Issue #${{ steps.issue.outputs.number }} の実装（テスト用）
+
+            ${{ steps.issue.outputs.title }}
+            
+            Co-authored-by: Claude <claude-code[bot]@users.noreply.github.com>"
+            git push origin ${{ env.branch_name }}
+            echo "ダミーファイルでコミットとプッシュが完了しました。"
           fi
       
       - name: Create pull request
