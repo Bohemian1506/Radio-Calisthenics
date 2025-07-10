@@ -3,6 +3,8 @@ name: Claude Code
 on:
   issues:
     types: [labeled]
+  issue_comment:
+    types: [created]
   workflow_dispatch:
     inputs:
       issue_number:
@@ -12,7 +14,10 @@ on:
 
 jobs:
   claude-code:
-    if: github.event.label.name == 'claude-code' || github.event_name == 'workflow_dispatch'
+    if: |
+      github.event.label.name == 'claude-code' || 
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
     runs-on: ubuntu-latest
     
     steps:
@@ -33,6 +38,8 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             ISSUE_NUMBER="${{ github.event.inputs.issue_number }}"
+          elif [ "${{ github.event_name }}" == "issue_comment" ]; then
+            ISSUE_NUMBER="${{ github.event.issue.number }}"
           else
             ISSUE_NUMBER="${{ github.event.issue.number }}"
           fi
